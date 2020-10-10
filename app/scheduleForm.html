@@ -111,10 +111,13 @@
 
                     <div class="form-group col-md-6">
                         <label for="remindDate">Date</label>
-                        <input type="date" class="form-control" id="remindDate" placeholder="" aria-describedby="dateHelpBlock">
+                        <input type="date" class="form-control" id="remindDate" placeholder="" onchange="dayChange(this.value)" aria-describedby="dateHelpBlock" required>
                         <small id="dateHelpBlock" class="form-text text-muted">
                             Your date must be in dd/mm/yy format
-                          </small>                          
+                          </small>
+                          <div class="invalid-feedback">
+                            Please provide a valid date.
+                          </div>                                              
                         </select>
                     </div>
 
@@ -132,13 +135,13 @@
                     <div class="form-group col-md-6">
                         <label for="inputDayRemind">Day</label>
                         <select id="inputDayRemind" class="form-control">
-                            <option selected>Monday</option>
-                            <option>Tuesday</option>
-                            <option>Wednesday</option>
-                            <option>Thursday</option>
-                            <option>Friday</option>
-                            <option>Saturday</option>
-                            <option>Sunday</option>
+                            <option selected value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                            <option value="6">Saturday</option>
+                            <option value="7">Sunday</option>
                         </select>
                     </div>
 
@@ -162,6 +165,12 @@
     </div>
 
     <script>
+
+        function dayChange(value){
+            var newDate = new Date(value)
+            document.getElementById("inputDayRemind").value = newDate.getDay();
+        }
+
         function alterModal(value) {
             if (value == "event"){
                 document.getElementById("remindModal").style.display = "none";
