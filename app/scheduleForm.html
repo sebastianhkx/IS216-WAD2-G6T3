@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+    <!-- Add code here -->
+
+    <style>
+        body {  
+            background: white; 
+        }
+        #topHeader {
+            font-size:larger;
+            font-weight:bold;
+        }
+    </style>
+</head>
+<body>
+
+   <!-- Add code here -->
+<div class="container box">
+
+        <h1>Schedule Form</h1>
+
+        <form>
+            <div class="form-group col-md-10">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" placeholder="No Title">
+            </div>
+            <div class="form-group col-md-10">
+                <label for="inputState">Type of Task</label>
+                <select id="inputState" class="form-control">
+                  <option selected>Event</option>
+                  <option>Reminder</option>
+                  <option>Task</option>
+                  <option>Work</option>
+                </select>
+            </div>
+
+            <!--Work section-->
+            <div id="topHeader">Event</div>
+        <div id="event">
+            <br>
+            <div class="form-row col-md-10">
+
+                <div class="form-group col-md-6">
+                    <label for="inputState">Day</label>
+                    <select id="inputState" class="form-control">
+                    <option selected>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                    <option>Sunday</option>
+                    </select>
+                </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputState">Time</label>
+                        <input type="number" class="form-control" id="time" placeholder="">
+                        </select>
+                </div>
+            </div>
+            <div class="form-group col-md-10">
+                <label for="inputState">Location</label>
+                <input type="text" class="form-control" id="title" placeholder="Location">
+            </div>
+        </div>
+
+        <div class="form-group col-md-10">
+            <label for="descriptionArea">Description</label>
+            <textarea class="form-control" id="description" rows="3"></textarea>
+          </div>
+        
+            
+        </form>
+</div>
+
+<script>
+
+</script>
+    
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+</body>
+</html>
