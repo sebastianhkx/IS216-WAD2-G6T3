@@ -23,22 +23,8 @@
         }
 
         .modal-animate {
-            -moz-animation-name: fadeIn;
-            -webkit-animation-name: fadeIn;
-            -ms-animation-name: fadeIn;
-            animation-name: fadeIn;
-            -moz-animation-duration: 1s;
-            -webkit-animation-duration: 1s;
-            -ms-animation-duration: 1s;
-            animation-duration: 1s;
-            -moz-animation-timing-function: ease-in-out;
-            -webkit-animation-timing-function: ease-in-out;
-            -ms-animation-timing-function: ease-in-out;
-            animation-timing-function: ease-in-out;
-            -moz-animation-fill-mode: forwards;
-            -webkit-animation-fill-mode: forwards;
-            -ms-animation-fill-mode: forwards;
-            animation-fill-mode: forwards;
+            opacity: 1;
+            animation: fade 2s linear;
         }
 
         #eventModal {
@@ -48,6 +34,19 @@
         #remindModal {
             display: none;
         }
+        
+        @keyframes fade {
+
+            0%,
+            100% {
+                opacity: 0
+            }
+
+            50% {
+                opacity: 1
+            }
+        }
+        
     </style>
 </head>
 
