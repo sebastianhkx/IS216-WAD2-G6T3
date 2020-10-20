@@ -1,87 +1,62 @@
 
-function stuff(){
-
-    var item = document.getElementById('location').value;
-
-    console.log(item);
-
-    process(item);
 
 
 
 
-}
+function weather(loc, date, time){  
 
+  var loc = document.getElementById("location").value;
+  var time = "15:00:00";
+  var date = "2020-10-20";
 
-let map, infoWindow;
+  
+  var xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+      if (this.readyState == 4) {
+          if (this.status == 200) {
+              var obj = JSON.parse( this.responseText );
 
-function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: -34.397, lng: 150.644 },
-    zoom: 6,
-  });
-  infoWindow = new google.maps.InfoWindow();
+              console.log(obj);
 
-  // Try HTML5 geolocation.
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const pos = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        infoWindow.setPosition(pos);
-        infoWindow.setContent("Location found.");
-        infoWindow.open(map);
-        map.setCenter(pos);
-      },
-      () => {
-        handleLocationError(true, infoWindow, map.getCenter());
-      }
-    );
-  } else {
-    // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
-  }
-}
+              var weat_list = obj.list;
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-  infoWindow.setPosition(pos);
-  infoWindow.setContent(
-    browserHasGeolocation
-      ? "Error: The Geolocation service failed."
-      : "Error: Your browser doesn't support geolocation."
-  );
-  infoWindow.open(map);
-}
+              console.log(weat_list);
 
-
-function process(input) {
-
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                var obj = JSON.parse(this.responseText);
-
-                console.log(obj);
+              for (let i = 0; i < weat_list.length; i++) {
+                var weather = weat_list[i];
+                var time_text = weather.dt_txt;
+                var weather_desc = weather.weather[0].description
                 
+                var time_array = time_text.split(" ");
+
+                if (time_array[1] == time && time_array[0] == date) {
+
+                  document.getElementById("weather").innerText = 
+                    weather_desc;
                 }
-        
 
-            } 
-            
-            else {
-                document.getElementById("map").innerHTML = "Error: HTTP status=" + this.status;
-            }
 
-    }
+                
+              }
 
-    gotoURL = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?inputtype=textquery&key=AIzaSyCog0orIyqs1-UAtrucIMd_NgentUTkqHo&input=chicken" + input;
+          } else {
+              alert("Place not found");
+          }               
+      }
 
-    xhr.open("GET", gotoURL, true);
+    };
+ 
+  
+  // xhr.onreadystatechange
 
-    xhr.send();
+  var gotoURL = "http://api.openweathermap.org/data/2.5/forecast?appid=31de0a7caddc553707023c32a93d4764&q=" + loc ; 
+  xhr.open("GET", gotoURL, true);
+  xhr.send();
+
+
 }
 
-window.addEventListener("load", initMap);
+
+
+
+
