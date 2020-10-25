@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+  integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+  <style>
+    body {
+        background: white;
+    }
+
+    #topHeader {
+        font-size: larger;
+        font-weight: bold;
+    }
+
+    .modal-animate {
+        opacity: 1;
+    }
+
+    #eventModal {
+        display: block;
+    }
+
+    #remindModal {
+        display: none;
+    }
+
+    @keyframes fade {
+
+        0%,
+        100% {
+            opacity: 0
+        }
+
+        50% {
+            opacity: 1
+        }
+    }
+</style>
+
+</head>
+
+
+<body>
+    <div class="container box">
+
+  <div id="app">
+    <v-app>
+      <v-main>
+        <v-card
+        class="overflow-hidden"
+        color="amber lighten-4"
+      >
+        <v-toolbar
+        flat
+        color="amber"
+        >
+            <v-icon>mdi-account</v-icon>
+            <v-toolbar-title class="font-weight-light">
+                Schedule Form
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+            <v-btn input="submit">Submit</v-btn>
+        </v-toolbar>
+        <v-form v-model="scheduleForm">
+            <v-container>
+                  <v-text-field
+                    v-model="titleName"
+                    label="Title"
+                    :rules="fieldRules"
+                    required
+                    clearable
+                  ></v-text-field>
+                <v-btn-toggle
+                v-model="taskReminder"
+                mandatory>
+                <v-btn>
+                    Event
+                </v-btn>
+                <v-btn>
+                    Task/Reminder
+                </v-btn>
+                <v-btn>
+                    Unavailable
+                </v-btn>
+              </v-btn-toggle>
+      
+            </v-container>
+            <v-container v-if="taskReminder == '0'">
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="dateInput" type="date" label="Date"></v-text-field>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <v-text-field v-model="timeInput" type="time" label="Time"></v-text-field>
+                    </v-col>
+                </v-row>
+
+                <v-row>
+                    <v-col cols="12" md="8">
+                        <v-text-field
+                            v-model="location"
+                            label="Location:"
+                            :rules="fieldRules"
+                            required
+                            clearable
+                        ></v-text-field>                    
+                    </v-col>
+                    <v-col cols="12" md="4">
+                        <v-btn input="submit" onClick="returnPlaces()">Check</v-btn>
+                    </v-col>
+                </v-row>
+
+              <v-container v-if="locationReturn == 'success'">
+                <v-simple-table dark>
+                    <template v-slot:default>
+                      <thead>
+                        <tr>
+                          <th class="text-left">
+                            Name
+                          </th>
+                          <th class="text-left">
+                            Address
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr
+                          v-for="item in locationObject"
+                          :key="item.name"
+                        >
+                          <td>{{ item.name }}</td>
+                          <td>{{ item.address }}</td>
+                        </tr>
+                      </tbody>
+                    </template>
+                  </v-simple-table>
+                
+              </v-container>
+            
+              <v-alert
+                v-model="locEmptalert"
+                border="left"
+                close-text="Close Alert"
+                color="pink darken-1"
+                dark
+                dismissible
+                >
+                Location field is empty!
+             </v-alert>
+              <v-alert
+                    border="top"
+                    color="red lighten-2"
+                    icon="exclamation-thick"
+                    v-if="locationReturn == 'failure'"
+                    dark
+                    >
+                    Your search did not return any results. Please check your request
+            </v-alert>
+
+            </v-container>
+    
+                <v-container v-if="taskReminder == '1'">
+                    test reminder!!
+                </v-container>
+    
+                <v-container v-if="taskReminder == '2'">
+                    test unavail!!
+                </v-container>
+    
+          </v-form>
+        </v-card>
+      </v-main>
+    </v-app>
+  </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+  integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+  crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+  integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+  crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+  integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+  crossorigin="anonymous"></script>
+
+  <script>
+    var FormApp = new Vue({
+      el: '#app',
+      vuetify: new Vuetify(),
+      data: {
+            taskType: ["Event", "Reminder/Task", "Unavailable"],
+            taskReminder: 'EVENT',
+            dateInput: 'getDate',
+            fieldRules: [v => !!v || 'This field is required'],
+            locationReturn: "none",
+            location: '',
+            locImg: '',
+            locationObject: [],
+            locEmptalert: false,
+            },
+      methods: {
+          getDate: function() {
+            var dateObj = new Date();
+            var month = dateObj.getMonth() + 1; //months from 1-12
+            var day = dateObj.getDate() - 1;
+            var year = dateObj.getFullYear();
+            var newDate = year + "-" + month + "-" + day;
+            return newDate
+          }
+      }
+        }
+
+    )
+
+    function returnPlaces() {
+            var location = FormApp.location;
+            var api = "";
+            if (location.length == 0){
+                FormApp.locEmptalert = true;
+            } else {
+                FormApp.locEmptalert = false;
+                const locationObject = [];
+                var loadRequest = new XMLHttpRequest();
+                loadRequest.onreadystatechange = function () {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var response = JSON.parse(this.responseText);
+
+                        if (response.status == "ZERO_RESULTS") {
+                            FormApp.locationReturn = "failure";
+                            
+                        } else {
+                            for (i=0; i < response.candidates.length; i++){
+                                //var obj = {};
+                                //obj["name"] = response.candidates[i].name;
+                                //obj["address"] = response.candidates[i].name;
+                                locationObject.push({name: response.candidates[i].name, address: response.candidates[i].formatted_address});
+                            }
+                            FormApp.locationObject = locationObject;
+                            FormApp.locationReturn = "success";
+                        }
+                    }
+                }
+                loadRequest.open("GET", "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=" + location + "&inputtype=textquery&fields=photos,formatted_address,name,geometry&locationbias=circle:2000&key=" + api, true);
+                loadRequest.send();
+                event.preventDefault();
+            }
+    }
+
+
+  </script>
+
+
+
+</body>
+</html>
