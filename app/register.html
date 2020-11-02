@@ -141,7 +141,7 @@
                 }
             }
         };
-        loadReq.open("POST", "http://localhost/is216/project/register_process.php", true);
+        loadReq.open("POST", "include/register_process.php", true);
         loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password);
     }
