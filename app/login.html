@@ -128,7 +128,7 @@
                 }
             }
         };
-        loadReq.open("POST", "http://localhost/is216/project/process_login.php", true);
+        loadReq.open("POST", "include/process_login.php", true);
         loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password);
     }
