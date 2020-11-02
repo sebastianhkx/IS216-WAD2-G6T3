@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+
+<head>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+
+    <style>
+        .cardFormat {
+            padding: 20px;
+            background-color: #a4508b;
+            background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
+
+        }
+
+        .box {
+            width: 50%;
+
+        }
+
+        .compStyle {
+            margin: 20px;
+            padding: 20px;
+        }
+
+        .body {
+            background-color: #a4508b;
+            background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app" class="container box">
+        <v-app>
+
+            <!--MAin BODY-->
+            <v-main>
+                <v-container>
+                    <v-card style="text-align: center;" color="#a4508b" color="#5f0a87" class='cardformat'>
+                        <v-alert v-if="errorAlert" border="left" close-text="Close Alert" color="pink darken-1" dark
+                            dismissible>
+                            {{errorMsg}}
+                        </v-alert>
+                            <h2 class="compStyle">Login Form</h2>
+                        <v-form ref="form" v-model="valid">
+                            <v-text-field v-model="username" name="username" :rules="fieldRules" label="Username:"
+                                required class="compStyle"></v-text-field>
+
+                            <v-text-field type="password" v-model="password" :rules="passwordRules" name="password"
+                                 label="Password:" required class="compStyle"></v-text-field>
+
+                            <v-btn class="compStyle" color="success" @click='eValidateSubmit' :disabled="!loginForm">
+                                Login
+                            </v-btn>
+                            <v-btn class="compStyle" color="success" href="register.html">
+                                Register
+                            </v-btn>
+                        </v-form>
+                    </v-card>
+                </v-container>
+            </v-main>
+        </v-app>
+    </div>
+
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+
+<script>
+    var FormApp = new Vue({
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+            loginForm: true,
+            username: '',
+            passwordRules: [v => !!v || 'Password is required',
+            v => (v && v.length > 7) || 'Password must be longer than 7 characters'
+            ],
+            fieldRules: [v => !!v || 'Username is required'],
+            password: '',
+            errorAlert: false,
+            errorMsg: '',
+        },
+        computed: {
+
+        },
+        methods: {
+            eValidateSubmit() {
+                FormApp.errorAlert = false;
+                if (this.$refs.form.validate() == true) {
+                    FormApp.errorAlert = false;
+                    FormApp.errorMsg = '';
+                    validateUser();
+                };
+            },
+        }
+    }
+
+    )
+
+    function validateUser() {
+        var loadReq = new XMLHttpRequest();
+        loadReq.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                response = this.responseText;
+                if (response.includes("Login success!") == true){
+                    //Bottom redirects!
+                    //window.location.href = "home.html";
+                } else {
+                    FormApp.errorAlert = true;
+                    FormApp.errorMsg = response;
+                }
+            }
+        };
+        loadReq.open("POST", "http://localhost/is216/project/process_login.php", true);
+        loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password);
+    }
+</script>
