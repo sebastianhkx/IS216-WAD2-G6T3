@@ -55,6 +55,10 @@ class EVENT {
         return $this->description;
     }
 
+    public function getCompleted() {
+        return $this->completed;
+    }
+
 }
 
 

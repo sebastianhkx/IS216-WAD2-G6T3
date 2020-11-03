@@ -149,7 +149,7 @@ public function get_task(){
   $task_list = [];
   while( $row = $stmt->fetch() ) {
     $task_list[] =
-        new EVENT(
+        new TASK(
             $row['task_id'],
             $row['user_id'],
             $row['date'],

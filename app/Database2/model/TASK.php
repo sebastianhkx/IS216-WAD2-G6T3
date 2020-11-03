@@ -41,7 +41,7 @@ class TASK {
         return $this->end_time;
     }
 
-    public function getRepeatableeeeeeeeeeee() {
+    public function getRepeatable() {
         return $this->repeatable;
     }
 
