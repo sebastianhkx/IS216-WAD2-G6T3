@@ -25,9 +25,9 @@ class HANDLERDAO {
     $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
     // STEP 4
-    $task_list = [];
+    $event_list = [];
     while( $row = $stmt->fetch() ) {
-      $task_list[] =
+      $event_list[] =
           new EVENT(
               $row['event_id'],
               $row['user_id'],
@@ -46,7 +46,7 @@ class HANDLERDAO {
     $conn = null;
   
     // STEP 6
-    return $task_list;
+    return $event_list;
 
   }
 
@@ -124,6 +124,57 @@ public function delete_event($id) {
   // STEP 5
   return $status;
 }
+
+
+public function get_event_by_month($month, $year){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+  
+
+  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31'";
+
+
+
+
+  // STEP 2
+
+$sql = "SELECT * from event_list ${month_statement}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $event_list = [];
+  while( $row = $stmt->fetch() ) {
+    $event_list[] =
+        new EVENT(
+            $row['event_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['location'],
+            $row['title'],
+            $row['description'],
+            $row['completed']
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $event_list;
+
+}
+
 
 
 // Task Handling //////////////////////////////////////////////////////////
@@ -241,6 +292,54 @@ $conn = null;
 // STEP 5
 return $status;
 }
+
+
+public function get_task_by_month($month, $year){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  
+  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31'";
+
+
+  // STEP 2
+
+$sql = "SELECT * from task_list ${month_statment}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $task_list = [];
+  while( $row = $stmt->fetch() ) {
+    $task_list[] =
+        new TASK(
+            $row['task_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $task_list;
+
+}
+
 
 }
 
