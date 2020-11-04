@@ -22,7 +22,6 @@ foreach( $task_list as $task_object ) {
     $task["repeatable"] = $task_object->getRepeatable();
     $task["title"] = $task_object->getTitle();
     $task["description"] = $task_object->getDescription();
-    $task["completed"] = $task_object->getCompleted();
     $tasks[] = $task;
 }
 // make posts into json and return json data
