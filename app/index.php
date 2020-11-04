@@ -323,7 +323,7 @@ $username = $_SESSION['username'];
                     }
                 }
             };
-            loadReq.open("GET", "include/get_event.php", true);
+            loadReq.open("GET", "include/read_event.php", true);
             loadReq.send();
         }
 
@@ -473,7 +473,7 @@ $username = $_SESSION['username'];
                     }
                 }
             };
-            loadReq.open("GET", "include/get_task.php", true);
+            loadReq.open("GET", "include/read_task.php", true);
             loadReq.send();
         }
 
