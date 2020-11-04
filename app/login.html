@@ -121,14 +121,14 @@
                 response = this.responseText;
                 if (response.includes("Login success!") == true){
                     //Bottom redirects!
-                    //window.location.href = "home.html";
+                    window.location.href = "index.php";
                 } else {
                     FormApp.errorAlert = true;
                     FormApp.errorMsg = response;
                 }
             }
         };
-        loadReq.open("POST", "include/process_login.php", true);
+        loadReq.open("POST", "model/process_login.php", true);
         loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password);
     }
