@@ -554,9 +554,6 @@ $username = $_SESSION['username'];
               var start_time = FormApp.estartTimeInput;
               var title = FormApp.titleName;
 
-              // Event_id To be modified
-              var event_id = 1;
-
               // User_Id to be modified
               
               var user_id = '<?php echo $id; ?>';
@@ -566,10 +563,9 @@ $username = $_SESSION['username'];
               var completed = 0;  
 
               $.ajax({
-                url: "database/add_event.php",
+                url: "./include/add_event.php",
                 type: "POST",
                 data: {
-                event_id: event_id,
                 date: date,
                 description: description,
                 end_time: end_time,	
@@ -620,57 +616,113 @@ $username = $_SESSION['username'];
 
           console.log(FormApp);
 
-          $(document).ready(function() {
-
-          var date = FormApp.tDateInput;
-          var description = FormApp.tDescription;
-          var end_time = FormApp.tEndTimeInput;
-          var repeatable = FormApp.tRepeatable;
-          var start_time = FormApp.tStartTimeInput;
-          var title = FormApp.titleName;
-          
-          // Event_id To be modified
-          var task_id = 1;
-
-          // userid take from session id!!
-              
-          var user_id = '<?php echo $id; ?>';
+          if (FormApp.taskType == '1') {
 
 
-          $.ajax({
-            url: "database/add_task.php",
-            type: "POST",
-            data: {
-              task_id: task_id,
-              date: date,
-              description: description,
-              end_time: end_time,	
-              start_time: start_time,	
-              repeatable: repeatable,	
-              title: title,	
-              user_id: user_id			
-            },
+            $(document).ready(function() {
 
-            cache: false,
-            success: function(dataResult){
+              var date = FormApp.tDateInput;
+              var description = FormApp.tDescription;
+              var end_time = FormApp.tEndTimeInput;
+              var repeatable = FormApp.tRepeatable;
+              var start_time = FormApp.tStartTimeInput;
+              var title = FormApp.titleName;
+            
 
-              var dataResult = JSON.parse(dataResult);
+              // userid take from session id!!
+                
+              var user_id = '<?php echo $id; ?>';
 
-              if(dataResult.statusCode==200){
 
-                alert("Data Successfully Added");
+              $.ajax({
+                url: "./include/add_task.php",
+                type: "POST",
+                data: {
+                  date: date,
+                  description: description,
+                  end_time: end_time,	
+                  start_time: start_time,	
+                  repeatable: repeatable,	
+                  title: title,	
+                  user_id: user_id			
+                },
 
-              }
+                cache: false,
+                success: function(dataResult){
 
-              else if(dataResult.statusCode==201){
-                alert("Error occured !");
-              }
+                  var dataResult = JSON.parse(dataResult);
 
-            }
+                  if(dataResult.statusCode==200){
 
-          }); 
+                    alert("Data Successfully Added");
 
-        });
+                  }
+
+                  else if(dataResult.statusCode==201){
+                    alert("Error occured !");
+                  }
+
+                }
+
+              }); 
+
+            });
+        
+          }
+
+          else {
+
+
+            $(document).ready(function() {
+
+              var date = FormApp.tDateInput;
+              var description = FormApp.tDescription;
+              var end_time = FormApp.tEndTimeInput;
+              var repeatable = FormApp.tRepeatable;
+              var start_time = FormApp.tStartTimeInput;
+              var title = FormApp.titleName;
+
+
+              // userid take from session id!!
+                
+              var user_id = '<?php echo $id; ?>';
+
+
+              $.ajax({
+                url: "./include/add_unavailable.php",
+                type: "POST",
+                data: {
+                  date: date,
+                  description: description,
+                  end_time: end_time,	
+                  start_time: start_time,	
+                  repeatable: repeatable,	
+                  title: title,	
+                  user_id: user_id			
+                },
+
+                cache: false,
+                success: function(dataResult){
+
+                  var dataResult = JSON.parse(dataResult);
+
+                  if(dataResult.statusCode==200){
+
+                    alert("Data Successfully Added");
+
+                  }
+
+                  else if(dataResult.statusCode==201){
+                    alert("Error occured !");
+                  }
+
+                }
+
+              }); 
+
+            });
+
+          }
 
 
         }
