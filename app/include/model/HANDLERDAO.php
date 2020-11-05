@@ -176,6 +176,57 @@ $sql = "SELECT * from event_list ${month_statement}";
 }
 
 
+public function clash_checker($date, $start_time, $end_time, $user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+  
+
+  $check_statement = "where user_id = ${user_id} AND DATE between '${date}' and '${date}' AND (start_time between '${start_time}' and '${end_time}' OR end_time between '${start_time}' and '${end_time}') ";
+
+
+
+
+  // STEP 2
+
+$sql = "SELECT * from event_list ${check_statement}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $event_list = [];
+  while( $row = $stmt->fetch() ) {
+    $event_list[] =
+        new EVENT(
+            $row['event_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['location'],
+            $row['title'],
+            $row['description'],
+            $row['completed']
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $event_list;
+
+}
+
+
+
 
 // Task Handling //////////////////////////////////////////////////////////
 
@@ -340,6 +391,56 @@ $sql = "SELECT * from task_list ${month_statment}";
 
 }
 
+
+public function clash_checker_task($repeatable, $start_time, $end_time, $user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+  
+
+  $check_statement = "where user_id = ${user_id} AND repeatable = '${repeatable}' AND (start_time between '${start_time}' and '${end_time}' OR end_time between '${start_time}' and '${end_time}') ";
+
+
+
+
+  // STEP 2
+
+$sql = "SELECT * from task_list ${check_statement}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $task_list = [];
+  while( $row = $stmt->fetch() ) {
+    $task_list[] =
+          new TASK(
+            $row['task_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $task_list;
+
+}
+
+
 ////////////// Unavailable list /////////////////////////////////////////////////////
 public function get_unavailable(){
 
@@ -478,9 +579,9 @@ $sql = "SELECT * from unavailable_list ${month_statment}";
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
   // STEP 4
-  $task_list = [];
+  $unavailable_list = [];
   while( $row = $stmt->fetch() ) {
-    $task_list[] =
+    $unavailable_list[] =
         new UNAVAILABLE(
             $row['unavailabe_id'],
             $row['user_id'],
@@ -498,10 +599,57 @@ $sql = "SELECT * from unavailable_list ${month_statment}";
   $conn = null;
 
   // STEP 6
-  return $task_list;
+  return $unavailable_list;
 
 }
 
+public function clash_checker_unavailable($repeatable, $start_time, $end_time, $user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+  
+
+  $check_statement = "where user_id = ${user_id} AND repeatable = '${repeatable}' AND (start_time between '${start_time}' and '${end_time}' OR end_time between '${start_time}' and '${end_time}') ";
+
+
+
+
+  // STEP 2
+
+$sql = "SELECT * from unavailable_list ${check_statement}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $unavailable_list = [];
+  while( $row = $stmt->fetch() ) {
+    $unavailable_list[] =
+        new UNAVAILABLE(
+            $row['unavailabe_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $unavailable_list;
+
+}
 
 
 
