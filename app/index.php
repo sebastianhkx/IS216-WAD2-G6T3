@@ -24,7 +24,6 @@ $username = $_SESSION['username'];
     <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
 
     <script src="https://unpkg.com/axios/dist/axios.js"></script>
-    <script src="moment.js"></script>
 
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
@@ -83,7 +82,7 @@ $username = $_SESSION['username'];
                         </v-list-item-icon>
                         <v-list-item-title>Scheduler</v-list-item-title>
                     </v-list-item>
-                    <v-list-item href="model/logout_process.php">
+                    <v-list-item href="include/logout_process.php">
                         <v-list-item-icon>
                             <v-icon>mdi-star</v-icon>
                         </v-list-item-icon>
