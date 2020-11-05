@@ -1,10 +1,10 @@
-<?php 
+<?php
 
 session_start();
 
 if (!isset($_SESSION['userid'])) {
-    header("Location: login.html"); 
-    return;
+  header("Location: login.html");
+  return;
 }
 
 $id = $_SESSION['userid'];
@@ -15,22 +15,26 @@ $username = $_SESSION['username'];
 <!DOCTYPE html>
 <html>
 <!-- THINGS TO VALIDATE: Check if there's an EXACT overlapping time!!!-->
+<!-- ANother thing to validate: Make sure the date isn't backdated! -->
 
 <head>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
-    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
 
   <style>
     body {
-      background: white;
+      background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);
     }
 
     .center-element {
       text-align: "center";
+    }
+
+    a:hover {
+      text-decoration: none;
     }
 
     @keyframes fade {
@@ -50,50 +54,57 @@ $username = $_SESSION['username'];
 
 
 <body>
-  <div class="container box">
+  <div class="">
 
     <div id="app">
-      <v-app>
       <v-app style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);">
-            <v-navigation-drawer permanent app dark style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);" :mini-variant="mini">
-                <v-list-item>
-                    <v-list-item-content>
-                        <v-list-item-title class="title">
-                            Welcome back <?php echo $_SESSION['username'] ?>!
-                        </v-list-item-title>
-                        <v-list-item-subtitle>
-                            subtext
-                        </v-list-item-subtitle>
-                    </v-list-item-content>
-                </v-list-item>
+        <v-navigation-drawer permanent app dark style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);" :mini-variant="mini">
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title class="title">
+                Welcome back <?php echo $_SESSION['username'] ?>!
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                subtext
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
-                <v-divider></v-divider>
+          <v-divider></v-divider>
 
-                <v-list nav dense>
-                    <v-list-item link>
-                        <v-list-item-icon>
-                            <v-icon>mdi-folder</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>Work Management</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item link href="ScheduleVue.php">
-                        <v-list-item-icon>
-                            <v-icon>mdi-account-multiple</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>Scheduler</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item href="model/logout_process.php">
-                        <v-list-item-icon>
-                            <v-icon>mdi-star</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>Logout</v-list-item-title>
-                    </v-list-item>
-                </v-list>
-            </v-navigation-drawer>
+          <v-list nav dense>
+            <v-list-item link href="index.php">
+              <v-list-item-icon>
+                <v-icon>mdi-home</mdi-home>
+                </v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Home</v-list-item-title>
+            </v-list-item>
+            <v-list-item link>
+              <v-list-item-icon>
+                <v-icon>mdi-folder</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Work Management</v-list-item-title>
+            </v-list-item>
+            <v-list-item link href="ScheduleVue.php">
+              <v-list-item-icon>
+                <v-icon>mdi-account-multiple</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Scheduler</v-list-item-title>
+            </v-list-item>
+            <v-list-item href="model/logout_process.php">
+              <v-list-item-icon>
+                <v-icon>mdi-star</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Logout</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-navigation-drawer>
 
         <v-main>
-          <v-card class="overflow-hidden" color="light-blue lighten-3">
-            <v-toolbar flat color="light-blue accent-2">
+          <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.1)" dark>
+            <v-toolbar flat color="rgb(0, 0, 0, 0.2)">
+              <!-- <v-toolbar flat color="light-blue accent-2"> -->
               <v-icon>mdi-account</v-icon>
               <v-toolbar-title class="font-weight-light">
                 Schedule Form
@@ -103,17 +114,17 @@ $username = $_SESSION['username'];
             <v-form ref="form" lazy-validation v-model="scheduleForm">
               <v-container>
                 <!-- General alert message start -->
-                <v-alert v-model="submitErrorAlert" border="left" close-text="Close Alert" color="pink darken-1" dark
-                  dismissible>
+                <v-alert v-model="submitErrorAlert" border="left" close-text="Close Alert" color="pink darken-1" dark dismissible>
                   {{errorSubmitMessage}}
                 </v-alert>
+                <v-alert v-model="successAlert" border="left" close-text="Close Alert" color="green darken-1" dark dismissible>
+                  {{successMessage}}
+                </v-alert>
                 <!-- Error alert messages -->
-                <v-alert v-model="locEmptalert" border="left" close-text="Close Alert" color="pink darken-1" dark
-                  dismissible>
+                <v-alert v-model="locEmptalert" border="left" close-text="Close Alert" color="pink darken-1" dark dismissible>
                   Location field is empty!
                 </v-alert>
-                <v-alert border="top" color="red lighten-2" icon="exclamation-thick" v-if="locationReturn == 'failure'"
-                  dark>
+                <v-alert border="top" color="red lighten-2" icon="exclamation-thick" v-if="locationReturn == 'failure'" dark>
                   Your search did not return any results. Response Code: {{ResponseCode}}, {{errorType}}.
                 </v-alert>
                 <!-- End of Error alert messages -->
@@ -227,8 +238,7 @@ $username = $_SESSION['username'];
                             <v-row align="center">
 
                               <!-- Display Info on selected area -->
-                              <v-col class="display-3" cols="6"><img class="text-xs-center" v-bind:src="recWeatherImg"
-                                  style="width:100px; height:100px;">
+                              <v-col class="display-3" cols="6"><img class="text-xs-center" v-bind:src="recWeatherImg" style="width:100px; height:100px;">
                               </v-col>
                               <v-col cols="6">
                                 <h5 class="text-xs-center">{{recWeather}}</h5> <br>
@@ -260,8 +270,7 @@ $username = $_SESSION['username'];
                   </v-col>
 
                   <v-col cols="12" md="3">
-                    <v-select :items="['Non Repeat', 'Weekday', 'Weekend', 'Repeat Weekly']" label="Repeatable:"
-                      v-model="tRepeatable" :rules="fieldRules" required> </v-select>
+                    <v-select :items="['Non Repeat', 'Weekday', 'Weekend', 'Repeat Weekly']" label="Repeatable:" v-model="tRepeatable" :rules="fieldRules" required> </v-select>
                   </v-col>
 
                   <v-col cols="12" md="3">
@@ -288,86 +297,82 @@ $username = $_SESSION['username'];
 
   <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
-  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-    crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-    crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
   <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBTxz9GlBwJNiU8IlL_IcQQmGqJSmlnV50">
   </script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
   <script>
     var FormApp = new Vue({
-      el: '#app',
-      vuetify: new Vuetify(),
-      data: {
-        scheduleForm: false,
-        taskType: ["Event", "Reminder/Task", "Unavailable"],
-        taskType: '0',
-        titleName: '',
-        eDateInput: '',
-        estartTimeInput: '',
-        eEndTimeInput: '',
-        eDescription: '',
-        fieldRules: [v => !!v || 'This field is required'],
-        checkTime: [v => !!v || 'End time must be greater than start time'],
-        locationReturn: "none",
-        eLocation: '',
-        locImg: '',
-        locationObject: [],
-        locEmptalert: false,
-        ResponseCode: 200,
-        errorType: '',
-        displayRecommended: false,
-        mapStyle: '',
-        selectLocation: '',
-        recLocation: '',
-        recWeather: '',
-        recWeatherImg: '',
-        recTimeTaken: '',
-        recCoordinates: '',
-        tDateInput: '',
-        tStartTimeInput: '',
-        tEndTimeInput: '',
-        tDescription: '',
-        tRepeatable: 'Non Repeat',
-        submitErrorAlert: false,
-        errorSubmitMessage: '',
-      },
-      computed: {
+        el: '#app',
+        vuetify: new Vuetify(),
+        data: {
+          scheduleForm: false,
+          taskType: ["Event", "Reminder/Task", "Unavailable"],
+          taskType: '0',
+          titleName: '',
+          eDateInput: '',
+          estartTimeInput: '',
+          eEndTimeInput: '',
+          eDescription: '',
+          fieldRules: [v => !!v || 'This field is required'],
+          checkTime: [v => !!v || 'End time must be greater than start time'],
+          locationReturn: "none",
+          eLocation: '',
+          locImg: '',
+          locationObject: [],
+          locEmptalert: false,
+          ResponseCode: 200,
+          errorType: '',
+          displayRecommended: false,
+          mapStyle: '',
+          selectLocation: '',
+          recLocation: '',
+          recWeather: '',
+          recWeatherImg: '',
+          recTimeTaken: '',
+          recCoordinates: '',
+          tDateInput: '',
+          tStartTimeInput: '',
+          tEndTimeInput: '',
+          tDescription: '',
+          tRepeatable: 'Non Repeat',
+          submitErrorAlert: false,
+          errorSubmitMessage: '',
+          successAlert: false,
+          successMessage: '',
+        },
+        computed: {
 
-      },
-      methods: {
-        getDate: function () {
-          var dateObj = new Date();
-          var month = dateObj.getMonth() + 1; //months from 1-12
-          var day = dateObj.getDate() - 1;
-          var year = dateObj.getFullYear();
-          var newDate = year + "-" + month + "-" + day;
-          return newDate
         },
-        removeMap: function () {
-          this.displayRecommended = false;
-          this.mapStyle = "width:0px; height:0px"
-        },
-        getArea(name, lat, lng, id) {
-          callRecommendedModule(name, lat, lng, id);
-        },
-        callTime: function () {
-          getTime();
-        },
-        eValidateSubmit() {
-          if (this.$refs.form.validate() == true) {
-            submitForm();
-          };
-        },
+        methods: {
+          getDate: function() {
+            var dateObj = new Date();
+            var month = dateObj.getMonth() + 1; //months from 1-12
+            var day = dateObj.getDate() - 1;
+            var year = dateObj.getFullYear();
+            var newDate = year + "-" + month + "-" + day;
+            return newDate
+          },
+          removeMap: function() {
+            this.displayRecommended = false;
+            this.mapStyle = "width:0px; height:0px"
+          },
+          getArea(name, lat, lng, id) {
+            callRecommendedModule(name, lat, lng, id);
+          },
+          callTime: function() {
+            getTime();
+          },
+          eValidateSubmit() {
+            if (this.$refs.form.validate() == true) {
+              submitForm();
+            };
+          },
+        }
       }
-    }
 
     );
 
@@ -387,7 +392,7 @@ $username = $_SESSION['username'];
         FormApp.locEmptalert = false;
         const locationObject = [];
         var loadRequest = new XMLHttpRequest();
-        loadRequest.onreadystatechange = function () {
+        loadRequest.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             var response = JSON.parse(this.responseText);
 
@@ -405,7 +410,13 @@ $username = $_SESSION['username'];
                 var lat = response.response.venues[i].location.lat;
                 var lng = response.response.venues[i].location.lng;
                 var formatted_address = response.response.venues[i].location.address + " (" + response.response.venues[i].location.crossStreet + ")"
-                locationObject.push({ name: response.response.venues[i].name, address: formatted_address, lat: lat, lng: lng, id: id });
+                locationObject.push({
+                  name: response.response.venues[i].name,
+                  address: formatted_address,
+                  lat: lat,
+                  lng: lng,
+                  id: id
+                });
               }
               FormApp.locationObject = locationObject;
               FormApp.locationReturn = "success";
@@ -424,7 +435,10 @@ $username = $_SESSION['username'];
       FormApp.locationReturn = 'none';
       FormApp.selectLocation = name;
       console.log(id);
-      FormApp.recCoordinates = { lat: lat, lng: lng };
+      FormApp.recCoordinates = {
+        lat: lat,
+        lng: lng
+      };
       callWeather(lat, lng, id);
 
     }
@@ -445,16 +459,19 @@ $username = $_SESSION['username'];
       } else {
 
         var loadRequest = new XMLHttpRequest();
-        loadRequest.onreadystatechange = function () {
+        loadRequest.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             response = JSON.parse(this.responseText);
-            var weather = response.daily[diffDays-1].weather[0].main;
-            var weather_icon = response.daily[diffDays-1].weather[0].icon;
-            var weather_details = response.daily[diffDays-1].weather[0].details;
+            var weather = response.daily[diffDays - 1].weather[0].main;
+            var weather_icon = response.daily[diffDays - 1].weather[0].icon;
+            var weather_details = response.daily[diffDays - 1].weather[0].details;
 
             FormApp.recWeatherImg = "http://openweathermap.org/img/wn/" + weather_icon + "@2x.png"
             FormApp.recWeather = weather;
-            FormApp.recLocation = { lat: lat, lng: lng };
+            FormApp.recLocation = {
+              lat: lat,
+              lng: lng
+            };
             //Change map!
             loadMap(lat, lng);
 
@@ -464,6 +481,24 @@ $username = $_SESSION['username'];
         loadRequest.send();
         event.preventDefault();
       }
+    }
+
+    function loadMap(lat, lng) {
+
+      FormApp.mapStyle = "width:100%; height:500px;"
+      var locale = {
+        lat: lat,
+        lng: lng
+      };
+      var map = new google.maps.Map(
+        document.getElementById('map_canvas'), {
+          zoom: 20,
+          center: locale
+        });
+      var marker = new google.maps.Marker({
+        position: locale,
+        map: map
+      });
     }
 
     //Calls openrouteservice to get information
@@ -491,7 +526,7 @@ $username = $_SESSION['username'];
 
 
         var loadRequest = new XMLHttpRequest();
-        loadRequest.onreadystatechange = function () {
+        loadRequest.onreadystatechange = function() {
           if (this.readyState == 4 && this.status == 200) {
             response = JSON.parse(this.responseText);
             var distanceMatrix = response.durations;
@@ -513,7 +548,12 @@ $username = $_SESSION['username'];
         loadRequest.setRequestHeader('Accept', 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8');
         loadRequest.setRequestHeader('Content-Type', 'application/json');
         loadRequest.setRequestHeader('Authorization', '5b3ce3597851110001cf62486288a428d94d441192557d6833ffe438');
-        var body = { locations: [[currentLng, currentLat], [travelLng, travelLat]] };
+        var body = {
+          locations: [
+            [currentLng, currentLat],
+            [travelLng, travelLat]
+          ]
+        };
         loadRequest.send(JSON.stringify(body));
       }
 
@@ -525,7 +565,9 @@ $username = $_SESSION['username'];
     function submitForm() {
       var taskType = '';
       FormApp.submitErrorAlert = false;
+      FormApp.successAlert = false;
       FormApp.errorSubmitMessage = "";
+      FormApp.successMessage = "";
 
       if (FormApp.taskType == '0') {
         taskType = 'Event';
@@ -533,62 +575,62 @@ $username = $_SESSION['username'];
         if (validateTimer(FormApp.estartTimeInput, FormApp.eEndTimeInput) == false) {
           FormApp.submitErrorAlert = true;
           FormApp.errorSubmitMessage = "The End Time cannot be earlier or same as start time! Please change it!";
-        } else if (FormApp.selectLocation == ""){
-          
+        } else if (FormApp.selectLocation == "") {
+          FormApp.submitErrorAlert = true;
+          FormApp.errorSubmitMessage = "Please select a location before proceeding!";
         } else {
           //Success condition, run through the final ajax function
-          alert("it's called");
 
-            $(document).ready(function() {
+          $(document).ready(function() {
 
-              var date = FormApp.eDateInput;
-              var description = FormApp.eDescription;
-              var end_time = FormApp.eEndTimeInput;
-              var location = FormApp.selectLocation;
-              var start_time = FormApp.estartTimeInput;
-              var title = FormApp.titleName;
+            var date = FormApp.eDateInput;
+            var description = FormApp.eDescription;
+            var end_time = FormApp.eEndTimeInput;
+            var location = FormApp.selectLocation;
+            var start_time = FormApp.estartTimeInput;
+            var title = FormApp.titleName;
 
-              // User_Id to be modified
-              
-              var user_id = '<?php echo $id; ?>';
+            // User_Id to be modified
+
+            var user_id = '<?php echo $id; ?>';
 
 
-              // 0 == False, 1 == True
-              var completed = 0;  
+            // 0 == False, 1 == True
+            var completed = 0;
 
-              $.ajax({
-                url: "./include/add_event.php",
-                type: "POST",
-                data: {
+            $.ajax({
+              url: "./include/add_event.php",
+              type: "POST",
+              data: {
                 date: date,
                 description: description,
-                end_time: end_time,	
-                start_time: start_time,	
-                location: location,	
-                title: title,	
-                user_id: user_id			
-                },
+                end_time: end_time,
+                start_time: start_time,
+                location: location,
+                title: title,
+                user_id: user_id
+              },
 
-                cache: false,
-                success: function(dataResult){
+              cache: false,
+              success: function(dataResult) {
 
-                  var dataResult = JSON.parse(dataResult);
+                var dataResult = JSON.parse(dataResult);
 
-                  if(dataResult.statusCode==200){
+                if (dataResult.statusCode == 200) {
 
-                    alert("Data Successfully Added");
+                  FormApp.successMessage = "Data Successfully added!";
+                  FormApp.successAlert = true;
 
-                  }
-
-                  else if(dataResult.statusCode==201){
-                    alert("Error occured !");
-                  }
-
+                } else if (dataResult.statusCode == 201) {
+                  FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                  FormApp, submitErrorAlert = true;
                 }
-              
-              }); 
+
+              }
 
             });
+
+          });
 
         }
 
@@ -603,9 +645,7 @@ $username = $_SESSION['username'];
         if (validateTimer(FormApp.tStartTimeInput, FormApp.tEndTimeInput) == false) {
           FormApp.submitErrorAlert = true;
           FormApp.errorSubmitMessage = "The End Time cannot be earlier or same as start time! Please change it!";
-        } 
-        
-        else {
+        } else {
           //Success condition, run through the final ajax function
 
           console.log(FormApp);
@@ -621,10 +661,10 @@ $username = $_SESSION['username'];
               var repeatable = FormApp.tRepeatable;
               var start_time = FormApp.tStartTimeInput;
               var title = FormApp.titleName;
-            
+
 
               // userid take from session id!!
-                
+
               var user_id = '<?php echo $id; ?>';
 
 
@@ -634,37 +674,35 @@ $username = $_SESSION['username'];
                 data: {
                   date: date,
                   description: description,
-                  end_time: end_time,	
-                  start_time: start_time,	
-                  repeatable: repeatable,	
-                  title: title,	
-                  user_id: user_id			
+                  end_time: end_time,
+                  start_time: start_time,
+                  repeatable: repeatable,
+                  title: title,
+                  user_id: user_id
                 },
 
                 cache: false,
-                success: function(dataResult){
+                success: function(dataResult) {
 
                   var dataResult = JSON.parse(dataResult);
 
-                  if(dataResult.statusCode==200){
+                  if (dataResult.statusCode == 200) {
 
-                    alert("Data Successfully Added");
+                    FormApp.successMessage = "Data Successfully added!";
+                    FormApp.successAlert = true;
 
-                  }
-
-                  else if(dataResult.statusCode==201){
-                    alert("Error occured !");
+                  } else if (dataResult.statusCode == 201) {
+                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                    FormApp.submitErrorAlert = true;
                   }
 
                 }
 
-              }); 
+              });
 
             });
-        
-          }
 
-          else {
+          } else {
 
 
             $(document).ready(function() {
@@ -678,7 +716,7 @@ $username = $_SESSION['username'];
 
 
               // userid take from session id!!
-                
+
               var user_id = '<?php echo $id; ?>';
 
 
@@ -688,31 +726,31 @@ $username = $_SESSION['username'];
                 data: {
                   date: date,
                   description: description,
-                  end_time: end_time,	
-                  start_time: start_time,	
-                  repeatable: repeatable,	
-                  title: title,	
-                  user_id: user_id			
+                  end_time: end_time,
+                  start_time: start_time,
+                  repeatable: repeatable,
+                  title: title,
+                  user_id: user_id
                 },
 
                 cache: false,
-                success: function(dataResult){
+                success: function(dataResult) {
 
                   var dataResult = JSON.parse(dataResult);
 
-                  if(dataResult.statusCode==200){
+                  if (dataResult.statusCode == 200) {
 
-                    alert("Data Successfully Added");
+                    FormApp.successMessage = "Data Successfully added!";
+                    FormApp.successAlert = true;
 
-                  }
-
-                  else if(dataResult.statusCode==201){
-                    alert("Error occured !");
+                  } else if (dataResult.statusCode == 201) {
+                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                    FormApp, submitErrorAlert = true;
                   }
 
                 }
 
-              }); 
+              });
 
             });
 
@@ -732,7 +770,6 @@ $username = $_SESSION['username'];
         return true;
       }
     }
-
   </script>
 
 
