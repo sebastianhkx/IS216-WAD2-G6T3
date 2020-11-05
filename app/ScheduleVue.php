@@ -599,15 +599,12 @@ $username = $_SESSION['username'];
             var completed = 0;
 
             $.ajax({
-              url: "./include/add_event.php",
+              url: "./include/read_event_time.php",
               type: "POST",
               data: {
                 date: date,
-                description: description,
                 end_time: end_time,
                 start_time: start_time,
-                location: location,
-                title: title,
                 user_id: user_id
               },
 
@@ -616,14 +613,45 @@ $username = $_SESSION['username'];
 
                 var dataResult = JSON.parse(dataResult);
 
-                if (dataResult.statusCode == 200) {
+                if (dataResult.counter > 0) {
 
-                  FormApp.successMessage = "Data Successfully added!";
-                  FormApp.successAlert = true;
-
-                } else if (dataResult.statusCode == 201) {
-                  FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                  FormApp.errorSubmitMessage = "Error Occured! There is already an existing Event at the time";
                   FormApp, submitErrorAlert = true;
+
+                } else {
+
+                  $.ajax({
+                    url: "./include/add_event.php",
+                    type: "POST",
+                    data: {
+                      date: date,
+                      description: description,
+                      end_time: end_time,
+                      start_time: start_time,
+                      location: location,
+                      title: title,
+                      user_id: user_id
+                    },
+
+                    cache: false,
+                    success: function(dataResult) {
+
+                      var dataResult = JSON.parse(dataResult);
+
+                      if (dataResult.statusCode == 200) {
+
+                        FormApp.successMessage = "Data Successfully added!";
+                        FormApp.successAlert = true;
+
+                      } else if (dataResult.statusCode == 201) {
+                        FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                        FormApp, submitErrorAlert = true;
+                      }
+
+                    }
+
+                  });
+
                 }
 
               }
