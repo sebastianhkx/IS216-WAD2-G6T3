@@ -103,7 +103,7 @@ $username = $_SESSION['username'];
             <v-form ref="form" lazy-validation v-model="scheduleForm">
               <v-container>
                 <!-- General alert message start -->
-                <v-alert v-if="submitErrorAlert" border="left" close-text="Close Alert" color="pink darken-1" dark
+                <v-alert v-model="submitErrorAlert" border="left" close-text="Close Alert" color="pink darken-1" dark
                   dismissible>
                   {{errorSubmitMessage}}
                 </v-alert>
