@@ -432,11 +432,14 @@ $username = $_SESSION['username'];
     function callWeather(lat, lng, id) {
       const api_key_weather = "c9a2c0a5914d4558bdb5432970854635";
       var currentDate = new Date();
-      var selectedDate = FormApp.eDateInput;
+      var selectedDate = new Date(FormApp.eDateInput);
       var diffTime = Math.abs(selectedDate - currentDate);
+      console.log(selectedDate);
+      console.log(diffTime);
       var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      console.log(diffDays);
 
-      if (diffDays >= 5) {
+      if (diffDays > 7 || diffDays < 0) {
         FormApp.recWeather = "Weather cannot be estimated.";
         loadMap(lat, lng);
       } else {
@@ -445,9 +448,9 @@ $username = $_SESSION['username'];
         loadRequest.onreadystatechange = function () {
           if (this.readyState == 4 && this.status == 200) {
             response = JSON.parse(this.responseText);
-            var weather = response.current.weather[0].main;
-            var weather_icon = response.current.weather[0].icon;
-            var weather_details = response.current.weather[0].details;
+            var weather = response.daily[diffDays-1].weather[0].main;
+            var weather_icon = response.daily[diffDays-1].weather[0].icon;
+            var weather_details = response.daily[diffDays-1].weather[0].details;
 
             FormApp.recWeatherImg = "http://openweathermap.org/img/wn/" + weather_icon + "@2x.png"
             FormApp.recWeather = weather;
@@ -457,19 +460,10 @@ $username = $_SESSION['username'];
 
           }
         }
-        loadRequest.open("GET", "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lng + "&appid=" + api_key_weather, true);
+        loadRequest.open("GET", "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lng + "&exclude=current,hourly,minutely&appid=" + api_key_weather, true);
         loadRequest.send();
         event.preventDefault();
       }
-    }
-
-    function loadMap(lat, lng) {
-
-      FormApp.mapStyle = "width:100%; height:500px;"
-      var locale = { lat: lat, lng: lng };
-      var map = new google.maps.Map(
-        document.getElementById('map_canvas'), { zoom: 20, center: locale });
-      var marker = new google.maps.Marker({ position: locale, map: map });
     }
 
     //Calls openrouteservice to get information
