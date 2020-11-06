@@ -1,10 +1,5 @@
 <?php
 
-//if ( !isset($_SESSION['userid'])) {
-//    header("Location: login.html"); 
-//    exit();
-//}
-
 require_once 'common.php';
 
 $date=$_POST['date'];
@@ -27,7 +22,5 @@ else {
   echo json_encode(array("statusCode"=>201));
 }
 
-
-// }
 
 ?>

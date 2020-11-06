@@ -7,14 +7,11 @@ require_once 'common.php';
 
 //Actual 
 
-$repeatable = $_POST['repeatable'];
-$start_time = $_POST['start_time'];
-$end_time = $_POST['end_time'];
 $user_id = $_POST['user_id'];
 
 
 $dao = new HANDLERDAO();
-$event_list = $dao->clash_checker_unavailable($repeatable, $start_time, $end_time, $user_id);
+$event_list = $dao->get_unavailable_user($user_id);
 
 
 $uanvs = [];

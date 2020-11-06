@@ -1,9 +1,6 @@
 <?php
 
-//if ( !isset($_SESSION['userid'])) {
-//    header("Location: login.html"); 
-//    exit();
-//}
+
 
 require_once 'common.php';
 
@@ -27,7 +24,5 @@ foreach( $task_list as $task_object ) {
 // make posts into json and return json data
 $postJSON = json_encode($tasks);
 echo $postJSON;
-
-// }
 
 ?>

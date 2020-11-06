@@ -7,17 +7,14 @@ require_once 'common.php';
 
 //Actual 
 
-//$month = $_POST['month'];
-//$year = $_POST['year'];
 
-
-//Test
-$month = 12;
-$year = 1992;
+$month = $_POST['month'];
+$year = $_POST['year'];
+$user_id = $_POST['user_id'];
 
 
 $dao = new HANDLERDAO();
-$unavailable_list = $dao->get_unavailable_list_by_month($month, $year);
+$unavailable_list = $dao->get_unavailable_list_by_month($month, $year, $user_id);
 
 $uanvs = [];
 foreach( $unavailable_list as $unav_object ) {

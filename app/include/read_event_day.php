@@ -8,17 +8,12 @@ require_once 'common.php';
 
 //Actual 
 
-
-$month = $_POST['month'];
-$year = $_POST['year'];
+$date = $_POST['date'];
 $user_id = $_POST['user_id'];
-
-//Test
-
 
 
 $dao = new HANDLERDAO();
-$event_list = $dao->get_event_by_month($month, $year, $user_id);
+$event_list = $dao->get_event_by_date($date, $user_id);
 
 $events = [];
 foreach( $event_list as $event_object ) {

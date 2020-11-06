@@ -7,16 +7,11 @@ require_once 'common.php';
 
 //Actual 
 
-$month = $_POST['month'];
-$year = $_POST['year'];
 $user_id = $_POST['user_id'];
-
-//Test
-
 
 
 $dao = new HANDLERDAO();
-$task_list = $dao->get_task_by_month($month, $year, $user_id);
+$task_list = $dao->get_task_user($user_id);
 
 $tasks = [];
 foreach( $task_list as $task_object ) {

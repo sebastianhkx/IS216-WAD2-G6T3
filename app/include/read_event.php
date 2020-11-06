@@ -1,10 +1,5 @@
 <?php
 
-//if ( !isset($_SESSION['userid'])) {
-//    header("Location: login.html"); 
-//    exit();
-//}
-
 require_once 'common.php';
 
 
@@ -29,6 +24,6 @@ foreach( $event_list as $event_object ) {
 $postJSON = json_encode($events);
 echo $postJSON;
 
-// }
+
 
 ?>
