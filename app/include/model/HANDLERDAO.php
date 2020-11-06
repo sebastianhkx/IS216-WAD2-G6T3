@@ -7,6 +7,55 @@ class HANDLERDAO {
 
   //Event Handling//////////////////////////////////////////////////////////////
 
+  public function get_event_user($user_id){
+
+
+    // STEP 1
+    $connMgr = new ConnectionManager();
+    $conn = $connMgr->getConnection();
+
+    // STEP 2
+
+    $sql = "SELECT * from event_list where user_id = '$user_id'";
+
+    $stmt = $conn->prepare($sql);
+
+    // STEP 3
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+    // STEP 4
+    $event_list = [];
+    while( $row = $stmt->fetch() ) {
+      $event_list[] =
+          new EVENT(
+              $row['event_id'],
+              $row['user_id'],
+              $row['date'],
+              $row['start_time'],
+              $row['end_time'],
+              $row['location'],
+              $row['title'],
+              $row['description'],
+              $row['completed']
+            );
+    }
+
+    // STEP 5
+    $stmt = null;
+    $conn = null;
+  
+    // STEP 6
+    return $event_list;
+
+  }
+
+
+
+
+
+
+
   public function get_event(){
 
 
@@ -126,7 +175,7 @@ public function delete_event($id) {
 }
 
 
-public function get_event_by_month($month, $year){
+public function get_event_by_month($month, $year, $user_id){
 
 
   // STEP 1
@@ -134,7 +183,7 @@ public function get_event_by_month($month, $year){
   $conn = $connMgr->getConnection();
   
 
-  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31'";
+  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31' AND user_id = '${user_id}'";
 
 
 
@@ -226,9 +275,138 @@ $sql = "SELECT * from event_list ${check_statement}";
 }
 
 
+public function edit_event_data($user_id, $event_id ,$date, $start_time, $end_time, $location, $title, $description){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, location = ${location}, title = ${title}, description=${description}"
+  
+
+  $check_statement = "where user_id = ${user_id} AND event_id = ${event_id}";
+
+
+
+
+  // STEP 2
+
+  $sql = "Update event_list ${properties_input} ${check_statement}";
+  $stmt = $conn->prepare($sql);
+
+
+    //STEP 3
+    $status = $stmt->execute();
+
+    // STEP 4
+    $stmt = null;
+    $conn = null;
+
+    // STEP 5
+    return $status;
+
+}
+
+public function get_event_by_date($date, $user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+  
+
+  $date_statement = "where DATE between '${date}' and '${date}' ";
+
+
+
+  // STEP 2
+
+  $sql = "SELECT * from event_list ${date_statement}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $event_list = [];
+  while( $row = $stmt->fetch() ) {
+    $event_list[] =
+        new EVENT(
+            $row['event_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['location'],
+            $row['title'],
+            $row['description'],
+            $row['completed']
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $event_list;
+
+}
 
 
 // Task Handling //////////////////////////////////////////////////////////
+
+public function get_task_user($user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  // STEP 2
+
+  $sql = "SELECT * from task_list where user_id = ${user_id}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $task_list = [];
+  while( $row = $stmt->fetch() ) {
+    $task_list[] =
+        new TASK(
+            $row['task_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $task_list;
+
+}
+
+
+
+
+
+
+
 
 public function get_task(){
 
@@ -345,7 +523,7 @@ return $status;
 }
 
 
-public function get_task_by_month($month, $year){
+public function get_task_by_month($month, $year, $user_id){
 
 
   // STEP 1
@@ -353,7 +531,7 @@ public function get_task_by_month($month, $year){
   $conn = $connMgr->getConnection();
 
   
-  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31'";
+  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31' AND user_id = '${user_id}'";
 
 
   // STEP 2
@@ -440,8 +618,131 @@ $sql = "SELECT * from task_list ${check_statement}";
 
 }
 
+public function edit_task_data($user_id, $task_id ,$date, $start_time, $end_time, $repeatable, $title, $description){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}"
+  
+
+  $check_statement = "where user_id = ${user_id} AND task_id = ${task_id}";
+
+
+
+
+  // STEP 2
+
+  $sql = "Update task_list ${properties_input} ${check_statement}";
+  $stmt = $conn->prepare($sql);
+
+
+    //STEP 3
+    $status = $stmt->execute();
+
+    // STEP 4
+    $stmt = null;
+    $conn = null;
+
+    // STEP 5
+    return $status;
+
+}
+
+public function get_task_by_date($date, $user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  
+  $date_statement = "where DATE between '${date}' and '${date}'";
+
+
+  // STEP 2
+
+$sql = "SELECT * from task_list ${date_statement}";
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $task_list = [];
+  while( $row = $stmt->fetch() ) {
+    $task_list[] =
+        new TASK(
+            $row['task_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $task_list;
+
+}
+
 
 ////////////// Unavailable list /////////////////////////////////////////////////////
+public function get_unavailable_user($user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  // STEP 2
+
+  $sql = "SELECT * from unavailable_list where user_id= '${user_id}';
+
+  $stmt = $conn->prepare($sql);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $unavailable_list = [];
+  while( $row = $stmt->fetch() ) {
+    $unavailable_list[] =
+        new UNAVAILABLE(
+            $row['unavailable_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $unavailable_list;
+
+}
+
+
+
 public function get_unavailable(){
 
 
@@ -557,7 +858,7 @@ return $status;
 }
 
 
-public function get_unavailable_list_by_month($month, $year){
+public function get_unavailable_list_by_month($month, $year, $user_id){
 
 
   // STEP 1
@@ -565,7 +866,7 @@ public function get_unavailable_list_by_month($month, $year){
   $conn = $connMgr->getConnection();
 
   
-  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31'";
+  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31' AND user_id = '${user_id}'";
 
 
   // STEP 2
@@ -648,6 +949,39 @@ $sql = "SELECT * from unavailable_list ${check_statement}";
 
   // STEP 6
   return $unavailable_list;
+
+}
+
+public function edit_unava_data($user_id, $unavailable_id ,$date, $start_time, $end_time, $repeatable, $title, $description){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}"
+  
+
+  $check_statement = "where user_id = ${user_id} AND unavailable_id = ${unavailable_id}";
+
+
+
+
+  // STEP 2
+
+  $sql = "Update unavailable_list ${properties_input} ${check_statement}";
+  $stmt = $conn->prepare($sql);
+
+
+    //STEP 3
+    $status = $stmt->execute();
+
+    // STEP 4
+    $stmt = null;
+    $conn = null;
+
+    // STEP 5
+    return $status;
 
 }
 
