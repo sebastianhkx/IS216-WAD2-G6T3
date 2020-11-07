@@ -4,6 +4,12 @@ create database scheduler;
 
 use scheduler;
 
+CREATE TABLE if not exists userbase (
+    id integer auto_increment primary key,
+    username varchar(200),
+    passwordHash varchar(1000)
+);
+
 CREATE TABLE if not exists `event_list` (
   `event_id` integer auto_increment primary key,
   `user_id` integer NOT NULL,
