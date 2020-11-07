@@ -71,6 +71,13 @@ $username = $_SESSION['username'];
 
                 <v-list nav dense>
                     <v-list-item link>
+                        <v-list-item-icon href="index.php">
+                            <v-icon>mdi-home</mdi-home>
+                            </v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Home</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link>
                         <v-list-item-icon>
                             <v-icon>mdi-folder</v-icon>
                         </v-list-item-icon>
@@ -92,24 +99,40 @@ $username = $_SESSION['username'];
             </v-navigation-drawer>
 
             <v-main>
+                <!-- Alert confirmation when object is deleted!! -->
+                <v-dialog v-model="deleteCfmDialog" max-width="290">
+                    <v-card>
+                        <v-card-title class="headline">
+                            {{deleteCfmDialogMsg}}
+                        </v-card-title>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="green darken-1" text @click="deleteCfmDialog = false">
+                                Confirm
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+
                 <!-- Introduction part -->
-                <v-card max-width="400" style="margin:20px" color="rgb(0, 0, 0, 0.2)" dark>
+                <v-card max-width="500" style="margin:20px" color="rgb(0, 0, 0, 0.2)" dark>
                     <v-list-item two-line>
                         <v-list-item-content>
                             <v-list-item-title class="headline">
                                 Welcome! name!
                             </v-list-item-title>
-                            <v-list-item-subtitle>{{weatherReport}}, Mostly sunny</v-list-item-subtitle>
+                            <v-list-item-subtitle>{{dailyReport}}, {{weatherReport}}</v-list-item-subtitle>
+
                         </v-list-item-content>
                     </v-list-item>
 
                     <v-card-text>
                         <v-row>
-                            <v-col class="display-3" cols="6">
-                                23&deg;C
+                            <v-col class="display-2" cols="6">
+                                {{tempReport}}&deg;C
                             </v-col>
-                            <v-col cols="6">
-                                <v-img src="https://cdn.vuetifyjs.com/images/cards/sun.png" alt="Sunny image" width="92"></v-img>
+                            <v-col class="display-2" cols="3">
+                                <v-img v-bind:src="weatherImage" width="92" height="92"></v-img>
                             </v-col>
                         </v-row>
                     </v-card-text>
@@ -162,22 +185,39 @@ $username = $_SESSION['username'];
                                 </v-menu>
                             </v-toolbar>
                         </v-sheet>
-                        <v-sheet height="500">
+                        <v-sheet height="700">
                             <v-calendar ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"></v-calendar>
                             <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
                                 <v-card color="grey lighten-4" min-width="350px" flat>
                                     <v-toolbar :color="selectedEvent.color" dark>
-                                        <v-btn icon>
+                                        <v-btn @click="editFunction" icon>
                                             <v-icon>mdi-pencil</v-icon>
                                         </v-btn>
                                         <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                                         <v-spacer></v-spacer>
-                                        <v-btn icon>
-                                            <v-icon>mdi-heart</v-icon>
-                                        </v-btn>
-                                        <v-btn icon>
-                                            <v-icon>mdi-dots-vertical</v-icon>
-                                        </v-btn>
+                                        <!-- model area -->
+                                        <v-dialog v-model="deleteDialog" persistent max-width="290">
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-btn icon @click="deleteDialog = true">
+                                                    <v-icon>mdi-trash-can</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card>
+                                                <v-card-title class="headline">
+                                                    Are you sure you want to delete:
+                                                </v-card-title>
+                                                <v-card-text>{{selectedEvent.name}}</v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn color="green darken-1" text @click="deleteObject">
+                                                        Delete
+                                                    </v-btn>
+                                                    <v-btn color="green darken-1" text @click="deleteDialog = false">
+                                                        Don't delete
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
                                     </v-toolbar>
                                     <v-card-text>
                                         <span v-html="selectedEvent.details"></span>
@@ -209,9 +249,16 @@ $username = $_SESSION['username'];
             vuetify: new Vuetify(),
             data: {
                 drawer: true,
+                dailyReport: '',
                 weatherReport: '',
+                weatherImage: '',
+                tempReport: '',
                 focus: '',
                 type: 'month',
+                deleteDialog: false,
+                deleteCfmDialog: false,
+                deleteCfmDialogMsg: '',
+                userId: '',
                 navLink: {
                     logout: "logout.html"
                 },
@@ -229,12 +276,13 @@ $username = $_SESSION['username'];
 
             },
             created: function() {
-                var startDate = new Date("Nov 2 2020 08:00:00");
-                var endDate = new Date("Nov 2 2020 15:00:00")
-                var startDate2 = new Date("Nov 7 2020 08:00:00");
-                var endDate2 = new Date("Nov 7 2020 15:00:00")
+                //var startDate = new Date("Nov 2 2020 08:00:00");
+                //var endDate = new Date("Nov 2 2020 15:00:00")
+                //var startDate2 = new Date("Nov 7 2020 08:00:00");
+                //var endDate2 = new Date("Nov 7 2020 15:00:00")
                 setInterval(this.weatherReturn, 100);
-                this.updateEvents()
+                callWeather();
+                this.updateEvents();
             },
             computed: {
                 lgAndUp() {
@@ -250,18 +298,76 @@ $username = $_SESSION['username'];
 
                     loadEvent();
                     loadTask();
+                    loadUnavailable();
 
                     console.log(this.events);
-
-
-
                 },
                 weatherReturn: function() {
                     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                     var todayDate = new Date();
                     var dayName = days[todayDate.getDay()];
                     var todayTime = todayDate.toLocaleTimeString();
-                    this.weatherReport = dayName + ", " + todayTime;
+                    this.dailyReport = dayName + ", " + todayTime;
+                },
+                editFunction: function() {
+                    var user_id = '<?php $_SESSION['userid'] ?>';
+                    var taskType = this.selectedEvent.taskType;
+                    var title = this.selectedEvent.name;
+                    var date = this.selectedEvent.rawDate;
+                    var startTime = this.selectedEvent.rawStartTime;
+                    var endTime = this.selectedEvent.rawEndTime;
+                    var itemid;
+                    var location;
+                    var repeatable = this.selectedEvent.repeatable;
+                    var description = this.selectedEvent.details;
+
+
+                    if (taskType == "event") {
+                        itemid = this.selectedEvent.id;
+                        var location = this.selectedEvent.location;
+                    } else if (taskType == "task") {
+                        itemid = this.selectedEvent.id;
+                    } else {
+                        itemid = this.selectedEvent.id;
+                    }
+
+                    window.location.href = "ScheduleEdit.php?itemid=" + itemid + "&taskType=" + taskType + "&title=" + title + "&date=" + date + "&startTime=" + startTime + "&endTime=" + endTime + "&description=" + description + "&location=" + location + "&repeatable=" + repeatable;
+                },
+                deleteObject: function() {
+                    var id = navApp.selectedEvent.id;
+                    var taskType = navApp.selectedEvent.taskType;
+                    navApp.deleteDialog = false;
+
+                    console.log(id);
+                    console.log(taskType);
+
+                    $.ajax({
+                        url: "./include/delete_eventTask.php",
+                        type: "POST",
+                        data: {
+                            id: id,
+                            taskType: taskType
+                        },
+
+                        cache: false,
+                        success: function(dataResult) {
+
+                            var dataResult = JSON.parse(dataResult);
+
+                            if (dataResult.statusCode == 200) {
+
+                                navApp.deleteCfmDialog = true;
+                                navApp.deleteCfmDialogMsg = "Object successfully deleted!";
+                                navApp.events.splice(navApp.events.findIndex(v => v.id === id), 1);
+
+                            } else if (dataResult.statusCode == 201) {
+                                navApp.deleteCfmDialog = true;
+                                navApp.deleteCfmDialogMsg = "Database returned 201 status code!";
+                            }
+
+                        }
+
+                    });
                 },
                 viewDay({
                     date
@@ -315,9 +421,15 @@ $username = $_SESSION['username'];
                             name: response[i].title,
                             start: new Date(response[i].date + " " + response[i].start_time),
                             end: new Date(response[i].date + " " + response[i].end_time),
+                            rawDate: response[i].date,
+                            rawStartTime: response[i].start_time,
+                            rawEndTime: response[i].end_time,
+                            location: response[i].location,
                             color: "red lighten-2",
                             timed: true,
                             details: response[i].description + " " + response[i].location,
+                            id: response[i].event_id,
+                            taskType: "event",
                         })
                     }
                 }
@@ -341,9 +453,15 @@ $username = $_SESSION['username'];
                                 name: response[i].title,
                                 start: new Date(response[i].date + " " + response[i].start_time),
                                 end: new Date(response[i].date + " " + response[i].end_time),
-                                color: "green lighten-2",
+                                rawDate: response[i].date,
+                                rawStartTime: response[i].start_time,
+                                rawEndTime: response[i].end_time,
+                                color: "black lighten-2",
                                 timed: true,
                                 details: response[i].description,
+                                repeatable: response[i].repeatable,
+                                id: response[i].task_id,
+                                taskType: "task",
                             })
 
                         } else if (response[i].repeatable == "Weekday") {
@@ -356,7 +474,7 @@ $username = $_SESSION['username'];
                             var currentDateStart = new Date(todayDateStr + " " + response[i].start_time);
                             var currentDateEnd = new Date(todayDateStr + " " + response[i].end_time);
 
-                            for (j = 0; j < 365; j++) {
+                            for (j = 0; j < 72; j++) {
                                 //check if day is a weekday
 
                                 var weStartDate = dateChange(currentDateStart, response[i].start_time, 1);
@@ -371,15 +489,26 @@ $username = $_SESSION['username'];
                                         name: response[i].title,
                                         start: new Date(weStartDate),
                                         end: new Date(weEndDate),
+                                        rawDate: response[i].date,
+                                        rawStartTime: response[i].start_time,
+                                        rawEndTime: response[i].end_time,
                                         color: "green lighten-2",
                                         timed: true,
                                         details: response[i].description,
+                                        repeatable: response[i].repeatable,
+                                        id: response[i].task_id,
+                                        taskType: "task",
                                     }
                                     navApp.events.push(eventObj);
                                 }
-                                //push date by 1
-                                currentDateStart.setDate(currentDateStart.getDate() + 1);
-                                currentDateEnd.setDate(currentDateEnd.getDate() + 1);
+                                //If day is weekend, skip by two days.
+                                if (chosenDay == 5) {
+                                    currentDateStart.setDate(currentDateStart.getDate() + 2);
+                                    currentDateEnd.setDate(currentDateEnd.getDate() + 2);
+                                } else {
+                                    currentDateStart.setDate(currentDateStart.getDate() + 1);
+                                    currentDateEnd.setDate(currentDateEnd.getDate() + 1);
+                                }
                             }
 
 
@@ -392,7 +521,7 @@ $username = $_SESSION['username'];
                             var currentDateStart = new Date(getCorrectDate(todayDate) + " " + response[i].start_time);
                             var currentDateEnd = new Date(getCorrectDate(todayDate) + " " + response[i].end_time);
 
-                            for (j = 0; j < 99; j++) {
+                            for (j = 0; j < 36; j++) {
                                 var chosenDay = currentDateStart.getDay();
                                 let weStart = currentDateStart;
                                 let weEnd = currentDateEnd;
@@ -404,9 +533,15 @@ $username = $_SESSION['username'];
                                         name: response[i].title,
                                         start: new Date(weStart),
                                         end: new Date(weEnd),
+                                        rawDate: response[i].date,
+                                        rawStartTime: response[i].start_time,
+                                        rawEndTime: response[i].end_time,
                                         color: "blue lighten-2",
                                         timed: true,
                                         details: response[i].description,
+                                        repeatable: response[i].repeatable,
+                                        id: response[i].task_id,
+                                        taskType: "task",
                                     })
                                 }
                                 //If DAY is saturday, ADD 1 to sunday. 
@@ -425,7 +560,7 @@ $username = $_SESSION['username'];
                         } else if (response[i].repeatable == "Repeat Weekly") {
                             // If repeat every week
 
-                            
+
                             //Take the particular date and loop
                             var currentDateStart = new Date(response[i].date + " " + response[i].start_time);
                             var currentDateEnd = new Date(response[i].date + " " + response[i].end_time);
@@ -443,22 +578,28 @@ $username = $_SESSION['username'];
                             console.log(todayDate);
                             todayDay = 0;
 
-                            while (todayDay != chosenDay){
+                            while (todayDay != chosenDay) {
                                 todayDate.setDate(todayDate.getDate() + 1);
                                 todayDate.setDate(todayDate.getDate() + 1);
                                 todayDay += 1
                             }
 
-                            for (j = 0; j < 54; j++) {
+                            for (j = 0; j < 24; j++) {
 
                                 //check if day is a weekend
                                 navApp.events.push({
                                     name: response[i].title,
                                     start: new Date(currentDateStart),
                                     end: new Date(currentDateEnd),
+                                    rawDate: response[i].date,
+                                    rawStartTime: response[i].start_time,
+                                    rawEndTime: response[i].end_time,
                                     color: "purple lighten-2",
                                     timed: true,
                                     details: response[i].description,
+                                    repeatable: response[i].repeatable,
+                                    id: response[i].task_id,
+                                    taskType: "task",
                                 })
 
                                 //push date by 7
@@ -474,6 +615,238 @@ $username = $_SESSION['username'];
             };
             loadReq.open("GET", "include/read_task.php", true);
             loadReq.send();
+        }
+
+        function loadUnavailable() {
+            var loadReq = new XMLHttpRequest();
+            loadReq.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    response = JSON.parse(this.responseText);
+
+                    for (i = 0; i < response.length; i++) {
+
+                        //console.log(response[i]);
+                        //If non-repeat
+                        if (response[i].repeatable == "Non Repeat") {
+                            navApp.events.push({
+                                name: response[i].title,
+                                start: new Date(response[i].date + " " + response[i].start_time),
+                                end: new Date(response[i].date + " " + response[i].end_time),
+                                rawDate: response[i].date,
+                                rawStartTime: response[i].start_time,
+                                rawEndTime: response[i].end_time,
+                                color: "grey",
+                                timed: true,
+                                details: response[i].description,
+                                repeatable: response[i].repeatable,
+                                id: response[i].unavailable_id,
+                                taskType: "unavailable",
+                            })
+
+                        } else if (response[i].repeatable == "Weekday") {
+                            //if weekday
+                            //We only accept 1-5 for 1 month ahead
+                            const weekday = [1, 2, 3, 4, 5];
+                            var todayDate = new Date()
+                            todayDate.setDate(todayDate.getDate() - 1);
+                            var todayDateStr = getCorrectDate(todayDate);
+                            var currentDateStart = new Date(todayDateStr + " " + response[i].start_time);
+                            var currentDateEnd = new Date(todayDateStr + " " + response[i].end_time);
+
+                            for (j = 0; j < 72; j++) {
+                                //check if day is a weekday
+
+                                var weStartDate = dateChange(currentDateStart, response[i].start_time, 1);
+                                var weEndDate = dateChange(currentDateEnd, response[i].end_time, 1);
+
+
+                                var chosenDay = new Date(weStartDate).getDay();
+
+                                if (weekday.indexOf(chosenDay) !== -1) {
+
+                                    var eventObj = {
+                                        name: response[i].title,
+                                        start: new Date(weStartDate),
+                                        end: new Date(weEndDate),
+                                        rawDate: response[i].date,
+                                        rawStartTime: response[i].start_time,
+                                        rawEndTime: response[i].end_time,
+                                        color: "grey",
+                                        timed: true,
+                                        details: response[i].description,
+                                        repeatable: response[i].repeatable,
+                                        id: response[i].unavailable_id,
+                                        taskType: "unavailable",
+                                    }
+                                    navApp.events.push(eventObj);
+                                }
+                                //If day is weekend, skip by two days.
+                                if (chosenDay == 5) {
+                                    currentDateStart.setDate(currentDateStart.getDate() + 2);
+                                    currentDateEnd.setDate(currentDateEnd.getDate() + 2);
+                                } else {
+                                    currentDateStart.setDate(currentDateStart.getDate() + 1);
+                                    currentDateEnd.setDate(currentDateEnd.getDate() + 1);
+                                }
+                            }
+
+
+                        } else if (response[i].repeatable == "Weekend") {
+                            //If repeat weekend (Time not considered)
+                            //We only accept 1-5 for 1 month ahead
+                            const weekend = [0, 6];
+                            var todayDate = new Date();
+                            var todayDateStr = getCorrectDate(todayDate);
+                            var currentDateStart = new Date(getCorrectDate(todayDate) + " " + response[i].start_time);
+                            var currentDateEnd = new Date(getCorrectDate(todayDate) + " " + response[i].end_time);
+
+                            for (j = 0; j < 36; j++) {
+                                var chosenDay = currentDateStart.getDay();
+                                let weStart = currentDateStart;
+                                let weEnd = currentDateEnd;
+                                //check if day is a weekend
+
+                                if (weekend.indexOf(chosenDay) !== -1) {
+                                    firstFile = true;
+                                    navApp.events.push({
+                                        name: response[i].title,
+                                        start: new Date(weStart),
+                                        end: new Date(weEnd),
+                                        rawDate: response[i].date,
+                                        rawStartTime: response[i].start_time,
+                                        rawEndTime: response[i].end_time,
+                                        color: "grey",
+                                        timed: true,
+                                        details: response[i].description,
+                                        repeatable: response[i].repeatable,
+                                        id: response[i].unavailable_id,
+                                        taskType: "unavailable",
+                                    })
+                                }
+                                //If DAY is saturday, ADD 1 to sunday. 
+                                //Else add 6 ONLY after it has determined it's a weekend SUNDAY.
+                                if (chosenDay == 0) {
+                                    currentDateStart.setDate(currentDateStart.getDate() + 6);
+                                    currentDateEnd.setDate(currentDateEnd.getDate() + 6);
+                                } else {
+                                    currentDateStart.setDate(currentDateStart.getDate() + 1);
+                                    currentDateEnd.setDate(currentDateEnd.getDate() + 1);
+                                }
+
+                            }
+
+
+                        } else if (response[i].repeatable == "Repeat Weekly") {
+                            // If repeat every week
+
+
+                            //Take the particular date and loop
+                            var currentDateStart = new Date(response[i].date + " " + response[i].start_time);
+                            var currentDateEnd = new Date(response[i].date + " " + response[i].end_time);
+
+                            //Recalibrate the correct day of the current week to match day in reference to set date.
+                            //IF date set is TODAY or in the past, recalibrate above
+                            //OR ELSE, if date set is in the future, start from only future!!
+
+                            var todayDate = new Date()
+                            var todayDay = new Date().getDay();
+                            var chosenDay = currentDateStart.getDay();
+
+                            //Reset day to Sunday
+                            todayDate.setDate(todayDate.getDate() - todayDay);
+                            console.log(todayDate);
+                            todayDay = 0;
+
+                            while (todayDay != chosenDay) {
+                                todayDate.setDate(todayDate.getDate() + 1);
+                                todayDate.setDate(todayDate.getDate() + 1);
+                                todayDay += 1
+                            }
+
+                            for (j = 0; j < 24; j++) {
+
+                                //check if day is a weekend
+                                navApp.events.push({
+                                    name: response[i].title,
+                                    start: new Date(currentDateStart),
+                                    end: new Date(currentDateEnd),
+                                    rawDate: response[i].date,
+                                    rawStartTime: response[i].start_time,
+                                    rawEndTime: response[i].end_time,
+                                    color: "grey",
+                                    timed: true,
+                                    details: response[i].description,
+                                    repeatable: response[i].repeatable,
+                                    id: response[i].unavailable_id,
+                                    taskType: "unavailable",
+                                })
+
+                                //push date by 7
+                                currentDateStart.setDate(currentDateStart.getDate() + 7);
+                                currentDateEnd.setDate(currentDateEnd.getDate() + 7);
+
+                            }
+
+                        }
+
+                    }
+                }
+            };
+            loadReq.open("GET", "include/read_unavailable.php", true);
+            loadReq.send();
+        }
+
+
+
+        function callWeather() {
+
+            //Determine if geolocation is supported. 
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    //not supported by this browser!
+                    alert("Browser does not support geolocation!");
+                }
+            }
+
+            //GET LOCATION
+
+            function showPosition(position) {
+
+                //Get location
+                var lat = position.coords.latitude;
+                var lng = position.coords.longitude;
+                console.log(lat + " " + lng);
+
+                //Call weather
+
+                const api_key_weather = "c9a2c0a5914d4558bdb5432970854635";
+                var currentDate = new Date();
+
+                var loadRequest = new XMLHttpRequest();
+                loadRequest.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        response = JSON.parse(this.responseText);
+                        var weather = response.current.weather[0].main;
+                        var weather_icon = response.current.weather[0].icon;
+                        var weather_details = response.current.weather[0].details;
+                        var temp = response.current.temp;
+
+                        console.log(weather);
+
+                        navApp.weatherImage = "http://openweathermap.org/img/wn/" + weather_icon + "@2x.png"
+                        navApp.weatherReport = weather;
+                        navApp.tempReport = temp;
+
+                    }
+                }
+                loadRequest.open("GET", "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lng + "&units=metric" + "&appid=" + api_key_weather, true);
+                loadRequest.send();
+                event.preventDefault();
+
+            }
+            getLocation();
         }
 
 
