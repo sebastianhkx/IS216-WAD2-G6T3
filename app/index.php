@@ -107,7 +107,7 @@ $username = $_SESSION['username'];
                         </v-card-title>
                         <v-card-actions>
                             <v-spacer></v-spacer>
-                            <v-btn color="green darken-1" text @click="deleteCfmDialog = false">
+                            <v-btn color="green darken-1" text @click="reloadWindow">
                                 Confirm
                             </v-btn>
                         </v-card-actions>
@@ -294,6 +294,10 @@ $username = $_SESSION['username'];
 
             },
             methods: {
+                reloadWindow: function() {
+                    location.reload();
+                    return false;
+                },
                 updateEvents: function() {
 
                     loadEvent();
