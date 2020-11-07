@@ -282,10 +282,10 @@ public function edit_event_data($user_id, $event_id ,$date, $start_time, $end_ti
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
 
-  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, location = ${location}, title = ${title}, description=${description}"
+  $properties_input = "SET date = :date, start_time= :start_time, end_time = :end_time, location = :location, title = :title, description= :description";
   
 
-  $check_statement = "where user_id = ${user_id} AND event_id = ${event_id}";
+  $check_statement = "where user_id = :user_id AND event_id = :event_id";
 
 
 
@@ -294,7 +294,14 @@ public function edit_event_data($user_id, $event_id ,$date, $start_time, $end_ti
 
   $sql = "Update event_list ${properties_input} ${check_statement}";
   $stmt = $conn->prepare($sql);
-
+  $stmt->bindParam(':event_id', $event_id, PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+  $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+  $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+  $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+  $stmt->bindParam(':location', $location, PDO::PARAM_STR);
+  $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+  $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
     //STEP 3
     $status = $stmt->execute();
@@ -536,7 +543,7 @@ public function get_task_by_month($month, $year, $user_id){
 
   // STEP 2
 
-$sql = "SELECT * from task_list ${month_statment}";
+$sql = "SELECT * from task_list ${month_statement}";
 
   $stmt = $conn->prepare($sql);
 
@@ -625,7 +632,7 @@ public function edit_task_data($user_id, $task_id ,$date, $start_time, $end_time
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
 
-  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}"
+  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}";
   
 
   $check_statement = "where user_id = ${user_id} AND task_id = ${task_id}";
@@ -708,7 +715,7 @@ public function get_unavailable_user($user_id){
 
   // STEP 2
 
-  $sql = "SELECT * from unavailable_list where user_id= '${user_id}';
+  $sql = "SELECT * from unavailable_list where user_id= '${user_id}'";
 
   $stmt = $conn->prepare($sql);
 
@@ -871,7 +878,7 @@ public function get_unavailable_list_by_month($month, $year, $user_id){
 
   // STEP 2
 
-$sql = "SELECT * from unavailable_list ${month_statment}";
+$sql = "SELECT * from unavailable_list ${month_statement}";
 
   $stmt = $conn->prepare($sql);
 
@@ -959,7 +966,7 @@ public function edit_unava_data($user_id, $unavailable_id ,$date, $start_time, $
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
 
-  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}"
+  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}";
   
 
   $check_statement = "where user_id = ${user_id} AND unavailable_id = ${unavailable_id}";
