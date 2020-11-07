@@ -150,7 +150,7 @@ return $status;
 }
 
 
-public function delete_event($id) {
+public function delete_event($id, $user_id) {
   // STEP 1
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
@@ -159,9 +159,10 @@ public function delete_event($id) {
   $sql = "DELETE FROM
               event_list
           WHERE 
-              id = :id";
+              event_id = :id AND user_id = :user_id";
   $stmt = $conn->prepare($sql);
-  $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+  $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
   //STEP 3
   $status = $stmt->execute();
@@ -505,7 +506,7 @@ return $status;
 }
 
 
-public function delete_task($id) {
+public function delete_task($id, $user_id) {
 // STEP 1
 $connMgr = new ConnectionManager();
 $conn = $connMgr->getConnection();
@@ -514,9 +515,10 @@ $conn = $connMgr->getConnection();
 $sql = "DELETE FROM
             task_list
         WHERE 
-            id = :id";
+            task_id = :id AND user_id = :user_id";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+$stmt->bindParam(':id', $id, PDO::PARAM_STR);
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
 //STEP 3
 $status = $stmt->execute();
@@ -840,7 +842,7 @@ return $status;
 }
 
 
-public function delete_unavailable($id) {
+public function delete_unavailable($id, $user_id) {
 // STEP 1
 $connMgr = new ConnectionManager();
 $conn = $connMgr->getConnection();
@@ -849,9 +851,10 @@ $conn = $connMgr->getConnection();
 $sql = "DELETE FROM
             unavailable_list
         WHERE 
-            id = :id";
+            unavailable_id = :id AND user_id = :user_id";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+$stmt->bindParam(':id', $id, PDO::PARAM_STR);
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
 //STEP 3
 $status = $stmt->execute();
