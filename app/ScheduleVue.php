@@ -10,12 +10,15 @@ if (!isset($_SESSION['userid'])) {
 $id = $_SESSION['userid'];
 $username = $_SESSION['username'];
 
+
+
 ?>
 
 <!DOCTYPE html>
 <html>
 <!-- THINGS TO VALIDATE: Check if there's an EXACT overlapping time!!!-->
-<!-- ANother thing to validate: Make sure the date isn't backdated! -->
+<!-- ENSURE THE DESCRIPTION HAS A CHARACTER LIMIT OF 200 -->
+<!-- ENSURE DOUBLE QUOTES ARE NOT ALLOWED! -->
 
 <head>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
@@ -168,7 +171,7 @@ $username = $_SESSION['username'];
                     <v-btn onClick="returnPlaces()">Search for Location</v-btn>
                   </v-col>
                   <v-col cols="12">
-                    <v-textarea v-model="eDescription" label="Description:" placeholder="Add your description here!">
+                    <v-textarea v-model="eDescription" :counter="200" :rules="descRules" label="Description:" placeholder="Add your description here!">
                     </v-textarea>
                   </v-col>
                 </v-row>
@@ -280,7 +283,7 @@ $username = $_SESSION['username'];
                     <v-text-field v-model="tEndTimeInput" type="time" label="End Time" :rules="fieldRules" required></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-textarea v-model="tDescription" label="Description:" placeholder="Add your description here!">
+                    <v-textarea v-model="tDescription"  :counter="200" :rules="descRules" label="Description:" placeholder="Add your description here!">
                     </v-textarea>
                   </v-col>
                   <v-btn cols="12" md="12" color="success" block @click='eValidateSubmit' :disabled="!scheduleForm">Submit
@@ -319,6 +322,7 @@ $username = $_SESSION['username'];
           eDescription: '',
           fieldRules: [v => !!v || 'This field is required'],
           checkTime: [v => !!v || 'End time must be greater than start time'],
+          descRules: [v => v.length <= 200 || 'Description must be less than 200 characters'],
           locationReturn: "none",
           eLocation: '',
           locImg: '',
@@ -375,6 +379,10 @@ $username = $_SESSION['username'];
       }
 
     );
+
+    function loadEdit() {
+
+    }
 
     function returnPlaces() {
       var location = FormApp.eLocation;
@@ -599,12 +607,15 @@ $username = $_SESSION['username'];
             var completed = 0;
 
             $.ajax({
-              url: "./include/read_event_time.php",
+              url: "./include/add_event.php",
               type: "POST",
               data: {
                 date: date,
+                description: description,
                 end_time: end_time,
                 start_time: start_time,
+                location: location,
+                title: title,
                 user_id: user_id
               },
 
@@ -613,45 +624,14 @@ $username = $_SESSION['username'];
 
                 var dataResult = JSON.parse(dataResult);
 
-                if (dataResult.counter > 0) {
+                if (dataResult.statusCode == 200) {
 
-                  FormApp.errorSubmitMessage = "Error Occured! There is already an existing Event at the time";
+                  FormApp.successMessage = "Data Successfully added!";
+                  FormApp.successAlert = true;
+
+                } else if (dataResult.statusCode == 201) {
+                  FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
                   FormApp, submitErrorAlert = true;
-
-                } else {
-
-                  $.ajax({
-                    url: "./include/add_event.php",
-                    type: "POST",
-                    data: {
-                      date: date,
-                      description: description,
-                      end_time: end_time,
-                      start_time: start_time,
-                      location: location,
-                      title: title,
-                      user_id: user_id
-                    },
-
-                    cache: false,
-                    success: function(dataResult) {
-
-                      var dataResult = JSON.parse(dataResult);
-
-                      if (dataResult.statusCode == 200) {
-
-                        FormApp.successMessage = "Data Successfully added!";
-                        FormApp.successAlert = true;
-
-                      } else if (dataResult.statusCode == 201) {
-                        FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
-                        FormApp, submitErrorAlert = true;
-                      }
-
-                    }
-
-                  });
-
                 }
 
               }
@@ -676,8 +656,6 @@ $username = $_SESSION['username'];
         } else {
           //Success condition, run through the final ajax function
 
-          console.log(FormApp);
-
           if (FormApp.taskType == '1') {
 
 
@@ -695,7 +673,7 @@ $username = $_SESSION['username'];
 
               var user_id = '<?php echo $id; ?>';
 
-
+              if (taskType == "Task"){}
               $.ajax({
                 url: "./include/add_task.php",
                 type: "POST",
@@ -731,7 +709,6 @@ $username = $_SESSION['username'];
             });
 
           } else {
-
 
             $(document).ready(function() {
 
