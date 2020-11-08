@@ -37,6 +37,12 @@ $username = $_SESSION['username'];
 
         }
 
+        .v-card {
+            display: flex !important;
+            flex-direction: column;
+        }
+
+
         a:hover {
             text-decoration: none;
         }
@@ -54,8 +60,8 @@ $username = $_SESSION['username'];
 <body>
 
     <div id="mainApp">
-        <v-app style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);">
-            <v-navigation-drawer permanent app dark style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);" :mini-variant="mini">
+        <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+            <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2)" :mini-variant="mini">
                 <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title class="title">
@@ -115,32 +121,86 @@ $username = $_SESSION['username'];
                 </v-dialog>
 
                 <!-- Introduction part -->
-                <v-card max-width="500" style="margin:20px" color="rgb(0, 0, 0, 0.2)" dark>
-                    <v-list-item two-line>
-                        <v-list-item-content>
-                            <v-list-item-title class="headline">
-                                Welcome! name!
-                            </v-list-item-title>
-                            <v-list-item-subtitle>{{dailyReport}}, {{weatherReport}}</v-list-item-subtitle>
+                <v-row>
+                    <v-col cols="12" md="6">
+                        <v-card max-width="500" style="margin:20px" color="rgb(0, 0, 0, 0.2)" dark>
+                            <v-list-item two-line>
+                                <v-list-item-content>
+                                    <v-list-item-title class="headline">
+                                        Welcome! name!
+                                    </v-list-item-title>
+                                    <v-list-item-subtitle>{{dailyReport}}, {{weatherReport}}</v-list-item-subtitle>
 
-                        </v-list-item-content>
-                    </v-list-item>
+                                </v-list-item-content>
+                            </v-list-item>
 
-                    <v-card-text>
-                        <v-row>
-                            <v-col class="display-2" cols="6">
-                                {{tempReport}}&deg;C
-                            </v-col>
-                            <v-col class="display-2" cols="3">
-                                <v-img v-bind:src="weatherImage" width="92" height="92"></v-img>
-                            </v-col>
-                        </v-row>
-                    </v-card-text>
-                </v-card>
+                            <v-card-text>
+                                <v-row>
+                                    <v-col class="display-2" cols="6">
+                                        {{tempReport}}&deg;C
+                                    </v-col>
+                                    <v-col class="display-2" cols="3">
+                                        <v-img v-bind:src="weatherImage" width="92" height="92"></v-img>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                    <v-col cols="12" md="6">
+                        <!-- Agenda part -->
+                        <v-card color="rgb(0, 0, 0, 0.2)" dark style="margin-right:20px">
+                            <v-card-title class="white--text mt-8">
+                                <p class="ml-3">
+                                    Your Agenda for Today:
+                                </p>
+                            </v-card-title>
+                            </v-img>
+
+                            <v-card-text>
+                                <v-row>
+                                    <v-col cols="12" md="6">
+                                        <div class="font-weight-bold ml-8 mb-2">
+                                            Task for today:
+                                        </div>
+                                        <v-timeline max-height="10" align-top dense style="padding: 10px; height:100px; overflow: auto;">
+                                            <v-timeline-item v-for="agenda in agendas_tasks" small>
+                                                <div>
+                                                    <div class="font-weight-normal">
+                                                        <strong>{{ agenda.startTime }}</strong>
+                                                    </div>
+                                                    <div>{{ agenda.name }}</div>
+                                                </div>
+                                            </v-timeline-item>
+
+                                        </v-timeline>
+                                    </v-col>
+                                    <v-col cols="12" md="6">
+                                        <div class="font-weight-bold ml-8 mb-2">
+                                            Events for today:
+                                        </div>
+                                        <v-timeline height="10" align-top dense style="overflow: auto;">
+                                            <v-timeline-item v-for="agenda in agendas_events" small>
+                                                <div>
+                                                    <div class="font-weight-normal">
+                                                        <strong>{{ agenda.startTime }}</strong>
+                                                    </div>
+                                                    <div>{{ agenda.name }}</div>
+                                                </div>
+                                            </v-timeline-item>
+                                        </v-timeline>
+                                    </v-col>
+                                </v-row>
+                            </v-card-text>
+                        </v-card>
+                    </v-col>
+                </v-row>
                 <!-- Calendar part -->
                 <v-row style="margin:10px">
                     <v-col>
-                        <v-sheet height="64">
+                        <v-sheet height="128" elevation="3">
+                            <v-toolbar flat>
+                                <h2>Calendar</h2>
+                            </v-toolbar>
                             <v-toolbar flat>
                                 <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
                                     Today
@@ -273,7 +333,8 @@ $username = $_SESSION['username'];
                 selectedElement: null,
                 selectedOpen: false,
                 events: [],
-
+                agendas_events: [],
+                agendas_tasks: [],
             },
             created: function() {
                 //var startDate = new Date("Nov 2 2020 08:00:00");
@@ -304,7 +365,7 @@ $username = $_SESSION['username'];
                     loadTask();
                     loadUnavailable();
 
-                    console.log(this.events);
+                    console.log("Ive sroted");
                 },
                 weatherReturn: function() {
                     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -413,10 +474,15 @@ $username = $_SESSION['username'];
                     nativeEvent.stopPropagation()
                 },
             }
-        })
+        });
+
+        function loadAgendaView() {
+            
+        }
 
         function loadEvent() {
             var loadReq = new XMLHttpRequest();
+            const fixedToday = new Date();
             loadReq.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     response = JSON.parse(this.responseText);
@@ -435,7 +501,27 @@ $username = $_SESSION['username'];
                             id: response[i].event_id,
                             taskType: "event",
                         })
+
+                        //Throw into agenda as well if it matches today's date.
+                        if (fixedToday.toDateString() === new Date(response[i].date).toDateString()) {
+                            navApp.agendas_events.push({
+                                name: response[i].title,
+                                startTime: response[i].start_time,
+                                endTime: response[i].end_time,
+                                location: response[i].location,
+                                details: response[i].description
+                            })
+                        }
                     }
+                    //sort and filter the events
+                    function filterTime(event) {
+                        return Number(event.startTime.split(":").join("")) > Number(fixedToday.toLocaleTimeString("en-GB").split(":").join(""));
+                    }
+
+                    navApp.agendas_events.sort(function(a, b) {
+                        return Number(a.startTime.split(":").join("")) - Number(b.startTime.split(":").join(""));
+                    });
+                    navApp.agendas_events = navApp.agendas_events.filter(filterTime);
                 }
             };
             loadReq.open("GET", "include/read_event.php", true);
@@ -444,6 +530,7 @@ $username = $_SESSION['username'];
 
         function loadTask() {
             var loadReq = new XMLHttpRequest();
+            const fixedToday = new Date();
             loadReq.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     response = JSON.parse(this.responseText);
@@ -452,6 +539,7 @@ $username = $_SESSION['username'];
 
                         //console.log(response[i]);
                         //If non-repeat
+
                         if (response[i].repeatable == "Non Repeat") {
                             navApp.events.push({
                                 name: response[i].title,
@@ -468,11 +556,21 @@ $username = $_SESSION['username'];
                                 taskType: "task",
                             })
 
+                            ///Throw into the agenda if date matches
+                            if (fixedToday.toDateString() === new Date(response[i].date).toDateString()) {
+                                navApp.agendas_tasks.push({
+                                    name: response[i].title,
+                                    startTime: response[i].start_time,
+                                    endTime: response[i].end_time,
+                                    details: response[i].description
+                                })
+                            }
+
                         } else if (response[i].repeatable == "Weekday") {
                             //if weekday
                             //We only accept 1-5 for 1 month ahead
                             const weekday = [1, 2, 3, 4, 5];
-                            var todayDate = new Date()
+                            var todayDate = new Date(); // References today's date, but will change
                             todayDate.setDate(todayDate.getDate() - 1);
                             var todayDateStr = getCorrectDate(todayDate);
                             var currentDateStart = new Date(todayDateStr + " " + response[i].start_time);
@@ -486,6 +584,7 @@ $username = $_SESSION['username'];
 
 
                                 var chosenDay = new Date(weStartDate).getDay();
+                                var chosenDate = new Date(weStartDate);
 
                                 if (weekday.indexOf(chosenDay) !== -1) {
 
@@ -504,6 +603,16 @@ $username = $_SESSION['username'];
                                         taskType: "task",
                                     }
                                     navApp.events.push(eventObj);
+
+                                    //If date matches today, then add into agenda!!
+                                    if (chosenDate.toDateString() === fixedToday.toDateString()) {
+                                        navApp.agendas_tasks.push({
+                                            name: response[i].title,
+                                            startTime: response[i].start_time,
+                                            endTime: response[i].end_time,
+                                            details: response[i].description
+                                        })
+                                    }
                                 }
                                 //If day is weekend, skip by two days.
                                 if (chosenDay == 5) {
@@ -527,12 +636,11 @@ $username = $_SESSION['username'];
 
                             for (j = 0; j < 36; j++) {
                                 var chosenDay = currentDateStart.getDay();
-                                let weStart = currentDateStart;
-                                let weEnd = currentDateEnd;
+                                var weStart = currentDateStart;
+                                var weEnd = currentDateEnd;
                                 //check if day is a weekend
 
                                 if (weekend.indexOf(chosenDay) !== -1) {
-                                    firstFile = true;
                                     navApp.events.push({
                                         name: response[i].title,
                                         start: new Date(weStart),
@@ -547,6 +655,16 @@ $username = $_SESSION['username'];
                                         id: response[i].task_id,
                                         taskType: "task",
                                     })
+
+                                    //If match today's date, add!
+                                    if (weStart.toDateString() === fixedToday.toDateString()) {
+                                        navApp.agendas_tasks.push({
+                                            name: response[i].title,
+                                            startTime: response[i].start_time,
+                                            endTime: response[i].end_time,
+                                            details: response[i].description
+                                        })
+                                    }
                                 }
                                 //If DAY is saturday, ADD 1 to sunday. 
                                 //Else add 6 ONLY after it has determined it's a weekend SUNDAY.
@@ -572,14 +690,13 @@ $username = $_SESSION['username'];
                             //Recalibrate the correct day of the current week to match day in reference to set date.
                             //IF date set is TODAY or in the past, recalibrate above
                             //OR ELSE, if date set is in the future, start from only future!!
-
-                            var todayDate = new Date()
+                            const fixedToday = new Date();
+                            var todayDate = new Date();
                             var todayDay = new Date().getDay();
                             var chosenDay = currentDateStart.getDay();
 
                             //Reset day to Sunday
                             todayDate.setDate(todayDate.getDate() - todayDay);
-                            console.log(todayDate);
                             todayDay = 0;
 
                             while (todayDay != chosenDay) {
@@ -590,7 +707,7 @@ $username = $_SESSION['username'];
 
                             for (j = 0; j < 24; j++) {
 
-                                //check if day is a weekend
+                                //check if day matches the week
                                 navApp.events.push({
                                     name: response[i].title,
                                     start: new Date(currentDateStart),
@@ -606,6 +723,17 @@ $username = $_SESSION['username'];
                                     taskType: "task",
                                 })
 
+                                //If match today's date, add!
+                                if (todayDate.toDateString() === fixedToday.toDateString()) {
+                                    navApp.agendas_tasks.push({
+                                        name: response[i].title,
+                                        startTime: response[i].start_time,
+                                        endTime: response[i].end_time,
+                                        location: response[i].location,
+                                        details: response[i].description
+                                    })
+                                }
+
                                 //push date by 7
                                 currentDateStart.setDate(currentDateStart.getDate() + 7);
                                 currentDateEnd.setDate(currentDateEnd.getDate() + 7);
@@ -613,7 +741,15 @@ $username = $_SESSION['username'];
                             }
 
                         }
+                        //sort and filter the task
+                        function filterTime(event) {
+                            return Number(event.startTime.split(":").join("")) > Number(fixedToday.toLocaleTimeString("en-GB").split(":").join(""));
+                        }
 
+                        navApp.agendas_tasks.sort(function(a, b) {
+                            return Number(a.startTime.split(":").join("")) - Number(b.startTime.split(":").join(""));
+                        });
+                        navApp.agendas_tasks = navApp.agendas_tasks.filter(filterTime);
                     }
                 }
             };
@@ -799,8 +935,6 @@ $username = $_SESSION['username'];
             loadReq.open("GET", "include/read_unavailable.php", true);
             loadReq.send();
         }
-
-
 
         function callWeather() {
 
