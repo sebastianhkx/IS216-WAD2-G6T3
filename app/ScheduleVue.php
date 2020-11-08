@@ -597,6 +597,7 @@ $username = $_SESSION['username'];
             var location = FormApp.selectLocation;
             var start_time = FormApp.estartTimeInput;
             var title = FormApp.titleName;
+            
 
             // User_Id to be modified
 
@@ -606,39 +607,73 @@ $username = $_SESSION['username'];
             // 0 == False, 1 == True
             var completed = 0;
 
-            $.ajax({
-              url: "./include/add_event.php",
-              type: "POST",
-              data: {
+              $.ajax({
+                url: "./include/read_event_time.php",
+                type: "POST",
+                data: {
                 date: date,
-                description: description,
-                end_time: end_time,
-                start_time: start_time,
-                location: location,
-                title: title,
-                user_id: user_id
-              },
+                end_time: end_time,	
+                start_time: start_time,	
+                user_id: user_id			
+                },
 
-              cache: false,
-              success: function(dataResult) {
+                cache: false,
+                success: function(dataResult){
 
-                var dataResult = JSON.parse(dataResult);
+                  var dataResult = JSON.parse(dataResult);
 
-                if (dataResult.statusCode == 200) {
+                  if(dataResult.counter > 0 ){
 
-                  FormApp.successMessage = "Data Successfully added!";
-                  FormApp.successAlert = true;
+                    alert("There is a clash with another schedule of yours");
 
-                } else if (dataResult.statusCode == 201) {
-                  FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
-                  FormApp, submitErrorAlert = true;
-                }
+                  }
 
-              }
+                  else{
 
+                    $.ajax({
+                      url: "./include/add_event.php",
+                      type: "POST",
+                      data: {
+                        date: date,
+                        description: description,
+                        end_time: end_time,
+                        start_time: start_time,
+                        location: location,
+                        title: title,
+                        user_id: user_id
+                      },
+
+                      cache: false,
+                      success: function(dataResult) {
+
+                        var dataResult = JSON.parse(dataResult);
+
+                        if (dataResult.statusCode == 200) {
+
+                          FormApp.successMessage = "Data Successfully added!";
+                          FormApp.successAlert = true;
+
+                        } else if (dataResult.statusCode == 201) {
+                          FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                          FormApp.submitErrorAlert = true;
+                        }
+
+                      }
+
+                    });
+
+                  }
+
+                }  
+
+
+              });
+              
             });
 
-          });
+            
+
+          
 
         }
 
@@ -658,106 +693,872 @@ $username = $_SESSION['username'];
 
           if (FormApp.taskType == '1') {
 
+            var date = FormApp.tDateInput;
+            var description = FormApp.tDescription;
+            var end_time = FormApp.tEndTimeInput;
+            var repeatable = FormApp.tRepeatable;
+            var start_time = FormApp.tStartTimeInput;
+            var title = FormApp.titleName;
+            // userid take from session id!!
 
-            $(document).ready(function() {
+            var user_id = '<?php echo $id; ?>';
 
-              var date = FormApp.tDateInput;
-              var description = FormApp.tDescription;
-              var end_time = FormApp.tEndTimeInput;
-              var repeatable = FormApp.tRepeatable;
-              var start_time = FormApp.tStartTimeInput;
-              var title = FormApp.titleName;
+            //task_id is randomly generated!!
+
+            var task_id = Math.floor((Math.random() * 100) + 1);
+
+            // day getter
+
+            var date_array = date.split("-");
+              var d = new Date();
+              d.setFullYear(date_array[0]);
+              d.setMonth(date_array[1]);
+              d.setDate(date_array[2]);
+              var day = d.getDay();
+
+              // 0 -> Sunday to 6 -> Saturday
 
 
-              // userid take from session id!!
+            if (repeatable == 'Weekend' && (day != 0 || day !=6) ) {
 
-              var user_id = '<?php echo $id; ?>';
+              FormApp.errorSubmitMessage = "Please Make sure that the day is a Weekend";
+              FormApp.submitErrorAlert = true;
 
-              if (taskType == "Task"){}
-              $.ajax({
-                url: "./include/add_task.php",
-                type: "POST",
-                data: {
-                  date: date,
-                  description: description,
-                  end_time: end_time,
-                  start_time: start_time,
-                  repeatable: repeatable,
-                  title: title,
-                  user_id: user_id
-                },
+            }
 
-                cache: false,
-                success: function(dataResult) {
+            else if(repeatable == 'Weekday' && (day == 0 || day ==6) ){
 
-                  var dataResult = JSON.parse(dataResult);
+              FormApp.errorSubmitMessage = "Please make sure that the day is a week Day";
+              FormApp.submitErrorAlert = true;
 
-                  if (dataResult.statusCode == 200) {
+            }
 
-                    FormApp.successMessage = "Data Successfully added!";
-                    FormApp.successAlert = true;
+            else{
 
-                  } else if (dataResult.statusCode == 201) {
-                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
-                    FormApp.submitErrorAlert = true;
+              $(document).ready(function() {
+
+                $.ajax({
+                  url: "./include/read_unavailable_task_day.php",
+                  type: "POST",
+                  data: {
+                    day: day,
+                    end_time: end_time,
+                    start_time: start_time,
+                    user_id: user_id
+                  },
+
+                  cache: false,
+                  success: function(dataResult) {
+
+                    var dataResult = JSON.parse(dataResult);
+
+                    if (dataResult.counter > 0) {
+
+                      FormApp.errorSubmitMessage = "It appears you have a task during that period";
+                      FormApp.submitErrorAlert = true;
+
+                    } else {
+                      
+                      $.ajax({
+                        url: "./include/read_unavailable_unavailable_day.php",
+                        type: "POST",
+                        data: {
+                          day: day,
+                          end_time: end_time,
+                          start_time: start_time,
+                          user_id: user_id
+                        },
+
+                        cache: false,
+                        success: function(dataResult) {
+
+                          var dataResult = JSON.parse(dataResult);
+
+                          if (dataResult.counter > 0 ) {
+
+                            FormApp.errorSubmitMessage = "It appears you are unavailable during that period";
+                            FormApp.submitErrorAlert = true;
+
+                          } else {
+
+                            if (repeatable == 'Non Repeat') {
+                              
+                              ///////////////// Single Repeat Check /////////////////////////
+
+                            $.ajax({
+                              url: "./include/read_task_time_non_repeat.php",
+                              type: "POST",
+                              data: {
+                                date: date,
+                                end_time: end_time,
+                                start_time: start_time,
+                                user_id: user_id
+                              },
+
+                              cache: false,
+                              success: function(dataResult) {
+
+                                var dataResult = JSON.parse(dataResult);
+
+                                if (dataResult.counter > 0) {
+
+
+                                  FormApp.errorSubmitMessage = "It appears you have a task during that period";
+                                  FormApp.submitErrorAlert = true;
+
+                                } else {
+                                  $.ajax({
+                                    url: "./include/add_task.php",
+                                    type: "POST",
+                                    data: {
+                                      task_id: task_id,
+                                      date: date,
+                                      description: description,
+                                      end_time: end_time,
+                                      start_time: start_time,
+                                      repeatable: repeatable,
+                                      title: title,
+                                      user_id: user_id
+                                    },
+
+                                    cache: false,
+                                    success: function(dataResult) {
+
+                                      var dataResult = JSON.parse(dataResult);
+
+                                      if (dataResult.statusCode == 200) {
+
+                                        FormApp.successMessage = "Data Successfully added!";
+                                        FormApp.successAlert = true;
+
+                                      } else if (dataResult.statusCode == 201) {
+                                        FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                        FormApp.submitErrorAlert = true;
+                                      }
+
+                                    }
+
+                                  });
+                                }
+
+                              }
+
+                            });
+
+
+
+                              //////////////// END CHECK Code ////////////////////////////////
+
+                            }
+
+                            else if(repeatable == 'Repeat Weekly'){
+
+                              /////////////////////// Add to Task Unavailable Once ///////////
+
+                              $.ajax({
+                                url: "./include/add_task.php",
+                                type: "POST",
+                                data: {
+                                  task_id: task_id,
+                                  date: date,
+                                  description: description,
+                                  end_time: end_time,
+                                  start_time: start_time,
+                                  repeatable: repeatable,
+                                  title: title,
+                                  user_id: user_id
+                                },
+
+                                cache: false,
+                                success: function(dataResult) {
+
+                                  var dataResult = JSON.parse(dataResult);
+
+                                  if (dataResult.statusCode == 200) {
+
+                                    FormApp.successMessage = "Data Successfully added!";
+                                    FormApp.successAlert = true;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_task_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        task_id: task_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+
+
+                                  } else if (dataResult.statusCode == 201) {
+                                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                    FormApp.submitErrorAlert = true;
+                                  }
+
+                                }
+
+                              });
+
+                            //////////////// END CHECK Code ////////////////////////////////
+
+                            }
+
+                            else if(repeatable == 'Weekend'){
+
+                              ////////////////////// Add to Task Unavailable Twice ///////////////////
+
+                              $.ajax({
+                                url: "./include/add_task.php",
+                                type: "POST",
+                                data: {
+                                  task_id: task_id,
+                                  date: date,
+                                  description: description,
+                                  end_time: end_time,
+                                  start_time: start_time,
+                                  repeatable: repeatable,
+                                  title: title,
+                                  user_id: user_id
+                                },
+
+                                cache: false,
+                                success: function(dataResult) {
+
+                                  var dataResult = JSON.parse(dataResult);
+
+                                  if (dataResult.statusCode == 200) {
+
+                                    FormApp.successMessage = "Data Successfully added!";
+                                    FormApp.successAlert = true;
+
+                                    day = 0;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_task_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        task_id: task_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+
+                                    day = 6;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_task_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        task_id: task_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+
+
+                                  } else if (dataResult.statusCode == 201) {
+                                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                    FormApp.submitErrorAlert = true;
+                                  }
+
+                                }
+
+                              });
+
+
+                              //////////////// END CHECK Code ////////////////////////////////
+
+                            }
+
+                            else if(repeatable == 'Weekday') {
+                            ////////////////// Add to Task Unavailable 5 Times //////////////////////
+
+                            $.ajax({
+                              url: "./include/add_task.php",
+                              type: "POST",
+                              data: {
+                                task_id: task_id,
+                                date: date,
+                                description: description,
+                                end_time: end_time,
+                                start_time: start_time,
+                                repeatable: repeatable,
+                                title: title,
+                                user_id: user_id
+                              },
+
+                              cache: false,
+                              success: function(dataResult) {
+
+                                var dataResult = JSON.parse(dataResult);
+
+                                if (dataResult.statusCode == 200) {
+
+                                  FormApp.successMessage = "Data Successfully added!";
+                                  FormApp.successAlert = true;
+
+                                  for (let i = 0; i < 5; i++) {
+
+                                    day = i + 1;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_task_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        task_id:task_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+                                    
+                                    
+                                  }
+
+                                  
+
+
+                                } else if (dataResult.statusCode == 201) {
+                                  FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                  FormApp.submitErrorAlert = true;
+                                }
+
+                              }
+
+                            });
+
+
+                            //////////////// END CHECK Code ////////////////////////////////
+
+                          }
+
+                        }
+
+                      }
+
+
+                      });
+
+                    }
+
                   }
 
-                }
+
+
+
+                });
+              
 
               });
 
-            });
+            }
 
-          } else {
+          }else {
 
-            $(document).ready(function() {
+            var date = FormApp.tDateInput;
+            var description = FormApp.tDescription;
+            var end_time = FormApp.tEndTimeInput;
+            var repeatable = FormApp.tRepeatable;
+            var start_time = FormApp.tStartTimeInput;
+            var title = FormApp.titleName;
+            // userid take from session id!!
 
-              var date = FormApp.tDateInput;
-              var description = FormApp.tDescription;
-              var end_time = FormApp.tEndTimeInput;
-              var repeatable = FormApp.tRepeatable;
-              var start_time = FormApp.tStartTimeInput;
-              var title = FormApp.titleName;
+            var user_id = '<?php echo $id; ?>';
+
+            //task_id is randomly generated!!
+
+            var unavailable_id = Math.floor((Math.random() * 100) + 1);
 
 
-              // userid take from session id!!
+            //convert date into day
+            var date_array = date.split("-");
+            var d = new Date();
+            d.setFullYear(date_array[0]);
+            d.setMonth(date_array[1]);
+            d.setDate(date_array[2]);
+            var day = d.getDay();
 
-              var user_id = '<?php echo $id; ?>';
+            // 0 -> Sunday to 6 -> Saturday
+
+            if (repeatable == 'Weekend' && (day != 0 || day !=6) ) {
+
+              FormApp.errorSubmitMessage = "Please Make sure that the day is a Weekend";
+               FormApp.submitErrorAlert = true;
+
+            }
+
+            else if(repeatable == 'Weekday' && (day == 0 || day ==6) ){
+
+              FormApp.errorSubmitMessage = "Please make sure that the day is a week Day";
+              FormApp.submitErrorAlert = true;
+
+            }
 
 
-              $.ajax({
-                url: "./include/add_unavailable.php",
-                type: "POST",
-                data: {
-                  date: date,
-                  description: description,
-                  end_time: end_time,
-                  start_time: start_time,
-                  repeatable: repeatable,
-                  title: title,
-                  user_id: user_id
-                },
 
-                cache: false,
-                success: function(dataResult) {
+            else {
+              $(document).ready(function() {
 
-                  var dataResult = JSON.parse(dataResult);
 
-                  if (dataResult.statusCode == 200) {
 
-                    FormApp.successMessage = "Data Successfully added!";
-                    FormApp.successAlert = true;
+                $.ajax({
+                  url: "./include/read_unavailable_task_day.php",
+                  type: "POST",
+                  data: {
+                    day: day,
+                    end_time: end_time,
+                    start_time: start_time,
+                    user_id: user_id
+                  },
 
-                  } else if (dataResult.statusCode == 201) {
-                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
-                    FormApp, submitErrorAlert = true;
+                  cache: false,
+                  success: function(dataResult) {
+
+                    var dataResult = JSON.parse(dataResult);
+
+                    if (dataResult.counter > 0) {
+
+                      FormApp.errorSubmitMessage = "It appears you have a task during that period";
+                      FormApp.submitErrorAlert = true;
+
+                    } else {
+                      
+                      $.ajax({
+                        url: "./include/read_unavailable_unavailable_day.php",
+                        type: "POST",
+                        data: {
+                          day: day,
+                          end_time: end_time,
+                          start_time: start_time,
+                          user_id: user_id
+                        },
+
+                        cache: false,
+                        success: function(dataResult) {
+
+                          var dataResult = JSON.parse(dataResult);
+
+                          if (dataResult.counter > 0 ) {
+
+                            FormApp.errorSubmitMessage = "It appears you are unavailable during that period";
+                            FormApp.submitErrorAlert = true;
+
+                          } else {
+
+                            if (repeatable == 'Non Repeat') {
+                              
+                              ///////////////// Single Repeat Check /////////////////////////
+
+                            $.ajax({
+                              url: "./include/read_unavailable_time_non_repeat.php",
+                              type: "POST",
+                              data: {
+                                date: date,
+                                end_time: end_time,
+                                start_time: start_time,
+                                user_id: user_id
+                              },
+
+                              cache: false,
+                              success: function(dataResult) {
+
+                                var dataResult = JSON.parse(dataResult);
+
+                                if (dataResult.counter > 0) {
+
+
+                                  FormApp.errorSubmitMessage = "It appears you have a task during that period";
+                                  FormApp.submitErrorAlert = true;
+
+                                } else {
+                                  $.ajax({
+                                    url: "./include/add_unavailable.php",
+                                    type: "POST",
+                                    data: {
+                                      unavailable_id: unavailable_id,
+                                      date: date,
+                                      description: description,
+                                      end_time: end_time,
+                                      start_time: start_time,
+                                      repeatable: repeatable,
+                                      title: title,
+                                      user_id: user_id
+
+                                    },
+
+                                    cache: false,
+                                    success: function(dataResult) {
+
+                                      var dataResult = JSON.parse(dataResult);
+
+                                      if (dataResult.statusCode == 200) {
+
+                                        FormApp.successMessage = "Data Successfully added!";
+                                        FormApp.successAlert = true;
+
+                                      } else if (dataResult.statusCode == 201) {
+                                        FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                        FormApp.submitErrorAlert = true;
+                                      }
+
+                                    }
+
+                                  });
+                                }
+
+                              }
+
+                            });
+
+
+
+                              //////////////// END CHECK Code ////////////////////////////////
+
+                            }
+
+                            else if(repeatable == 'Repeat Weekly'){
+
+                              /////////////////////// Add to Task Unavailable Once ///////////
+
+                              $.ajax({
+                                url: "./include/add_unavailable.php",
+                                type: "POST",
+                                data: {
+                                  unavailable_id: unavailable_id,
+                                  date: date,
+                                  description: description,
+                                  end_time: end_time,
+                                  start_time: start_time,
+                                  repeatable: repeatable,
+                                  title: title,
+                                  user_id: user_id
+                                },
+
+                                cache: false,
+                                success: function(dataResult) {
+
+                                  var dataResult = JSON.parse(dataResult);
+
+                                  if (dataResult.statusCode == 200) {
+
+                                    FormApp.successMessage = "Data Successfully added!";
+                                    FormApp.successAlert = true;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_unavailable_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        unavailable_id: unavailable_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+
+
+                                  } else if (dataResult.statusCode == 201) {
+                                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                    FormApp.submitErrorAlert = true;
+                                  }
+
+                                }
+
+                              });
+
+                            //////////////// END CHECK Code ////////////////////////////////
+
+                            }
+
+                            else if(repeatable == 'Weekend'){
+
+                              ////////////////////// Add to Task Unavailable Twice ///////////////////
+
+                              $.ajax({
+                                url: "./include/add_unavailable.php",
+                                type: "POST",
+                                data: {
+                                  unavailable_id: unavailable_id,
+                                  date: date,
+                                  description: description,
+                                  end_time: end_time,
+                                  start_time: start_time,
+                                  repeatable: repeatable,
+                                  title: title,
+                                  user_id: user_id
+                                },
+
+                                cache: false,
+                                success: function(dataResult) {
+
+                                  var dataResult = JSON.parse(dataResult);
+
+                                  if (dataResult.statusCode == 200) {
+
+                                    FormApp.successMessage = "Data Successfully added!";
+                                    FormApp.successAlert = true;
+
+                                    day = 0;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_unavailable_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        unavailable_id: unavailable_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+
+                                    day = 6;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_unavailable_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        unavailable_id: unavailable_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+
+
+                                  } else if (dataResult.statusCode == 201) {
+                                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                    FormApp.submitErrorAlert = true;
+                                  }
+
+                                }
+
+                              });
+
+
+                              //////////////// END CHECK Code ////////////////////////////////
+
+                            }
+
+                            else if(repeatable == 'Weekday') {
+                            ////////////////// Add to Task Unavailable 5 Times //////////////////////
+
+                            $.ajax({
+                              url: "./include/add_unavailable.php",
+                              type: "POST",
+                              data: {
+                                unavailable_id: unavailable_id,
+                                date: date,
+                                description: description,
+                                end_time: end_time,
+                                start_time: start_time,
+                                repeatable: repeatable,
+                                title: title,
+                                user_id: user_id
+                              },
+
+                              cache: false,
+                              success: function(dataResult) {
+
+                                var dataResult = JSON.parse(dataResult);
+
+                                if (dataResult.statusCode == 200) {
+
+                                  FormApp.successMessage = "Data Successfully added!";
+                                  FormApp.successAlert = true;
+
+                                  for (let i = 0; i < 5; i++) {
+
+                                    day = i + 1;
+
+                                    $.ajax({
+                                      url: "./include/add_unavailable_unavailable_days.php",
+                                      type: "POST",
+                                      data: {
+                                        day: day,
+                                        end_time: end_time,
+                                        start_time: start_time,
+                                        user_id: user_id,
+                                        unavailable_id:unavailable_id
+                                      },
+
+                                      cache: false,
+                                      success: function(dataResult) {
+
+                                        var dataResult = JSON.parse(dataResult);
+
+                                        if (dataResult.statusCode == 200) {
+
+                                          console.log("day successfully logged");
+
+                                        } else if (dataResult.statusCode == 201) {
+                                          console.log("There seems to be an error that had happened");
+                                        }
+
+                                      }
+
+                                    });
+                                    
+                                    
+                                  }
+
+                                  
+
+
+                                } else if (dataResult.statusCode == 201) {
+                                  FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                                  FormApp.submitErrorAlert = true;
+                                }
+
+                              }
+
+                            });
+
+
+                            //////////////// END CHECK Code ////////////////////////////////
+
+                          }
+
+                        }
+
+                      }
+
+
+                      });
+
+                    }
+
                   }
 
-                }
+
+
+
+                });
+
 
               });
 
-            });
+            }
 
           }
 
