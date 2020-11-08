@@ -16,9 +16,10 @@ class HANDLERDAO {
 
     // STEP 2
 
-    $sql = "SELECT * from event_list where user_id = '$user_id'";
+    $sql = "SELECT * from event_list where user_id = :user_id";
 
     $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
     // STEP 3
     $stmt->execute();
@@ -184,16 +185,17 @@ public function get_event_by_month($month, $year, $user_id){
   $conn = $connMgr->getConnection();
   
 
-  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31' AND user_id = '${user_id}'";
+  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31' ";
 
 
 
 
   // STEP 2
 
-$sql = "SELECT * from event_list ${month_statement}";
+$sql = "SELECT * from event_list ${month_statement} AND user_id = :user_id";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -234,16 +236,18 @@ public function clash_checker($date, $start_time, $end_time, $user_id){
   $conn = $connMgr->getConnection();
   
 
-  $check_statement = "where user_id = ${user_id} AND DATE between '${date}' and '${date}' AND (start_time between '${start_time}' and '${end_time}' OR end_time between '${start_time}' and '${end_time}') ";
-
-
-
-
   // STEP 2
 
-$sql = "SELECT * from event_list ${check_statement}";
+  $sql = "SELECT * from event_list 
+          WHERE user_id = :user_id AND 
+          DATE between :date and :date AND 
+          (start_time between :start_time and :end_time OR end_time between :start_time and :end_time)";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+  $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+  $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+  $stmt->bindParam(':date', $date, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -286,7 +290,7 @@ public function edit_event_data($user_id, $event_id ,$date, $start_time, $end_ti
   $properties_input = "SET date = :date, start_time= :start_time, end_time = :end_time, location = :location, title = :title, description= :description";
   
 
-  $check_statement = "where user_id = :user_id AND event_id = :event_id";
+    $check_statement = "where user_id = :user_id AND event_id = :event_id";
 
 
 
@@ -322,17 +326,15 @@ public function get_event_by_date($date, $user_id){
   // STEP 1
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
-  
-
-  $date_statement = "where DATE between '${date}' and '${date}' ";
-
 
 
   // STEP 2
 
-  $sql = "SELECT * from event_list ${date_statement}";
+  $sql = "SELECT * from event_list where DATE between :date and :date AND user_id=:user_id";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+  $stmt->bindParam(':date', $date, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -376,9 +378,10 @@ public function get_task_user($user_id){
 
   // STEP 2
 
-  $sql = "SELECT * from task_list where user_id = ${user_id}";
+  $sql = "SELECT * from task_list where user_id :user_id";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -459,7 +462,7 @@ public function get_task(){
 }
 
 
-public function add_task($user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
+public function add_task($task_id, $user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
 
   // STEP 1
   $connMgr = new ConnectionManager();
@@ -467,6 +470,7 @@ public function add_task($user_id, $date, $start_time, $end_time, $repeatable, $
 
   $sql = "INSERT INTO task_list
   (
+      task_id,
       user_id, 
       date, 
       start_time, 
@@ -475,8 +479,9 @@ public function add_task($user_id, $date, $start_time, $end_time, $repeatable, $
       title,
       description
   )
-VALUES
+  VALUES
   (
+      :task_id,
       :user_id,
       :date,
       :start_time,
@@ -485,54 +490,55 @@ VALUES
       :title,
       :description
   )";
-$stmt = $conn->prepare($sql);
-$stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
-$stmt->bindParam(':date', $date, PDO::PARAM_STR);
-$stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
-$stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
-$stmt->bindParam(':repeatable', $repeatable, PDO::PARAM_STR);
-$stmt->bindParam(':title', $title, PDO::PARAM_STR);
-$stmt->bindParam(':description', $description, PDO::PARAM_STR);
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':task_id', $task_id, PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+  $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+  $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+  $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+  $stmt->bindParam(':repeatable', $repeatable, PDO::PARAM_STR);
+  $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+  $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
-//STEP 3
-$status = $stmt->execute();
+  //STEP 3
+  $status = $stmt->execute();
 
-// STEP 4
-$stmt = null;
-$conn = null;
+  // STEP 4
+  $stmt = null;
+  $conn = null;
 
-// STEP 5
-return $status;
-}
-
-
-public function delete_task($id, $user_id) {
-// STEP 1
-$connMgr = new ConnectionManager();
-$conn = $connMgr->getConnection();
-
-// STEP 2
-$sql = "DELETE FROM
-            task_list
-        WHERE 
-            task_id = :id AND user_id = :user_id";
-$stmt = $conn->prepare($sql);
-$stmt->bindParam(':id', $id, PDO::PARAM_STR);
-$stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
-
-//STEP 3
-$status = $stmt->execute();
-
-// STEP 4
-$stmt = null;
-$conn = null;
-
-// STEP 5
-return $status;
-}
+  // STEP 5
+  return $status;
+  }
 
 
-public function get_task_by_month($month, $year, $user_id){
+  public function delete_task($id, $user_id) {
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  // STEP 2
+  $sql = "DELETE FROM
+              task_list
+          WHERE 
+              task_id = :id AND user_id = :user_id";
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':id', $id, PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+
+  //STEP 3
+  $status = $stmt->execute();
+
+  // STEP 4
+  $stmt = null;
+  $conn = null;
+
+  // STEP 5
+  return $status;
+  }
+
+
+  public function get_task_by_month($month, $year, $user_id){
 
 
   // STEP 1
@@ -540,14 +546,15 @@ public function get_task_by_month($month, $year, $user_id){
   $conn = $connMgr->getConnection();
 
   
-  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31' AND user_id = '${user_id}'";
+  $month_statement = "DATE between '${year}/${month}/01' and '${year}/${month}/31'";
 
 
   // STEP 2
 
-$sql = "SELECT * from task_list ${month_statement}";
+  $sql = "SELECT * from task_list WHERE user_id = :user_id AND ${month_statement}";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -586,21 +593,23 @@ public function clash_checker_task($repeatable, $start_time, $end_time, $user_id
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
   
-
-  $check_statement = "where user_id = ${user_id} AND repeatable = '${repeatable}' AND (start_time between '${start_time}' and '${end_time}' OR end_time between '${start_time}' and '${end_time}') ";
-
-
-
-
   // STEP 2
 
-$sql = "SELECT * from task_list ${check_statement}";
+$sql = "SELECT * from task_list where 
+        user_id = :user_id AND 
+        repeatable = :repeatable AND 
+        (start_time between :start_time and :end_time OR end_time between :start_time and :end_time)";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+  $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+  $stmt->bindParam(':repeatable', $repeatable, PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
 
   // STEP 4
   $task_list = [];
@@ -625,7 +634,58 @@ $sql = "SELECT * from task_list ${check_statement}";
   // STEP 6
   return $task_list;
 
-}
+  }
+
+  public function clash_checker_task_non_repeat($date, $start_time, $end_time, $user_id){
+
+
+    // STEP 1
+    $connMgr = new ConnectionManager();
+    $conn = $connMgr->getConnection();
+    
+    // STEP 2
+  
+  $sql = "SELECT * from task_list where 
+          user_id = :user_id AND 
+          date = :date AND 
+          (start_time between :start_time and :end_time OR end_time between :start_time and :end_time)";
+  
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+    $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+    $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+  
+    // STEP 3
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+  
+  
+    // STEP 4
+    $task_list = [];
+    while( $row = $stmt->fetch() ) {
+      $task_list[] =
+            new TASK(
+              $row['task_id'],
+              $row['user_id'],
+              $row['date'],
+              $row['start_time'],
+              $row['end_time'],
+              $row['repeatable'],
+              $row['title'],
+              $row['description'],
+            );
+    }
+  
+    // STEP 5
+    $stmt = null;
+    $conn = null;
+  
+    // STEP 6
+    return $task_list;
+  
+    }
+
 
 public function edit_task_data($user_id, $task_id ,$date, $start_time, $end_time, $repeatable, $title, $description){
 
@@ -634,18 +694,29 @@ public function edit_task_data($user_id, $task_id ,$date, $start_time, $end_time
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
 
-  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}";
-  
-
-  $check_statement = "where user_id = ${user_id} AND task_id = ${task_id}";
 
 
+    $properties_input = "SET date = :date, start_time= :start_time, end_time = :end_time, repeatable = :repeatable, title = :title, description= :description";
+    
+
+    $check_statement = "where user_id = :user_id AND task_id = :task_id";
 
 
-  // STEP 2
 
-  $sql = "Update task_list ${properties_input} ${check_statement}";
-  $stmt = $conn->prepare($sql);
+
+    // STEP 2
+
+    $sql = "Update task_list ${properties_input} ${check_statement}";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':task_id', $task_id, PDO::PARAM_STR);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+    $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+    $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+    $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+    $stmt->bindParam(':repeatable', $repeatable, PDO::PARAM_STR);
+    $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+    $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
 
     //STEP 3
@@ -668,14 +739,16 @@ public function get_task_by_date($date, $user_id){
   $conn = $connMgr->getConnection();
 
   
-  $date_statement = "where DATE between '${date}' and '${date}'";
+  $date_statement = "'";
 
 
   // STEP 2
 
-$sql = "SELECT * from task_list ${date_statement}";
+  $sql = "SELECT * from task_list where DATE between :date and :date AND user_id = :user_id";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+  $stmt->bindParam(':date', $date, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -717,9 +790,10 @@ public function get_unavailable_user($user_id){
 
   // STEP 2
 
-  $sql = "SELECT * from unavailable_list where user_id= '${user_id}'";
+  $sql = "SELECT * from unavailable_list where user_id= :user_id";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -795,7 +869,7 @@ public function get_unavailable(){
 }
 
 
-public function add_unavailable($user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
+public function add_unavailable($unavailable_id, $user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
 
   // STEP 1
   $connMgr = new ConnectionManager();
@@ -803,6 +877,7 @@ public function add_unavailable($user_id, $date, $start_time, $end_time, $repeat
 
   $sql = "INSERT INTO unavailable_list
   (
+      unavailable_id,
       user_id, 
       date, 
       start_time, 
@@ -813,6 +888,7 @@ public function add_unavailable($user_id, $date, $start_time, $end_time, $repeat
   )
 VALUES
   (
+      :unavailable_id,
       :user_id,
       :date,
       :start_time,
@@ -822,6 +898,7 @@ VALUES
       :description
   )";
 $stmt = $conn->prepare($sql);
+$stmt->bindParam(':unavailable_id', $unavailable_id, PDO::PARAM_STR);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 $stmt->bindParam(':date', $date, PDO::PARAM_STR);
 $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
@@ -876,14 +953,15 @@ public function get_unavailable_list_by_month($month, $year, $user_id){
   $conn = $connMgr->getConnection();
 
   
-  $month_statement = "where DATE between '${year}/${month}/01' and '${year}/${month}/31' AND user_id = '${user_id}'";
+  $month_statement = "DATE between '${year}/${month}/01' and '${year}/${month}/31'";
 
 
   // STEP 2
 
-$sql = "SELECT * from unavailable_list ${month_statement}";
+  $sql = "SELECT * from unavailable_list WHERE user_id = :user_id AND ${month_statement}";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
@@ -922,16 +1000,19 @@ public function clash_checker_unavailable($repeatable, $start_time, $end_time, $
   $conn = $connMgr->getConnection();
   
 
-  $check_statement = "where user_id = ${user_id} AND repeatable = '${repeatable}' AND (start_time between '${start_time}' and '${end_time}' OR end_time between '${start_time}' and '${end_time}') ";
-
-
-
-
   // STEP 2
 
-$sql = "SELECT * from unavailable_list ${check_statement}";
+$sql = "SELECT * from unavailable_list WHERE 
+        user_id = :user_id AND 
+        repeatable = :repeatable AND 
+        (start_time between :start_time and :end_time OR end_time between :start_time and :end_time) ";
 
   $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+  $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+  $stmt->bindParam(':repeatable', $repeatable, PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+
 
   // STEP 3
   $stmt->execute();
@@ -962,6 +1043,60 @@ $sql = "SELECT * from unavailable_list ${check_statement}";
 
 }
 
+public function clash_checker_unavailable_non_repeat($date, $start_time, $end_time, $user_id){
+
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+  
+
+  // STEP 2
+
+$sql = "SELECT * from unavailable_list WHERE 
+        user_id = :user_id AND 
+        date = :date AND 
+        (start_time between :start_time and :end_time OR end_time between :start_time and :end_time) ";
+
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+  $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+  $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $unavailable_list = [];
+  while( $row = $stmt->fetch() ) {
+    $unavailable_list[] =
+        new UNAVAILABLE(
+            $row['unavailable_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $unavailable_list;
+
+}
+
+
+
+
 public function edit_unava_data($user_id, $unavailable_id ,$date, $start_time, $end_time, $repeatable, $title, $description){
 
 
@@ -969,18 +1104,26 @@ public function edit_unava_data($user_id, $unavailable_id ,$date, $start_time, $
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
 
-  $properties_input = "SET date = ${date}, start_time= ${start_time}, end_time = ${end_time}, repeatable = ${repeatable}, title = ${title}, description=${description}";
-  
+  $properties_input = "SET date = :date, start_time= :start_time, end_time = :end_time, repeatable = :repeatable, title = :title, description= :description";
+    
 
-  $check_statement = "where user_id = ${user_id} AND unavailable_id = ${unavailable_id}";
+  $check_statement = "where user_id = :user_id AND unavailable_id = :unavailable_id";
 
 
 
 
   // STEP 2
 
-  $sql = "Update unavailable_list ${properties_input} ${check_statement}";
-  $stmt = $conn->prepare($sql);
+    $sql = "UPDATE unavailable_list ${properties_input} ${check_statement}";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':unavailable_id', $unavailable_id, PDO::PARAM_STR);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+    $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+    $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+    $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+    $stmt->bindParam(':repeatable', $repeatable, PDO::PARAM_STR);
+    $stmt->bindParam(':title', $title, PDO::PARAM_STR);
+    $stmt->bindParam(':description', $description, PDO::PARAM_STR);
 
 
     //STEP 3
@@ -992,6 +1135,190 @@ public function edit_unava_data($user_id, $unavailable_id ,$date, $start_time, $
 
     // STEP 5
     return $status;
+
+}
+
+
+///////////////////////////////////// Read List of Days Not Available in Task ////////////////////////////////////////////////////
+
+public function get_unavailable_task_days($user_id, $day, $start_time, $end_time){
+
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+
+    // STEP 2
+
+    $sql = "SELECT * from day_logged_task where user_id = :user_id AND 
+    day = :day AND
+    (start_time between :start_time and :end_time OR end_time between :start_time and :end_time)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+    $stmt->bindParam(':day', $day, PDO::PARAM_STR);
+    $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+    $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+
+
+    //STEP 3
+    $status = $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+    // STEP 4
+    $days_list = [];
+    while( $row = $stmt->fetch() ) {
+      $days_list[] =
+          new DAYS_TASK(
+              $row['linked_id'],
+              $row['user_id'],
+              $row['day'],
+              $row['start_time'],
+              $row['end_time'],
+              $row['task_id']
+            );
+    }
+
+    // STEP 5
+    $stmt = null;
+    $conn = null;
+  
+    // STEP 6
+    return $days_list;
+
+}
+
+
+public function add_unavailable_task_days($user_id, $day, $start_time, $end_time, $task_id) {
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  $sql = "INSERT INTO day_logged_task
+  (
+      user_id,
+      day, 
+      start_time, 
+      end_time,
+      task_id
+  )
+
+VALUES
+  (
+      :user_id,
+      :day,
+      :start_time,
+      :end_time,
+      :task_id
+  )";
+
+$stmt = $conn->prepare($sql);
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+$stmt->bindParam(':day', $day, PDO::PARAM_STR);
+$stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+$stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+$stmt->bindParam(':task_id', $task_id, PDO::PARAM_STR);
+
+//STEP 3
+$status = $stmt->execute();
+
+// STEP 4
+$stmt = null;
+$conn = null;
+
+// STEP 5
+return $status;
+
+}
+
+
+///////////////////////// Read List of Days Not Available in Unavailble List //////////////////////////////
+
+public function get_unavailable_unavailable_days($user_id, $day, $start_time, $end_time){
+
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+
+    // STEP 2
+
+    $sql = "SELECT * from day_logged_unavailable where user_id = :user_id AND 
+    day = :day AND
+    (start_time between :start_time and :end_time OR end_time between :start_time and :end_time)";
+    $stmt = $conn->prepare($sql);
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+    $stmt->bindParam(':day', $day, PDO::PARAM_STR);
+    $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+    $stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+
+
+    //STEP 3
+    $status = $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+    // STEP 4
+    $days_list = [];
+    while( $row = $stmt->fetch() ) {
+      $days_list[] =
+          new DAYS_UNAVAILABLE(
+              $row['linked_id'],
+              $row['user_id'],
+              $row['day'],
+              $row['start_time'],
+              $row['end_time'],
+              $row['unavailable_id']
+            );
+    }
+
+    // STEP 5
+    $stmt = null;
+    $conn = null;
+  
+    // STEP 6
+    return $days_list;
+
+}
+
+
+public function add_unavailable_unavailable_days($user_id, $day, $start_time, $end_time, $unavailable_id) {
+
+  // STEP 1
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  $sql = "INSERT INTO day_logged_unavailable
+  (
+      user_id,
+      day, 
+      start_time, 
+      end_time,
+      unavailable_id
+  )
+
+VALUES
+  (
+      :user_id,
+      :day,
+      :start_time,
+      :end_time,
+      :unavailable_id
+  )";
+
+$stmt = $conn->prepare($sql);
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+$stmt->bindParam(':day', $day, PDO::PARAM_STR);
+$stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
+$stmt->bindParam(':end_time', $end_time, PDO::PARAM_STR);
+$stmt->bindParam(':unavailable_id', $unavailable_id, PDO::PARAM_STR);
+
+//STEP 3
+$status = $stmt->execute();
+
+// STEP 4
+$stmt = null;
+$conn = null;
+
+// STEP 5
+return $status;
 
 }
 

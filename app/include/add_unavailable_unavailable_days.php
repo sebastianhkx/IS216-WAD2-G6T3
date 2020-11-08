@@ -2,19 +2,16 @@
 
 require_once 'common.php';
 
-$date=$_POST['date'];
-$description=$_POST['description'];
+$day=$_POST['day'];
 $end_time=$_POST['end_time'];
 $start_time=$_POST['start_time'];
-$title=$_POST['title'];
 // To edit when proper
 $user_id=$_POST['user_id'];
+$unavailable_id=$_POST['unavailable_id'];
 ////
-$repeatable=$_POST['repeatable'];
-$task_id=$_POST['task_id'];
 
 $dao = new HANDLERDAO();
-$status = $dao->add_task($task_id, $user_id,$date,$start_time,$end_time,$repeatable,$title,$description);
+$status = $dao->add_unavailable_unavailable_days($user_id, $day, $start_time, $end_time, $unavailable_id);
 
 if ($status) {
   echo json_encode(array("statusCode"=>200));
@@ -22,8 +19,6 @@ if ($status) {
 else {
   echo json_encode(array("statusCode"=>201));
 }
-
-
 
 
 ?>
