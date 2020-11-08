@@ -1,46 +1,49 @@
 
 <?php
     /* please search and add "schedule" in your telegram first */
+    require_once 'common.php';
 
-                                                                                                              
-    $date=$_POST['date'];
-    $description=$_POST['description'];
-    $end_time=$_POST['end_time'];
-    $start_time=$_POST['start_time'];
-    $title=$_POST['title'];
-    $user_id=$_POST['user_id'];
-    $location=$_POST['location'];
-    $completed = 0;
+    $connMgr = new ConnectionManager();
+    $conn = $connMgr->getConnection();
     
+    $sql = "SELECT * from event_list ";
 
-    date_default_timezone_set("Singapore");
-    $localdate = date("Y-m-d");
-    $localtime = date("H:i");
-    
- 
-    $msg = 'Thanks for using our app! This is your schedule information: User_id:'.$user_id.' Title:'.$title.' Date:'.$date.' Location:'.$location.' Start_time:'.$start_time.' End_time:'.$end_time.' Discription:'.$discription ;
+    $stmt = $conn->prepare($sql);
+
+    $stmt->execute();
+    $stmt->setFetchMode(PDO::FETCH_ASSOC); 
+    while ($row=$stmt->fetch()) {
+            $date = $row['date'];
+            $event_id = $row['event_id'];
+            $user_id= $row['user_id'];
+            $start_time =  $row['start_time'];
+            $end_time =  $row['end_time'];
+            $location=  $row['location'];
+            $title=  $row['title'];
+            $description=  $row['description'];
+            $completed =  $row['completed'];
+            
+    }
+
+   $msg = 'Thanks for using our app! This is your schedule information: User_id:'.$user_id.' Title:'.$title.' Date:'.$date.' Location:'.$location.' Start_time:'.$start_time.' End_time:'.$end_time.' Description:'.$description ;
 
    $botToken="1453127689:AAGeTdOsjUXuLfq9dIFioTUSy1HBJTQ4Sks";
    $chatId=817589572;
    $params=[
-       'chat_id'=>$chatId, 
-       'text'=>$msg,
-       
+           'chat_id'=>$chatId, 
+           'text'=>$msg,
+           
    ];
    $website='https://api.telegram.org/bot'.$botToken.'/sendMessage?'. http_build_query($params);
-   
-   $local = $localdate+" "+$localtime;
-   $input = $date+" "+$start_time;
-   list($year,$month,$day,$hour,$minute)=split ("[-: ]",$local);
-   list($year1,$month1,$day1,$hour1,$minute1)=split ("[-: ]",$input);
-   $seconds=mktime($hour,$minute,$month,$day,$year);
-   $seconds1=mktime($hour1,$minute1,$month1,$day1,$year1);
-   $sleep = $seconds1-$seconds;
-   sleep($sleep);
-   
-   echo file_get_contents($website);
+   file_get_contents($website);
 
 
+
+    
+
+
+    $stmt = null;
+    $conn = null;
  /* $ch = curl_init($website . '/sendMessage');
   curl_setopt($ch, CURLOPT_HEADER, false);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -49,5 +52,18 @@
   curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   $result = curl_exec($ch);
   curl_close($ch);
-  header("Refresh:0");*/
+  header("Refresh:0");
+   date_default_timezone_set("Singapore");
+    
+   $localdate = strtotime(date("Y-m-d"));
+   $localtime = strtotime(date("H:i:s"));
+   $date1 = strtotime($date);
+   $start_time1 = strtotime($start_time);
+   $end_time1 = strtotime($end_time);
+
+    if (($localdate >= $date1)&&($localtime >= $start_time1)&&($localtime <= $end_time1)){
+        echo "<script language=JavaScript> location.replace(location.href);</script>";
+       }
+   */
 ?>
+
