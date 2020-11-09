@@ -78,12 +78,12 @@ $username = $_SESSION['username'];
                 <v-list nav dense>
                     <v-list-item link>
                         <v-list-item-icon href="index.php">
-                            <v-icon>mdi-home</mdi-home>
+                            <v-icon>mdi-home
                             </v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Home</v-list-item-title>
                     </v-list-item>
-                    <v-list-item link>
+                    <v-list-item link href="Work_Management.php">
                         <v-list-item-icon>
                             <v-icon>mdi-folder</v-icon>
                         </v-list-item-icon>
@@ -106,11 +106,12 @@ $username = $_SESSION['username'];
 
             <v-main>
                 <!-- Alert confirmation when object is deleted!! -->
-                <v-dialog v-model="deleteCfmDialog" max-width="290">
+                <v-dialog v-model="deleteCfmDialog" max-width="280">
                     <v-card>
                         <v-card-title class="headline">
-                            {{deleteCfmDialogMsg}}
+                            Result:
                         </v-card-title>
+                        <v-card-text>{{deleteCfmDialogMsg}}</v-card-text>
                         <v-card-actions>
                             <v-spacer></v-spacer>
                             <v-btn color="green darken-1" text @click="reloadWindow">
@@ -149,13 +150,12 @@ $username = $_SESSION['username'];
                     <v-col cols="12" md="6">
                         <!-- Agenda part -->
                         <v-card color="rgb(0, 0, 0, 0.2)" dark style="margin-right:20px">
-                            <v-card-title class="white--text mt-8">
-                                <p class="ml-3">
+                        <v-card-title class="">
+                                <p class="ml-2">
                                     Your Agenda for Today:
                                 </p>
                             </v-card-title>
                             </v-img>
-
                             <v-card-text>
                                 <v-row>
                                     <v-col cols="12" md="6">
@@ -178,7 +178,7 @@ $username = $_SESSION['username'];
                                         <div class="font-weight-bold ml-8 mb-2">
                                             Events for today:
                                         </div>
-                                        <v-timeline height="10" align-top dense style="overflow: auto;">
+                                        <v-timeline max-height="10" align-top dense style="height:100px; overflow: auto;">
                                             <v-timeline-item v-for="agenda in agendas_events" small>
                                                 <div>
                                                     <div class="font-weight-normal">
@@ -199,6 +199,7 @@ $username = $_SESSION['username'];
                     <v-col>
                         <v-sheet height="128" elevation="3">
                             <v-toolbar flat>
+                                <v-icon large style="padding-right: 10px">mdi-calendar</v-icon>
                                 <h2>Calendar</h2>
                             </v-toolbar>
                             <v-toolbar flat>
@@ -246,7 +247,7 @@ $username = $_SESSION['username'];
                             </v-toolbar>
                         </v-sheet>
                         <v-sheet height="700">
-                            <v-calendar ref="calendar" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"></v-calendar>
+                            <v-calendar ref="calendar" first-time="06:00" v-model="focus" color="primary" :events="events" :event-color="getEventColor" :type="type" @click:event="showEvent" @click:more="viewDay" @click:date="viewDay"></v-calendar>
                             <v-menu v-model="selectedOpen" :close-on-content-click="false" :activator="selectedElement" offset-x>
                                 <v-card color="grey lighten-4" min-width="350px" flat>
                                     <v-toolbar :color="selectedEvent.color" dark>
@@ -256,7 +257,7 @@ $username = $_SESSION['username'];
                                         <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
                                         <v-spacer></v-spacer>
                                         <!-- model area -->
-                                        <v-dialog v-model="deleteDialog" persistent max-width="290">
+                                        <v-dialog v-model="deleteDialog" persistent max-width="280">
                                             <template v-slot:activator="{ on, attrs }">
                                                 <v-btn icon @click="deleteDialog = true">
                                                     <v-icon>mdi-trash-can</v-icon>
@@ -264,9 +265,9 @@ $username = $_SESSION['username'];
                                             </template>
                                             <v-card>
                                                 <v-card-title class="headline">
-                                                    Are you sure you want to delete:
+                                                    Warning:
                                                 </v-card-title>
-                                                <v-card-text>{{selectedEvent.name}}</v-card-text>
+                                                <v-card-text>Are you sure you want to delete: {{selectedEvent.name}}</v-card-text>
                                                 <v-card-actions>
                                                     <v-spacer></v-spacer>
                                                     <v-btn color="green darken-1" text @click="deleteObject">
@@ -280,6 +281,7 @@ $username = $_SESSION['username'];
                                         </v-dialog>
                                     </v-toolbar>
                                     <v-card-text>
+                                        <span v-if="selectedEvent.taskType=='event'"><b>Location: {{selectedEvent.location}}</b></span><br>
                                         <span v-html="selectedEvent.details"></span>
                                     </v-card-text>
                                     <v-card-actions>
@@ -477,7 +479,7 @@ $username = $_SESSION['username'];
         });
 
         function loadAgendaView() {
-            
+
         }
 
         function loadEvent() {
@@ -497,7 +499,7 @@ $username = $_SESSION['username'];
                             location: response[i].location,
                             color: "red lighten-2",
                             timed: true,
-                            details: response[i].description + " " + response[i].location,
+                            details: response[i].description,
                             id: response[i].event_id,
                             taskType: "event",
                         })
@@ -513,15 +515,26 @@ $username = $_SESSION['username'];
                             })
                         }
                     }
-                    //sort and filter the events
+
+                    //Sort and filter time event and convert (For agenda view)
+
                     function filterTime(event) {
                         return Number(event.startTime.split(":").join("")) > Number(fixedToday.toLocaleTimeString("en-GB").split(":").join(""));
+                    }
+
+                    function convertToAmPm(event) {
+                        var timeString = event.startTime;
+                        var H = +timeString.substr(0, 2);
+                        var h = H % 12 || 12;
+                        var ampm = (H < 12 || H === 24) ? " AM" : " PM";
+                        event.startTime = h + timeString.substr(2, 3) + ampm;
                     }
 
                     navApp.agendas_events.sort(function(a, b) {
                         return Number(a.startTime.split(":").join("")) - Number(b.startTime.split(":").join(""));
                     });
                     navApp.agendas_events = navApp.agendas_events.filter(filterTime);
+                    navApp.agendas_events.map(convertToAmPm);
                 }
             };
             loadReq.open("GET", "include/read_event.php", true);
@@ -741,16 +754,26 @@ $username = $_SESSION['username'];
                             }
 
                         }
-                        //sort and filter the task
-                        function filterTime(event) {
-                            return Number(event.startTime.split(":").join("")) > Number(fixedToday.toLocaleTimeString("en-GB").split(":").join(""));
-                        }
-
-                        navApp.agendas_tasks.sort(function(a, b) {
-                            return Number(a.startTime.split(":").join("")) - Number(b.startTime.split(":").join(""));
-                        });
-                        navApp.agendas_tasks = navApp.agendas_tasks.filter(filterTime);
                     }
+                    //sort and filter the task
+                    function filterTime(event) {
+                        return Number(event.startTime.split(":").join("")) > Number(fixedToday.toLocaleTimeString("en-GB").split(":").join(""));
+                    }
+
+                    function convertToAmPm(event) {
+                        var timeString = event.startTime;
+                        var H = +timeString.substr(0, 2);
+                        var h = H % 12 || 12;
+                        var ampm = (H < 12 || H === 24) ? " AM" : " PM";
+                        console.log(h + timeString.substr(2, 3) + ampm);
+                        return event.startTime = h + timeString.substr(2, 3) + ampm;
+                    }
+
+                    navApp.agendas_tasks.sort(function(a, b) {
+                        return Number(a.startTime.split(":").join("")) - Number(b.startTime.split(":").join(""));
+                    });
+                    navApp.agendas_tasks = navApp.agendas_tasks.filter(filterTime);
+                    navApp.agendas_tasks.map(convertToAmPm);
                 }
             };
             loadReq.open("GET", "include/read_task.php", true);
