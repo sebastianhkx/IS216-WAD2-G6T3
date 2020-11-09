@@ -1168,12 +1168,12 @@ public function get_unavailable_task_days($user_id, $day, $start_time, $end_time
     while( $row = $stmt->fetch() ) {
       $days_list[] =
           new DAYS_TASK(
-              $row['linked_id'],
+              $row['task_id'],
               $row['user_id'],
               $row['day'],
               $row['start_time'],
-              $row['end_time'],
-              $row['task_id']
+              $row['end_time']
+              
             );
     }
 
@@ -1260,12 +1260,12 @@ public function get_unavailable_unavailable_days($user_id, $day, $start_time, $e
     while( $row = $stmt->fetch() ) {
       $days_list[] =
           new DAYS_UNAVAILABLE(
-              $row['linked_id'],
+              $row['unavailable_id'],
               $row['user_id'],
               $row['day'],
               $row['start_time'],
-              $row['end_time'],
-              $row['unavailable_id']
+              $row['end_time']
+              
             );
     }
 

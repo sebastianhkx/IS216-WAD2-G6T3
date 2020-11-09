@@ -8,17 +8,13 @@ class DAYS_TASK {
     private $end_time;
     private $task_id;
 
-    public function __construct($linked_id, $user_id, $day, $start_time, $end_time, $task_id) {
-        $this->linked_id = $linked_id;
+    public function __construct($user_id, $day, $start_time, $end_time, $task_id) {
+        $this->task_id = $task_id;
         $this->user_id = $user_id;
         $this->day = $day;
         $this->start_time = $start_time;
         $this->end_time = $end_time;
-        $this->task_id = $task_id;
-    }
-
-    public function getLinkedID() {
-        return $this->linked_id;
+        
     }
 
     public function getUser() {
