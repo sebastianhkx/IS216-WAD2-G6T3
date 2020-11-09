@@ -20,7 +20,6 @@ $days_list = $dao->get_unavailable_task_days($user_id, $day, $start_time, $end_t
 $unavailable_days = [];
 foreach( $days_list as $day_object ) {
     $day = [];
-    $day["linked_id"] = $day_object->getLinkedID();
     $day["user_id"] = $day_object->getUser();
     $day["day"] = $day_object->getDay();
     $day["start_time"] = $day_object->getStartTime();
