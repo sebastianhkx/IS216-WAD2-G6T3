@@ -60,15 +60,15 @@ $username = $_SESSION['username'];
   <div class="">
 
     <div id="app">
-      <v-app style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);">
-        <v-navigation-drawer permanent app dark style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);" :mini-variant="mini">
+      <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+        <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title class="title">
                 Welcome back <?php echo $_SESSION['username'] ?>!
               </v-list-item-title>
               <v-list-item-subtitle>
-                subtext
+                {{goalDisplay}}
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
@@ -83,7 +83,13 @@ $username = $_SESSION['username'];
               </v-list-item-icon>
               <v-list-item-title>Home</v-list-item-title>
             </v-list-item>
-            <v-list-item link>
+            <v-list-item link href="GoalSetting.php">
+              <v-list-item-icon>
+                <v-icon>mdi-flag</v-icon>
+              </v-list-item-icon>
+              <v-list-item-title>Set a Goal!</v-list-item-title>
+            </v-list-item>
+            <v-list-item link href="Work_Management.php">
               <v-list-item-icon>
                 <v-icon>mdi-folder</v-icon>
               </v-list-item-icon>
@@ -91,13 +97,13 @@ $username = $_SESSION['username'];
             </v-list-item>
             <v-list-item link href="ScheduleVue.php">
               <v-list-item-icon>
-                <v-icon>mdi-account-multiple</v-icon>
+                <v-icon>mdi-calendar</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Scheduler</v-list-item-title>
             </v-list-item>
             <v-list-item href="model/logout_process.php">
               <v-list-item-icon>
-                <v-icon>mdi-star</v-icon>
+                <v-icon>mdi-logout-variant</v-icon>
               </v-list-item-icon>
               <v-list-item-title>Logout</v-list-item-title>
             </v-list-item>
@@ -105,8 +111,8 @@ $username = $_SESSION['username'];
         </v-navigation-drawer>
 
         <v-main>
-          <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.1)" dark>
-            <v-toolbar flat color="rgb(0, 0, 0, 0.2)">
+          <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.5)" dark>
+            <v-toolbar flat color="rgb(0, 0, 0, 0.8)">
               <!-- <v-toolbar flat color="light-blue accent-2"> -->
               <v-icon>mdi-account</v-icon>
               <v-toolbar-title class="font-weight-light">
@@ -228,7 +234,7 @@ $username = $_SESSION['username'];
                     </v-col>
                     <v-col cols="12" md="6" v-if="displayRecommended">
                       <v-container>
-                        <v-card class="mx-auto" max-width="400">
+                        <v-card class="mx-auto" max-width="400" style="background: rgba(0,0,0,0.2);">
                           <v-list-item two-line>
                             <v-list-item-content>
                               <v-list-item-title class="headline">
@@ -252,6 +258,7 @@ $username = $_SESSION['username'];
                               <img class="text-xs-center" src="img/car.png"> <br>
                             </v-row>
                             <v-btn align="center" class="text-xs-center" @click="callTime">Check Time</v-btn>
+                            <v-checkbox v-model="autoTimeModifyCheck" label="Would you like to automatically modify the start time to accomodate travel time?" value="true"></v-checkbox>
                           </v-card-text>
 
                         </v-card>
@@ -283,7 +290,7 @@ $username = $_SESSION['username'];
                     <v-text-field v-model="tEndTimeInput" type="time" label="End Time" :rules="fieldRules" required></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-textarea v-model="tDescription"  :counter="200" :rules="descRules" label="Description:" placeholder="Add your description here!">
+                    <v-textarea v-model="tDescription" :counter="200" :rules="descRules" label="Description:" placeholder="Add your description here!">
                     </v-textarea>
                   </v-col>
                   <v-btn cols="12" md="12" color="success" block @click='eValidateSubmit' :disabled="!scheduleForm">Submit
@@ -347,9 +354,14 @@ $username = $_SESSION['username'];
           errorSubmitMessage: '',
           successAlert: false,
           successMessage: '',
+          autoTimeModifyCheck: 'false',
+          goalDisplay: ''
         },
         computed: {
 
+        },
+        created: function() {
+          checkExist();
         },
         methods: {
           getDate: function() {
@@ -519,7 +531,7 @@ $username = $_SESSION['username'];
     function getTime() {
 
       //timing
-      var time_restricted = ''; 
+      var time_restricted = '';
 
       //get location
       function getLocation() {
@@ -558,12 +570,12 @@ $username = $_SESSION['username'];
             console.log(totalTime / 2);
             FormApp.recTimeTaken = new Date((totalTime / 2) * 1000).toISOString().substr(11, 8);
             var date2 = new Date((totalTime / 2) * 1000).toISOString().substr(11, 8);
-            
+
             console.log(FormApp.estartTimeInput);
             console.log(date2);
-            
+
             if (FormApp.estartTimeInput !== "") {
-              if (confirm("Do you want to change your start time to accomodate your timing")) {
+              if (FormApp.autoTimeModifyCheck == "true") {
 
 
                 var date1 = FormApp.estartTimeInput + ":00";
@@ -573,37 +585,31 @@ $username = $_SESSION['username'];
                 var m1 = date1_array[1] * 60 * 1000;
                 var s1 = date1_array[2] * 1000;
 
-                var d1 = new Date(h1+ m1 + s1);
+                var d1 = new Date(h1 + m1 + s1);
 
                 var date2_array = date2.split(":");
                 var h2 = date2_array[0] * 3600 * 1000;
                 var m2 = date2_array[1] * 60 * 1000;
                 var s2 = date2_array[2] * 1000;
 
-                var d2 = new Date(h2+ m2 + s2);
+                var d2 = new Date(h2 + m2 + s2);
 
-                var d3 = new Date(d1-d2-27000000);
-
-                console.log(d1);
-                console.log(d2);
-                console.log(d3);
+                var d3 = new Date(d1 - d2 - 27000000);
 
                 var new_time = d3.toTimeString();
-                var new_time = new_time.slice(0,5);
+                var new_time = new_time.slice(0, 5);
                 console.log(new_time);
 
                 FormApp.estartTimeInput = new_time;
 
                 FormApp.successMessage = "The timing has been changed for you";
                 FormApp.successAlert = true;
-                  
-                } else {
-                  FormApp.errorSubmitMessage = "There is no change in your current timing";
-                  FormApp.submitErrorAlert = true;
-                }
-            }
 
-            else{
+              } else {
+                FormApp.errorSubmitMessage = "There is no change in your current timing";
+                FormApp.submitErrorAlert = true;
+              }
+            } else {
 
             }
 
@@ -630,7 +636,7 @@ $username = $_SESSION['username'];
 
     function submitForm() {
 
-      
+
       var taskType = '';
       FormApp.submitErrorAlert = false;
       FormApp.successAlert = false;
@@ -665,73 +671,71 @@ $username = $_SESSION['username'];
 
           $(document).ready(function() {
 
-              $.ajax({
-                url: "./include/read_event_time.php",
-                type: "POST",
-                data: {
+            $.ajax({
+              url: "./include/read_event_time.php",
+              type: "POST",
+              data: {
                 date: date,
-                end_time: end_time,	
-                start_time: start_time,	
-                user_id: user_id			
-                },
+                end_time: end_time,
+                start_time: start_time,
+                user_id: user_id
+              },
 
-                cache: false,
-                success: function(dataResult){
+              cache: false,
+              success: function(dataResult) {
 
-                  var dataResult = JSON.parse(dataResult);
+                var dataResult = JSON.parse(dataResult);
 
-                  if(dataResult.counter > 0 ){
+                if (dataResult.counter > 0) {
 
-                    alert("There is a clash with another schedule of yours");
+                  alert("There is a clash with another schedule of yours");
 
-                  }
+                } else {
 
-                  else{
+                  $.ajax({
+                    url: "./include/add_event.php",
+                    type: "POST",
+                    data: {
+                      date: date,
+                      description: description,
+                      end_time: end_time,
+                      start_time: start_time,
+                      location: location,
+                      title: title,
+                      user_id: user_id
+                    },
 
-                    $.ajax({
-                      url: "./include/add_event.php",
-                      type: "POST",
-                      data: {
-                        date: date,
-                        description: description,
-                        end_time: end_time,
-                        start_time: start_time,
-                        location: location,
-                        title: title,
-                        user_id: user_id
-                      },
+                    cache: false,
+                    success: function(dataResult) {
 
-                      cache: false,
-                      success: function(dataResult) {
+                      var dataResult = JSON.parse(dataResult);
 
-                        var dataResult = JSON.parse(dataResult);
+                      if (dataResult.statusCode == 200) {
 
-                        if (dataResult.statusCode == 200) {
+                        FormApp.successMessage = "Data Successfully added!";
+                        FormApp.successAlert = true;
 
-                          FormApp.successMessage = "Data Successfully added!";
-                          FormApp.successAlert = true;
-
-                        } else if (dataResult.statusCode == 201) {
-                          FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
-                          FormApp.submitErrorAlert = true;
-                        }
-
+                      } else if (dataResult.statusCode == 201) {
+                        FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                        FormApp.submitErrorAlert = true;
                       }
 
-                    });
+                    }
 
-                  }
+                  });
 
-                }  
+                }
+
+              }
 
 
-              });
-              
+            });
+
           });
 
-            
 
-          
+
+
         }
 
       } else {
@@ -788,8 +792,8 @@ $username = $_SESSION['username'];
                     FormApp.successAlert = true;
 
                   } else if (dataResult.statusCode == 201) {
-                      FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
-                      FormApp.submitErrorAlert = true;
+                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                    FormApp.submitErrorAlert = true;
                   }
 
                 }
@@ -798,7 +802,7 @@ $username = $_SESSION['username'];
 
             });
 
-          }else {
+          } else {
 
             var date = FormApp.tDateInput;
             var description = FormApp.tDescription;
@@ -837,8 +841,8 @@ $username = $_SESSION['username'];
                     FormApp.successAlert = true;
 
                   } else if (dataResult.statusCode == 201) {
-                      FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
-                      FormApp.submitErrorAlert = true;
+                    FormApp.errorSubmitMessage = "Error occured! The page returned 201 Status Code!";
+                    FormApp.submitErrorAlert = true;
                   }
 
                 }
@@ -852,7 +856,49 @@ $username = $_SESSION['username'];
         }
       }
 
-      
+
+    }
+
+    function checkExist() {
+      var currentDate = getTodayDate();
+      var formatType = "read";
+      var user_id = '<?php echo $id; ?>';
+
+      $.ajax({
+        url: "./include/process_goal.php",
+        type: "POST",
+        data: {
+          type: formatType,
+          date: currentDate,
+          user_id: user_id
+        },
+
+        cache: false,
+        success: function(dataResult) {
+
+          var dataResult = JSON.parse(dataResult);
+
+          if (dataResult.length > 0) {
+            //content exists!!
+            FormApp.goalDisplay = dataResult[0].description;
+          } else {
+            FormApp.goalDisplay = "No goal yet! Set one now!";
+          }
+
+        }
+
+      });
+
+    }
+
+    function getTodayDate() {
+      var d = new Date();
+      var date = d.getDate();
+      var month = d.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+      var year = d.getFullYear();
+
+      var dateStr = year + "-" + month + "-" + date;
+      return dateStr;
     }
 
     function validateTimer(start, end) {
@@ -864,10 +910,6 @@ $username = $_SESSION['username'];
         return true;
       }
     }
-
-
-
-
   </script>
 
 
