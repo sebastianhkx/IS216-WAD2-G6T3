@@ -27,7 +27,8 @@ class UserDAO{
 
             $userObject = new User($row['id'], 
                                     $row['username'], 
-                                    $row['passwordHash']
+                                    $row['passwordHash'],
+                                    $row['teleHandle']
                             );
         }
 
@@ -39,20 +40,21 @@ class UserDAO{
 
     //Register user!!
 
-    public function register($username, $hashed_password) {
+    public function register($username, $hashed_password, $teleHandle) {
 
         // Step 1 - Connect to Database
         $connMgr = new ConnectionManager();
         $pdo = $connMgr->getConnection();
 
         // Step 2 - Prepare SQL
-        $sql = "INSERT INTO userbase (username, passwordHash) VALUES (
-                    :username, :passwordHash
+        $sql = "INSERT INTO userbase (username, passwordHash, teleHandle) VALUES (
+                    :username, :passwordHash, :teleHandle
                 )
         ";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':username', $username, PDO::PARAM_STR);
         $stmt->bindParam(':passwordHash', $hashed_password, PDO::PARAM_STR);
+        $stmt->bindParam(':teleHandle', $teleHandle, PDO::PARAM_STR);
         
         // Step 3 - Execute SQL
         $result = $stmt->execute();
