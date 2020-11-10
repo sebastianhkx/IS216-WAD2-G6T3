@@ -7,7 +7,8 @@ use scheduler;
 CREATE TABLE if not exists userbase (
     id integer auto_increment primary key,
     username varchar(200),
-    passwordHash varchar(1000)
+    passwordHash varchar(1000),
+    teleHandle varchar(200)
 );
 
 CREATE TABLE if not exists `goal_table` (
@@ -28,6 +29,9 @@ CREATE TABLE if not exists `event_list` (
   `description` text NOT NULL,
   `completed` boolean NOT NULL
 )ENGINE=InnoDB DEFAULT CHARSET= utf8mb4;
+
+
+
 
 CREATE TABLE if not exists `task_list` (
   `task_id` integer auto_increment primary key,
