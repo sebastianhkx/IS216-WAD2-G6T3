@@ -8,6 +8,7 @@ if (!isset($_SESSION['userid'])) {
 }
 
 $id = $_SESSION['userid'];
+$chat_id = $_SESSION['chat_id'];
 $username = $_SESSION['username'];
 ?>
 
@@ -61,14 +62,14 @@ $username = $_SESSION['username'];
 
     <div id="mainApp">
         <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
-            <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2)" :mini-variant="mini">
+            <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
                 <v-list-item>
                     <v-list-item-content>
                         <v-list-item-title class="title">
                             Welcome back <?php echo $_SESSION['username'] ?>!
                         </v-list-item-title>
                         <v-list-item-subtitle>
-                            subtext
+                            {{goalDisplay}}
                         </v-list-item-subtitle>
                     </v-list-item-content>
                 </v-list-item>
@@ -76,12 +77,18 @@ $username = $_SESSION['username'];
                 <v-divider></v-divider>
 
                 <v-list nav dense>
-                    <v-list-item link>
-                        <v-list-item-icon href="index.php">
-                            <v-icon>mdi-home
+                    <v-list-item link href="index.php">
+                        <v-list-item-icon>
+                            <v-icon>mdi-home</mdi-home>
                             </v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Home</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item link href="GoalSetting.php">
+                        <v-list-item-icon>
+                            <v-icon>mdi-flag</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-title>Set a Goal!</v-list-item-title>
                     </v-list-item>
                     <v-list-item link href="Work_Management.php">
                         <v-list-item-icon>
@@ -91,13 +98,13 @@ $username = $_SESSION['username'];
                     </v-list-item>
                     <v-list-item link href="ScheduleVue.php">
                         <v-list-item-icon>
-                            <v-icon>mdi-account-multiple</v-icon>
+                            <v-icon>mdi-calendar</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Scheduler</v-list-item-title>
                     </v-list-item>
-                    <v-list-item href="include/logout_process.php">
+                    <v-list-item href="model/logout_process.php">
                         <v-list-item-icon>
-                            <v-icon>mdi-star</v-icon>
+                            <v-icon>mdi-logout-variant</v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Logout</v-list-item-title>
                     </v-list-item>
@@ -121,14 +128,29 @@ $username = $_SESSION['username'];
                     </v-card>
                 </v-dialog>
 
+                <!-- goal setting -->
+                <v-card color="rgba(0,0,0,0.4)" style="margin-left:20px; margin-right:20px" dark>
+                        
+                        <v-card-title>
+                            <v-icon>mdi-flag</v-icon>
+                              Today's Goal:
+                        </v-card-title>
+                        <v-card-text color="white" class="headline">{{goalDisplay}}</v-card-text>
+                        <v-card-actions>
+                            <v-btn v-if="goalDisplay=='No goal yet! Set one now!'" text href="goalSetting.php">
+                                Modify Goal
+                            </v-btn>
+                        </v-card-actions>
+                </v-card>
+
                 <!-- Introduction part -->
                 <v-row>
                     <v-col cols="12" md="6">
-                        <v-card max-width="500" style="margin:20px" color="rgb(0, 0, 0, 0.2)" dark>
+                        <v-card max-width="500" style="margin:20px" color="rgb(0, 0, 0, 0.4)" dark>
                             <v-list-item two-line>
                                 <v-list-item-content>
                                     <v-list-item-title class="headline">
-                                        Welcome! name!
+                                        Welcome <?php echo $_SESSION['username'] ?>!
                                     </v-list-item-title>
                                     <v-list-item-subtitle>{{dailyReport}}, {{weatherReport}}</v-list-item-subtitle>
 
@@ -149,8 +171,8 @@ $username = $_SESSION['username'];
                     </v-col>
                     <v-col cols="12" md="6">
                         <!-- Agenda part -->
-                        <v-card color="rgb(0, 0, 0, 0.2)" dark style="margin-right:20px">
-                        <v-card-title class="">
+                        <v-card color="rgb(0, 0, 0, 0.4)" dark style="margin-right:20px">
+                            <v-card-title class="">
                                 <p class="ml-2">
                                     Your Agenda for Today:
                                 </p>
@@ -163,7 +185,7 @@ $username = $_SESSION['username'];
                                             Task for today:
                                         </div>
                                         <v-timeline max-height="10" align-top dense style="padding: 10px; height:100px; overflow: auto;">
-                                            <v-timeline-item v-for="agenda in agendas_tasks" small>
+                                            <v-timeline-item v-for="agenda in agendas_tasks" small color="green">
                                                 <div>
                                                     <div class="font-weight-normal">
                                                         <strong>{{ agenda.startTime }}</strong>
@@ -179,7 +201,7 @@ $username = $_SESSION['username'];
                                             Events for today:
                                         </div>
                                         <v-timeline max-height="10" align-top dense style="height:100px; overflow: auto;">
-                                            <v-timeline-item v-for="agenda in agendas_events" small>
+                                            <v-timeline-item v-for="agenda in agendas_events" small color="red">
                                                 <div>
                                                     <div class="font-weight-normal">
                                                         <strong>{{ agenda.startTime }}</strong>
@@ -311,6 +333,8 @@ $username = $_SESSION['username'];
             vuetify: new Vuetify(),
             data: {
                 drawer: true,
+                goalDisplay: '',
+                goalCheck: false, // Check if a goal exist
                 dailyReport: '',
                 weatherReport: '',
                 weatherImage: '',
@@ -366,6 +390,7 @@ $username = $_SESSION['username'];
                     loadEvent();
                     loadTask();
                     loadUnavailable();
+                    checkExist();
 
                     console.log("Ive sroted");
                 },
@@ -477,10 +502,6 @@ $username = $_SESSION['username'];
                 },
             }
         });
-
-        function loadAgendaView() {
-
-        }
 
         function loadEvent() {
             var loadReq = new XMLHttpRequest();
@@ -1010,8 +1031,52 @@ $username = $_SESSION['username'];
             getLocation();
         }
 
+        function checkExist() {
+            var currentDate = getTodayDate();
+            var formatType = "read";
+            var user_id = '<?php echo $id; ?>';
+
+            $.ajax({
+                url: "./include/process_goal.php",
+                type: "POST",
+                data: {
+                    type: formatType,
+                    date: currentDate,
+                    user_id: user_id
+                },
+
+                cache: false,
+                success: function(dataResult) {
+
+                    var dataResult = JSON.parse(dataResult);
+
+                    if (dataResult.length > 0) {
+                        //content exists!!
+                        navApp.goalDisplay = dataResult[0].description;
+                        navApp.goalCheck = true;
+                    } else {
+                        navApp.goalDisplay = "No goal yet! Set one now!";
+                        navApp.goalCheck = false;
+                    }
+
+                }
+
+            });
+
+        }
+
 
         function getCorrectDate(d) {
+            var date = d.getDate();
+            var month = d.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+            var year = d.getFullYear();
+
+            var dateStr = year + "-" + month + "-" + date;
+            return dateStr;
+        }
+
+        function getTodayDate() {
+            var d = new Date();
             var date = d.getDate();
             var month = d.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
             var year = d.getFullYear();
