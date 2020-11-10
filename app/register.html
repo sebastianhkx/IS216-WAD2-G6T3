@@ -54,6 +54,9 @@
                             <v-text-field type="password" v-model="rPassword" :rules="pRules" label="Repeat Password:"
                                 required class="compStyle"></v-text-field>
 
+                            <v-text-field v-model="tele_handle" :rules="teleRules" label="Telegram Handle:"
+                                required class="compStyle"></v-text-field>
+
                             <v-btn class="compStyle" color="success" @click='eValidateSubmit' :disabled="!loginForm">
                                 Register
                             </v-btn>
@@ -87,9 +90,12 @@
             username: '',
             passwordRules: [v => !!v || 'Password is required',
             v => (v && v.length > 7) || 'Password must be longer than 7 characters'
-
             ],
+            teleRules: [v => !!v || 'Username is required'],
+            
             fieldRules: [v => !!v || 'Username is required'],
+
+            tele_handle: '',
             password: '',
             rPassword: '',
             errorAlert: false,
@@ -123,26 +129,74 @@
 
     )
 
+
+
     //Register user into the database
 
     function registerUser() {
-        var loadReq = new XMLHttpRequest();
-        loadReq.onreadystatechange = function () {
+
+        alert("Please Follow the Instruction Carefully");
+        alert("Add the bot @scheduler34_bot");
+        alert("Send /start to the bot");
+
+        //retrieve telehandler
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                response = this.responseText;
-                if (response.includes("has successfully registered!") == true){
-                    FormApp.successMsg = true;
-                    setInterval(function () {
-                        window.location.href = "login.html";
-                    }, 3000);
-                } else {
-                    FormApp.errorAlert = true;
-                    FormApp.errorMsg = response;
+                var obj = JSON.parse(this.response);
+                console.log(obj);
+                
+                for (let index = 0; index < obj.result.length; index++) {
+                    if (FormApp.tele_handle == obj.result[index].message.chat.username) {
+                        var result = obj.result[index].message.chat.id;
+                        console.log(result);
+                    }  
                 }
+
+                // if there is tele_id 
+
+                if (result != '') {
+            
+                var loadReq = new XMLHttpRequest();
+                loadReq.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    response = this.responseText;
+                    if (response.includes("has successfully registered!") == true){
+                        FormApp.successMsg = true;
+                        setInterval(function () {
+                            window.location.href = "login.html";
+                        }, 3000);
+                    } else {
+                        FormApp.errorAlert = true;
+                        FormApp.errorMsg = response;
+                    }
+                }
+
+                };
+                loadReq.open("POST", "include/register_process.php", true);
+                loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password + "&tele_handle="+ result);
+                }
+
+            else{
+
+                FormApp.errorAlert = true;
+                FormApp.errorMsg = "It appears that your telehandle does not exist! Please follow the steps again!";
+
+        }
+
+
+                
+                
             }
+
+
         };
-        loadReq.open("POST", "include/register_process.php", true);
-        loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password);
+
+        xmlhttp.open("GET", "https://api.telegram.org/bot1421065755:AAFKUQFBFs2KAr53AyrHhAlE-xMpgNSHv6s/getUpdates", true);
+        xmlhttp.send();
+
+
+
     }
 </script>
