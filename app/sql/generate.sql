@@ -4,6 +4,13 @@ create database scheduler;
 
 use scheduler;
 
+CREATE TABLE if not exists `goal_table` (
+  `goal_id` integer auto_increment primary key,
+  `user_id` integer NOT NULL,
+  `date` date NOT NULL,
+  `description` text NOT NULL,
+)ENGINE=InnoDB DEFAULT CHARSET= utf8mb4;
+
 CREATE TABLE if not exists `event_list` (
   `event_id` integer auto_increment primary key,
   `user_id` integer NOT NULL,
