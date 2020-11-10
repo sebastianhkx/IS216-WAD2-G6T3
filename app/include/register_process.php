@@ -5,12 +5,13 @@ header("Content-Type: application/json; charset=UTF-8");
 
 require_once 'common.php';
 
-if( trim($_POST['username']) != '' && trim($_POST['password']) ) {
+if( trim($_POST['username']) != '' && trim($_POST['password']) && trim($_POST['username']) != '' ) {
 
     // All 3 form input fields are filled out!
     // Retrieve form input values
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $tele_handle = $_POST['tele_handle'];
 
     // If passwords do not match:    
   //  if($password !== $retype_password){
@@ -34,7 +35,7 @@ if( trim($_POST['username']) != '' && trim($_POST['password']) ) {
     }
 
     //If it's a success, register user!
-    $register_result = $dao->register($username, $hashedPass);
+    $register_result = $dao->register($username, $hashedPass, $tele_handle);
 
 
     // If registration in Account table was SUCCESSFUL
