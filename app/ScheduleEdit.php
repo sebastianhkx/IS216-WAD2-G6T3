@@ -68,15 +68,15 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
     <div class="">
 
         <div id="app">
-            <v-app style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);">
-                <v-navigation-drawer permanent app dark style="background: linear-gradient(90deg, #00d2ff 0%, #3a47d5 100%);" :mini-variant="mini">
+            <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+                <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
                     <v-list-item>
                         <v-list-item-content>
                             <v-list-item-title class="title">
                                 Welcome back <?php echo $_SESSION['username'] ?>!
                             </v-list-item-title>
                             <v-list-item-subtitle>
-                                subtext
+                                {{goalDisplay}}
                             </v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
@@ -91,7 +91,13 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                             </v-list-item-icon>
                             <v-list-item-title>Home</v-list-item-title>
                         </v-list-item>
-                        <v-list-item link>
+                        <v-list-item link href="GoalSetting.php">
+                            <v-list-item-icon>
+                                <v-icon>mdi-flag</v-icon>
+                            </v-list-item-icon>
+                            <v-list-item-title>Set a Goal!</v-list-item-title>
+                        </v-list-item>
+                        <v-list-item link href="Work_Management.php">
                             <v-list-item-icon>
                                 <v-icon>mdi-folder</v-icon>
                             </v-list-item-icon>
@@ -99,13 +105,13 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                         </v-list-item>
                         <v-list-item link href="ScheduleVue.php">
                             <v-list-item-icon>
-                                <v-icon>mdi-account-multiple</v-icon>
+                                <v-icon>mdi-calendar</v-icon>
                             </v-list-item-icon>
                             <v-list-item-title>Scheduler</v-list-item-title>
                         </v-list-item>
                         <v-list-item href="model/logout_process.php">
                             <v-list-item-icon>
-                                <v-icon>mdi-star</v-icon>
+                                <v-icon>mdi-logout-variant</v-icon>
                             </v-list-item-icon>
                             <v-list-item-title>Logout</v-list-item-title>
                         </v-list-item>
@@ -113,8 +119,8 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                 </v-navigation-drawer>
 
                 <v-main>
-                    <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.1)" dark>
-                        <v-toolbar flat color="rgb(0, 0, 0, 0.2)">
+                    <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.5)" dark>
+                        <v-toolbar flat color="rgb(0, 0, 0, 0.8)">
                             <!-- <v-toolbar flat color="light-blue accent-2"> -->
                             <v-icon>mdi-account</v-icon>
                             <v-toolbar-title class="font-weight-light">
@@ -236,7 +242,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                                         </v-col>
                                         <v-col cols="12" md="6" v-if="displayRecommended">
                                             <v-container>
-                                                <v-card class="mx-auto" max-width="400">
+                                                <v-card class="mx-auto" max-width="400" style="background: rgba(0,0,0,0.2);">
                                                     <v-list-item two-line>
                                                         <v-list-item-content>
                                                             <v-list-item-title class="headline">
@@ -260,6 +266,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                                                             <img class="text-xs-center" src="img/car.png"> <br>
                                                         </v-row>
                                                         <v-btn align="center" class="text-xs-center" @click="callTime">Check Time</v-btn>
+                                                        <v-checkbox v-model="autoTimeModifyCheck" label="Would you like to automatically modify the start time to accomodate travel time?" value="true"></v-checkbox>
                                                     </v-card-text>
 
                                                 </v-card>
@@ -291,7 +298,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                                         <v-text-field v-model="tEndTimeInput" type="time" label="End Time" :rules="fieldRules" required></v-text-field>
                                     </v-col>
                                     <v-col cols="12">
-                                        <v-textarea v-model="tDescription"  :counter="200" :rules="descRules" label="Description:" placeholder="Add your description here!">
+                                        <v-textarea v-model="tDescription" :counter="200" :rules="descRules" label="Description:" placeholder="Add your description here!">
                                         </v-textarea>
                                     </v-col>
                                     <v-btn cols="12" md="12" color="success" block @click='eValidateSubmit' :disabled="!scheduleForm">Edit Entry
@@ -356,9 +363,14 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                     successAlert: false,
                     successMessage: '',
                     descRules: [v => v.length <= 200 || 'Description must be less than 200 characters'],
+                    autoTimeModifyCheck: 'false',
+                    goalDisplay: ''
                 },
                 computed: {
 
+                },
+                created: function() {
+                    checkExist();
                 },
                 methods: {
                     getDate: function() {
@@ -388,31 +400,32 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
             }
 
         );
+        //PHP function to echo a function if a get request is properly sent!
+        <?php
 
-        <?php 
-
-            function emptStringCheck($text) {
-              if($text == 'undefined'){
-                  return '';
-              }  else {
-                  return $text;
-              }
-            };
-
-            //Call function if an edit function is called!!!
-            if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
-                $itemid = $_GET['itemid'];
-                $taskType = $_GET['taskType'];
-                $title = $_GET['title'];
-                $startTime = $_GET['startTime'];
-                $endTime = $_GET['endTime'];
-                $location = emptStringCheck($_GET['location']);
-                $date = $_GET['date'];
-                $description = emptStringCheck($_GET['description']);
-                $repeatable = $_GET['repeatable'];
-
-                echo "loadEdit(\"$itemid\", \"$taskType\", \"$title\", \"$date\", \"$startTime\", \"$endTime\", \"$location\", \"$description\", \"$repeatable\");";
+        function emptStringCheck($text)
+        {
+            if ($text == 'undefined') {
+                return '';
+            } else {
+                return $text;
             }
+        };
+
+        //Call function if an edit function is called!!!
+        if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
+            $itemid = $_GET['itemid'];
+            $taskType = $_GET['taskType'];
+            $title = $_GET['title'];
+            $startTime = $_GET['startTime'];
+            $endTime = $_GET['endTime'];
+            $location = emptStringCheck($_GET['location']);
+            $date = $_GET['date'];
+            $description = emptStringCheck($_GET['description']);
+            $repeatable = $_GET['repeatable'];
+
+            echo "loadEdit(\"$itemid\", \"$taskType\", \"$title\", \"$date\", \"$startTime\", \"$endTime\", \"$location\", \"$description\", \"$repeatable\");";
+        }
         ?>
 
         function loadEdit(itemid, tasktype, title, date, startTime, endTime, location, description, repeatable) {
@@ -613,6 +626,46 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                         }
                         console.log(totalTime / 2);
                         FormApp.recTimeTaken = new Date((totalTime / 2) * 1000).toISOString().substr(11, 8);
+                        var date2 = new Date((totalTime / 2) * 1000).toISOString().substr(11, 8);
+
+                        if (FormApp.estartTimeInput !== "") {
+                            if (FormApp.autoTimeModifyCheck == "true") {
+
+
+                                var date1 = FormApp.estartTimeInput + ":00";
+                                console.log(date1);
+                                var date1_array = date1.split(":");
+                                var h1 = date1_array[0] * 3600 * 1000;
+                                var m1 = date1_array[1] * 60 * 1000;
+                                var s1 = date1_array[2] * 1000;
+
+                                var d1 = new Date(h1 + m1 + s1);
+
+                                var date2_array = date2.split(":");
+                                var h2 = date2_array[0] * 3600 * 1000;
+                                var m2 = date2_array[1] * 60 * 1000;
+                                var s2 = date2_array[2] * 1000;
+
+                                var d2 = new Date(h2 + m2 + s2);
+
+                                var d3 = new Date(d1 - d2 - 27000000);
+
+                                var new_time = d3.toTimeString();
+                                var new_time = new_time.slice(0, 5);
+                                console.log(new_time);
+
+                                FormApp.estartTimeInput = new_time;
+
+                                FormApp.successMessage = "The timing has been changed for you";
+                                FormApp.successAlert = true;
+
+                            } else {
+                                FormApp.errorSubmitMessage = "There is no change in your current timing";
+                                FormApp.submitErrorAlert = true;
+                            }
+                        } else {
+
+                        }
 
                     }
                 }
@@ -833,6 +886,48 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
 
                 }
             }
+        }
+
+        function checkExist() {
+            var currentDate = getTodayDate();
+            var formatType = "read";
+            var user_id = '<?php echo $id; ?>';
+
+            $.ajax({
+                url: "./include/process_goal.php",
+                type: "POST",
+                data: {
+                    type: formatType,
+                    date: currentDate,
+                    user_id: user_id
+                },
+
+                cache: false,
+                success: function(dataResult) {
+
+                    var dataResult = JSON.parse(dataResult);
+
+                    if (dataResult.length > 0) {
+                        //content exists!!
+                        FormApp.goalDisplay = dataResult[0].description;
+                    } else {
+                        FormApp.goalDisplay = "No goal yet! Set one now!";
+                    }
+
+                }
+
+            });
+
+        }
+
+        function getTodayDate() {
+            var d = new Date();
+            var date = d.getDate();
+            var month = d.getMonth() + 1; // Since getMonth() returns month from 0-11 not 1-12
+            var year = d.getFullYear();
+
+            var dateStr = year + "-" + month + "-" + date;
+            return dateStr;
         }
 
         function validateTimer(start, end) {
