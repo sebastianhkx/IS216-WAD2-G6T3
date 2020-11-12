@@ -56,7 +56,6 @@ class HANDLERDAO {
 
 
 
-
   public function get_event(){
 
 
@@ -462,7 +461,7 @@ public function get_task(){
 }
 
 
-public function add_task($task_id, $user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
+public function add_task($user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
 
   // STEP 1
   $connMgr = new ConnectionManager();
@@ -470,7 +469,6 @@ public function add_task($task_id, $user_id, $date, $start_time, $end_time, $rep
 
   $sql = "INSERT INTO task_list
   (
-      task_id,
       user_id, 
       date, 
       start_time, 
@@ -481,7 +479,6 @@ public function add_task($task_id, $user_id, $date, $start_time, $end_time, $rep
   )
   VALUES
   (
-      :task_id,
       :user_id,
       :date,
       :start_time,
@@ -491,7 +488,6 @@ public function add_task($task_id, $user_id, $date, $start_time, $end_time, $rep
       :description
   )";
   $stmt = $conn->prepare($sql);
-  $stmt->bindParam(':task_id', $task_id, PDO::PARAM_STR);
   $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
   $stmt->bindParam(':date', $date, PDO::PARAM_STR);
   $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
@@ -728,6 +724,50 @@ public function edit_task_data($user_id, $task_id ,$date, $start_time, $end_time
 
     // STEP 5
     return $status;
+
+}
+
+public function get_task_by_date_time($date, $user_id, $currentTime){
+  $connMgr = new ConnectionManager();
+  $conn = $connMgr->getConnection();
+
+  // STEP 2
+
+  $sql = "SELECT * from task_list 
+          where DATE between :date and :date AND user_id = :user_id
+          AND start_time < :currentTime AND end_time > :currentTime";
+
+  $stmt = $conn->prepare($sql);
+  $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+  $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+  $stmt->bindParam(':currentTime', $currentTime, PDO::PARAM_STR);
+
+  // STEP 3
+  $stmt->execute();
+  $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+  // STEP 4
+  $task_list = [];
+  while( $row = $stmt->fetch() ) {
+    $task_list[] =
+        new TASK(
+            $row['task_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+  }
+
+  // STEP 5
+  $stmt = null;
+  $conn = null;
+
+  // STEP 6
+  return $task_list;
 
 }
 
@@ -1325,5 +1365,3 @@ return $status;
 
 
 }
-
-?>
