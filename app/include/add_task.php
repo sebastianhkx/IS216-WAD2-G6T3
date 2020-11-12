@@ -11,10 +11,11 @@ $title=$_POST['title'];
 $user_id=$_POST['user_id'];
 ////
 $repeatable=$_POST['repeatable'];
-$task_id=$_POST['task_id'];
 
 $dao = new HANDLERDAO();
-$status = $dao->add_task($task_id, $user_id,$date,$start_time,$end_time,$repeatable,$title,$description);
+$status = $dao->add_task($user_id,$date,$start_time,$end_time,$repeatable,$title,$description);
+
+var_dump($_POST);
 
 if ($status) {
   echo json_encode(array("statusCode"=>200));
