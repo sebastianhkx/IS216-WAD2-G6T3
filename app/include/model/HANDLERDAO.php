@@ -727,28 +727,57 @@ public function edit_task_data($user_id, $task_id ,$date, $start_time, $end_time
 
 }
 
-public function get_task_by_date_time($date, $user_id, $currentTime){
+//This function is specifically for work management.
+//Could've been used to check for clashes...
+
+public function get_task_by_date_time($date, $user_id, $currentTime, $weekType, $day){
   $connMgr = new ConnectionManager();
   $conn = $connMgr->getConnection();
 
   // STEP 2
 
   $sql = "SELECT * from task_list 
-          where DATE between :date and :date AND user_id = :user_id
-          AND start_time < :currentTime AND end_time > :currentTime";
+          where (DATE between :date and :date AND user_id = :user_id
+          AND start_time < :currentTime AND end_time > :currentTime AND 
+          (repeatable = :weekType OR repeatable = 'Non Repeat')) OR
+          (user_id = :user_id AND start_time < :currentTime AND end_time > :currentTime AND repeatable = 'Repeat Weekly')";
 
   $stmt = $conn->prepare($sql);
   $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
   $stmt->bindParam(':date', $date, PDO::PARAM_STR);
   $stmt->bindParam(':currentTime', $currentTime, PDO::PARAM_STR);
+  $stmt->bindParam(':weekType', $weekType, PDO::PARAM_STR);
 
   // STEP 3
   $stmt->execute();
   $stmt->setFetchMode(PDO::FETCH_ASSOC);
 
   // STEP 4
+  $dayArray = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   $task_list = [];
   while( $row = $stmt->fetch() ) {
+
+    //Check if it's a repeat weekly task!!
+    if($row['repeatable'] == "Repeat Weekly"){
+      //Check if day match, if match it's a return!
+      $unixTimestamp = strtotime($row['date']);
+      $dayOfWeekStr = date("l", $unixTimestamp);
+      $dayOfWeekNum = array_search($dayOfWeekStr, $dayArray);
+      
+      if ($dayOfWeekNum == $day){
+        $task_list[] =
+        new TASK(
+            $row['task_id'],
+            $row['user_id'],
+            $row['date'],
+            $row['start_time'],
+            $row['end_time'],
+            $row['repeatable'],
+            $row['title'],
+            $row['description'],
+          );
+      }
+    } else {
     $task_list[] =
         new TASK(
             $row['task_id'],
@@ -760,6 +789,7 @@ public function get_task_by_date_time($date, $user_id, $currentTime){
             $row['title'],
             $row['description'],
           );
+        }
   }
 
   // STEP 5
