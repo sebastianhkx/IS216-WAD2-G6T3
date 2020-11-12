@@ -2,7 +2,7 @@
     /* please search and add "schedule" in your telegram first */
 
     $Json_Object = $_POST["Json_Object"];
-    $chat_id = $_POST["chat_id"]
+    $chat_id = $_POST["chat_id"];
 
     $json = json_decode($Json_Object, $chat_id);
 
