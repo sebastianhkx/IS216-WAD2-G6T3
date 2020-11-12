@@ -30,6 +30,7 @@ if( trim($_POST['username']) != '' && trim($_POST['password']) != '' ) {
 
     $AuthPass = $result->getHashedPassword();
     $id = $result->getUserId();
+    $teleid = $result->getTeleHandle();
 
     $status = password_verify($password,$AuthPass);
 
@@ -43,6 +44,7 @@ if( trim($_POST['username']) != '' && trim($_POST['password']) != '' ) {
     } else {
         $_SESSION['username'] = $username;
         $_SESSION['userid'] = $id;
+        $_SESSION['chat_id'] = $teleid;
         $msg = "Login success!";
         echo $msg;
         return;
