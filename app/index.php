@@ -102,7 +102,7 @@ $username = $_SESSION['username'];
                         </v-list-item-icon>
                         <v-list-item-title>Scheduler</v-list-item-title>
                     </v-list-item>
-                    <v-list-item href="model/logout_process.php">
+                    <v-list-item href="include/logout_process.php">
                         <v-list-item-icon>
                             <v-icon>mdi-logout-variant</v-icon>
                         </v-list-item-icon>
@@ -130,17 +130,17 @@ $username = $_SESSION['username'];
 
                 <!-- goal setting -->
                 <v-card color="rgba(0,0,0,0.4)" style="margin-left:20px; margin-right:20px" dark>
-                        
-                        <v-card-title>
-                            <v-icon>mdi-flag</v-icon>
-                              Today's Goal:
-                        </v-card-title>
-                        <v-card-text color="white" class="headline">{{goalDisplay}}</v-card-text>
-                        <v-card-actions>
-                            <v-btn v-if="goalDisplay=='No goal yet! Set one now!'" text href="goalSetting.php">
-                                Modify Goal
-                            </v-btn>
-                        </v-card-actions>
+
+                    <v-card-title>
+                        <v-icon>mdi-flag</v-icon>
+                        Today's Goal:
+                    </v-card-title>
+                    <v-card-text color="white" class="headline">{{goalDisplay}}</v-card-text>
+                    <v-card-actions>
+                        <v-btn v-if="goalDisplay=='No goal yet! Set one now!'" text href="goalSetting.php">
+                            Modify Goal
+                        </v-btn>
+                    </v-card-actions>
                 </v-card>
 
                 <!-- Introduction part -->
@@ -392,7 +392,6 @@ $username = $_SESSION['username'];
                     loadUnavailable();
                     checkExist();
 
-                    console.log("Ive sroted");
                 },
                 weatherReturn: function() {
                     var days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -429,9 +428,6 @@ $username = $_SESSION['username'];
                     var id = navApp.selectedEvent.id;
                     var taskType = navApp.selectedEvent.taskType;
                     navApp.deleteDialog = false;
-
-                    console.log(id);
-                    console.log(taskType);
 
                     $.ajax({
                         url: "./include/delete_eventTask.php",
@@ -726,26 +722,33 @@ $username = $_SESSION['username'];
                             //OR ELSE, if date set is in the future, start from only future!!
                             const fixedToday = new Date();
                             var todayDate = new Date();
-                            var todayDay = new Date().getDay();
-                            var chosenDay = currentDateStart.getDay();
+                            var todayDay = new Date().getDay(); // mon
+                            var chosenDay = currentDateStart.getDay(); //tue
 
-                            //Reset day to Sunday
-                            todayDate.setDate(todayDate.getDate() - todayDay);
-                            todayDay = 0;
+                            //if date is in the future, do not change!!
+                            if (currentDateStart > todayDate) {
+                                var dateModStart = new Date(response[i].date + " " + response[i].start_time);
+                                var dateModEnd = new Date(response[i].date + " " + response[i].end_time);
+                            } else {
+                                //Set date to match current weeks day
+                                //if date is in the past, then change!!
+                                todayDate.setDate(todayDate.getDate() - (todayDay - chosenDay));
 
-                            while (todayDay != chosenDay) {
-                                todayDate.setDate(todayDate.getDate() + 1);
-                                todayDate.setDate(todayDate.getDate() + 1);
-                                todayDay += 1
+
+                                var dateString = getCorrectDate(todayDate);
+
+                                var dateModStart = new Date(dateString + " " + response[i].start_time);
+                                var dateModEnd = new Date(dateString + " " + response[i].end_time);
                             }
+
 
                             for (j = 0; j < 24; j++) {
 
                                 //check if day matches the week
                                 navApp.events.push({
                                     name: response[i].title,
-                                    start: new Date(currentDateStart),
-                                    end: new Date(currentDateEnd),
+                                    start: new Date(dateModStart),
+                                    end: new Date(dateModEnd),
                                     rawDate: response[i].date,
                                     rawStartTime: response[i].start_time,
                                     rawEndTime: response[i].end_time,
@@ -758,7 +761,7 @@ $username = $_SESSION['username'];
                                 })
 
                                 //If match today's date, add!
-                                if (todayDate.toDateString() === fixedToday.toDateString()) {
+                                if (dateModStart.toDateString() === fixedToday.toDateString()) {
                                     navApp.agendas_tasks.push({
                                         name: response[i].title,
                                         startTime: response[i].start_time,
@@ -769,8 +772,8 @@ $username = $_SESSION['username'];
                                 }
 
                                 //push date by 7
-                                currentDateStart.setDate(currentDateStart.getDate() + 7);
-                                currentDateEnd.setDate(currentDateEnd.getDate() + 7);
+                                dateModStart.setDate(dateModStart.getDate() + 7);
+                                dateModEnd.setDate(dateModEnd.getDate() + 7);
 
                             }
 
@@ -786,7 +789,6 @@ $username = $_SESSION['username'];
                         var H = +timeString.substr(0, 2);
                         var h = H % 12 || 12;
                         var ampm = (H < 12 || H === 24) ? " AM" : " PM";
-                        console.log(h + timeString.substr(2, 3) + ampm);
                         return event.startTime = h + timeString.substr(2, 3) + ampm;
                     }
 
@@ -935,16 +937,22 @@ $username = $_SESSION['username'];
                             var todayDate = new Date()
                             var todayDay = new Date().getDay();
                             var chosenDay = currentDateStart.getDay();
+                            
+                            //if date is in the future, do not change!!
 
-                            //Reset day to Sunday
-                            todayDate.setDate(todayDate.getDate() - todayDay);
-                            console.log(todayDate);
-                            todayDay = 0;
+                            if (currentDateStart > todayDate) {
+                                var dateModStart = new Date(response[i].date + " " + response[i].start_time);
+                                var dateModEnd = new Date(response[i].date + " " + response[i].end_time);
+                            } else {
+                                //Set date to match current weeks day
+                                //if date is in the past, then change!!
+                                todayDate.setDate(todayDate.getDate() - (todayDay - chosenDay));
 
-                            while (todayDay != chosenDay) {
-                                todayDate.setDate(todayDate.getDate() + 1);
-                                todayDate.setDate(todayDate.getDate() + 1);
-                                todayDay += 1
+
+                                var dateString = getCorrectDate(todayDate);
+
+                                var dateModStart = new Date(dateString + " " + response[i].start_time);
+                                var dateModEnd = new Date(dateString + " " + response[i].end_time);
                             }
 
                             for (j = 0; j < 24; j++) {
@@ -952,8 +960,8 @@ $username = $_SESSION['username'];
                                 //check if day is a weekend
                                 navApp.events.push({
                                     name: response[i].title,
-                                    start: new Date(currentDateStart),
-                                    end: new Date(currentDateEnd),
+                                    start: new Date(dateModStart),
+                                    end: new Date(dateModEnd),
                                     rawDate: response[i].date,
                                     rawStartTime: response[i].start_time,
                                     rawEndTime: response[i].end_time,
@@ -966,8 +974,8 @@ $username = $_SESSION['username'];
                                 })
 
                                 //push date by 7
-                                currentDateStart.setDate(currentDateStart.getDate() + 7);
-                                currentDateEnd.setDate(currentDateEnd.getDate() + 7);
+                                dateModStart.setDate(dateModStart.getDate() + 7);
+                                dateModEnd.setDate(dateModEnd.getDate() + 7);
 
                             }
 
@@ -999,7 +1007,6 @@ $username = $_SESSION['username'];
                 //Get location
                 var lat = position.coords.latitude;
                 var lng = position.coords.longitude;
-                console.log(lat + " " + lng);
 
                 //Call weather
 
@@ -1015,7 +1022,6 @@ $username = $_SESSION['username'];
                         var weather_details = response.current.weather[0].details;
                         var temp = response.current.temp;
 
-                        console.log(weather);
 
                         navApp.weatherImage = "http://openweathermap.org/img/wn/" + weather_icon + "@2x.png"
                         navApp.weatherReport = weather;
