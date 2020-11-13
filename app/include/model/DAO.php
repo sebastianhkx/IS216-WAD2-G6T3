@@ -10,16 +10,18 @@ class DAO{
         // STEP 1
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
-        
-      
-        $date_statement = "WHERE user_id = '${user_id}' AND DATE = '${date}' AND start_time between '${past_time}' and '${time}'";
-
+       
       
         // STEP 2
       
-        $sql = "SELECT * from event_list ${date_statement}";
+        $sql = "SELECT * from event_list WHERE user_id = :user_id AND DATE = :date AND start_time between :past_time and :time";
       
         $stmt = $conn->prepare($sql);
+
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+        $stmt->bindParam(':past_time', $past_time, PDO::PARAM_STR);
+        $stmt->bindParam(':time', $time, PDO::PARAM_STR);
       
         // STEP 3
         $stmt->execute();
@@ -59,15 +61,17 @@ class DAO{
         $connMgr = new ConnectionManager();
         $conn = $connMgr->getConnection();
       
-        
-        $date_statement = "WHERE user_id = '${user_id}' AND DATE = '${date}' AND start_time between '${past_time}' and '${time}' AND repeatable = '${repeatable}'";
-      
+       
       
         // STEP 2
       
-        $sql = "SELECT * from task_list ${month_statment}";
+        $sql = "SELECT * from task_list WHERE user_id = :user_id AND DATE = :date AND start_time between :past_time and :time";
       
         $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
+        $stmt->bindParam(':date', $date, PDO::PARAM_STR);
+        $stmt->bindParam(':past_time', $past_time, PDO::PARAM_STR);
+        $stmt->bindParam(':time', $time, PDO::PARAM_STR);
       
         // STEP 3
         $stmt->execute();
