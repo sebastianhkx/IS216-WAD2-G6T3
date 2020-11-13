@@ -72,7 +72,7 @@ class DAO{
         $stmt->bindParam(':date', $date, PDO::PARAM_STR);
         $stmt->bindParam(':past_time', $past_time, PDO::PARAM_STR);
         $stmt->bindParam(':time', $time, PDO::PARAM_STR);
-        $stmt->bindParam(':$repeatable', $repeatable, PDO::PARAM_STR);
+        $stmt->bindParam(':repeatable', $repeatable, PDO::PARAM_STR);
       
         // STEP 3
         $stmt->execute();
