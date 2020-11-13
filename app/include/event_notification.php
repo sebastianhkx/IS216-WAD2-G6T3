@@ -37,10 +37,13 @@
    $website='https://api.telegram.org/bot'.$botToken.'/sendMessage?'. http_build_query($params);
    file_get_contents($website);
 
-
-
-    
-
+   date_default_timezone_set("Singapore");
+   $localdate = strtotime(date("Y-m-d H:i:00"));
+   $edate = strtotime($date." ".$start_time);
+   $stime =$edate - $localdate;
+   set_time_limit($localdate);
+   sleep($stime);
+   file_get_contents($website);
 
     $stmt = null;
     $conn = null;
@@ -53,17 +56,6 @@
   $result = curl_exec($ch);
   curl_close($ch);
   header("Refresh:0");
-   date_default_timezone_set("Singapore");
-    
-   $localdate = strtotime(date("Y-m-d"));
-   $localtime = strtotime(date("H:i:s"));
-   $date1 = strtotime($date);
-   $start_time1 = strtotime($start_time);
-   $end_time1 = strtotime($end_time);
-
-    if (($localdate >= $date1)&&($localtime >= $start_time1)&&($localtime <= $end_time1)){
-        echo "<script language=JavaScript> location.replace(location.href);</script>";
-       }
    */
 ?>
 
