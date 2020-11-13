@@ -65,13 +65,14 @@ class DAO{
       
         // STEP 2
       
-        $sql = "SELECT * from task_list WHERE user_id = :user_id AND DATE = :date AND start_time between :past_time and :time";
+        $sql = "SELECT * from task_list WHERE user_id = :user_id AND DATE = :date AND start_time between :past_time and :time and repeatable = :repeatable";
       
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
         $stmt->bindParam(':date', $date, PDO::PARAM_STR);
         $stmt->bindParam(':past_time', $past_time, PDO::PARAM_STR);
         $stmt->bindParam(':time', $time, PDO::PARAM_STR);
+        $stmt->bindParam(':$repeatable', $repeatable, PDO::PARAM_STR);
       
         // STEP 3
         $stmt->execute();
