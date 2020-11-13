@@ -4,10 +4,10 @@ require_once 'common.php';
 
 date_default_timezone_set("Asia/Singapore");
 
+
 $user_id = $_POST['user_id'];
 
 $chat_id = $_POST['chat_id'];
-
 
 /*
 $user_id = 1;
@@ -32,7 +32,7 @@ if ($Day == "Mon" || $Day == "Tue" || $Day == "Wed" || $Day == "Thu" || $Day == 
 
     $dao = new DAO();
 
-    $task_list = $dao->get_event_by_date_time($finalDate, $startTime, $finalTime, $user_id, $repeatable);
+    $task_list = $dao->get_task_by_date_time($finalDate, $startTime, $finalTime, $user_id, $repeatable);
 
     var_dump($task_list);
 
@@ -90,7 +90,7 @@ if ($Day == "Mon" || $Day == "Tue" || $Day == "Wed" || $Day == "Thu" || $Day == 
 
     $dao = new DAO();
 
-    $task_list = $dao->get_event_by_date_time($finalDate, $startTime, $finalTime, $user_id, $repeatable);
+    $task_list = $dao->get_task_by_date_time($finalDate, $startTime, $finalTime, $user_id, $repeatable);
 
     var_dump($task_list);
 
@@ -148,11 +148,11 @@ $repeatable = "Non-Repeat";
 
 $dao = new DAO();
 
-$task_list = $dao->get_event_by_date_time($finalDate, $startTime, $finalTime, $user_id, $repeatable);
+$task_list = $dao->get_task_by_date_time($finalDate, $startTime, $finalTime, $user_id, $repeatable);
 
 var_dump($task_list);
 
-$tasks = [];
+$tasks_2 = [];
 foreach( $task_list as $task_object ) {
     $task = [];
     $task["task_id"] = $task_object->getTaskID();
@@ -163,14 +163,14 @@ foreach( $task_list as $task_object ) {
     $task["repeatable"] = $task_object->getRepeatable();
     $task["title"] = $task_object->getTitle();
     $task["description"] = $task_object->getDescription();
-    $tasks[] = $task;
+    $tasks_2[] = $task;
 }
 
-var_dump($tasks);
+var_dump($tasks_2);
 
 // make posts into json and return json data
-for ($i=0; $i < count($tasks); $i++) { 
-    $json = $tasks[$i];
+for ($i=0; $i < count($tasks_2); $i++) { 
+    $json = $tasks_2[$i];
     
 
     $start_time =$json['start_time'];
@@ -205,11 +205,11 @@ $repeatable = "Repeat Weekly";
 
 $dao = new DAO();
 
-$task_list = $dao->get_event_by_date_time($finalDate, $startTime, $finalTime, $user_id, $repeatable);
+$task_list = $dao->get_task_by_time($startTime, $finalTime, $user_id, $repeatable);
 
 var_dump($task_list);
 
-$tasks = [];
+$tasks_3 = [];
 foreach( $task_list as $task_object ) {
     $task = [];
     $task["task_id"] = $task_object->getTaskID();
@@ -220,18 +220,21 @@ foreach( $task_list as $task_object ) {
     $task["repeatable"] = $task_object->getRepeatable();
     $task["title"] = $task_object->getTitle();
     $task["description"] = $task_object->getDescription();
-    $tasks[] = $task;
+    $tasks_3[] = $task;
 }
 
-for ($i=0; $i < count($tasks) ; $i++) { 
+for ($i=0; $i < count($tasks_3) ; $i++) { 
     
     //// Check through each repeat weekly task
 
-    $json = $tasks[$i];
+    $json = $tasks_3[$i];
     
 
     $cur_date =$json['date'];
-    $day_string = date("D", $cur_date);
+    var_dump($cur_date);
+    $day_string = date("D", strtotime($cur_date));
+    var_dump($day_string);
+
 
     if ($day_string == $Day) {
 
@@ -262,12 +265,9 @@ for ($i=0; $i < count($tasks) ; $i++) {
     
     }
         
-    }
-
-
-
-
 }
+
+
 
 
 
