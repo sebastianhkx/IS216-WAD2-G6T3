@@ -146,12 +146,26 @@
                 var obj = JSON.parse(this.response);
                 console.log(obj);
                 
-                for (let index = 0; index < obj.result.length; index++) {
-                    if (FormApp.tele_handle == obj.result[index].message.chat.username) {
-                        var result = obj.result[index].message.chat.id;
-                        console.log(result);
-                    }  
-                }
+                var result = '';
+
+                var obj = JSON.parse(this.response);
+                //console.log(obj);
+
+                var check = obj.result.find(function (post, index) {
+                    if (post.message.chat.username == FormApp.tele_handle){
+                        return post.message.chat.id;
+                        }
+                        
+                });
+
+                var result = check.message.chat.id;
+
+                //for (let index = 0; index < obj.result.length; index++) {
+                //    if (FormApp.tele_handle == obj.result[index].message.chat.username) {
+                //        var result = obj.result[index].message.chat.id;
+                //        console.log(result);
+                //    }  
+                //}
 
                 // if there is tele_id 
 
