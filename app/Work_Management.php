@@ -535,37 +535,7 @@ $username = $_SESSION['username'];
                 }) {
                     this.event = name;
                     navApp.workStatus = name[0];
-                },
-
-
-                viewDay({
-                    date
-                }) {
-                    this.focus = date
-                    this.type = 'day'
-                },
-
-                showEvent({
-                    nativeEvent,
-                    event
-                }) {
-                    const open = () => {
-                        this.selectedEvent = event
-                        this.selectedElement = nativeEvent.target
-                        setTimeout(() => {
-                            this.selectedOpen = true
-                        }, 10)
-                    }
-
-                    if (this.selectedOpen) {
-                        this.selectedOpen = false
-                        setTimeout(open, 10)
-                    } else {
-                        open()
-                    }
-
-                    nativeEvent.stopPropagation()
-                },
+                }
             }
 
         })
@@ -637,18 +607,18 @@ $username = $_SESSION['username'];
             return retDate;
         }
 
-        function statusChange(start, end, status) {
-            var sdate = start;
-            var sdate = sdate.getTime();
-            var edate = end;
-            var edate = edate.getTime();
-            var time = CurentTime().getTime();
-            console.log(time);
-            console.log(sdate);
-            if ((time >= sdate) && (time <= edate)) {
-                document.getElementById(label).innerHTML = status;
-            }
-        }
+        // function statusChange(start, end, status) {
+        //     var sdate = start;
+        //     var sdate = sdate.getTime();
+        //     var edate = end;
+        //     var edate = edate.getTime();
+        //     var time = CurentTime().getTime();
+        //     console.log(time);
+        //     console.log(sdate);
+        //     if ((time >= sdate) && (time <= edate)) {
+        //         document.getElementById(label).innerHTML = status;
+        //     }
+        // }
 
         function CurentTime() {
             var now = new Date();
