@@ -79,7 +79,7 @@ $username = $_SESSION['username'];
                 <v-list nav dense>
                     <v-list-item link href="index.php">
                         <v-list-item-icon>
-                            <v-icon>mdi-home</mdi-home>
+                            <v-icon>mdi-home
                             </v-icon>
                         </v-list-item-icon>
                         <v-list-item-title>Home</v-list-item-title>
@@ -112,6 +112,11 @@ $username = $_SESSION['username'];
             </v-navigation-drawer>
 
             <v-main>
+                    <v-fab-transition>
+                        <v-btn color="pink" dark fixed bottom right fab>
+                            <v-icon>mdi-plus</v-icon>
+                        </v-btn>
+                    </v-fab-transition>
                 <!-- Alert confirmation when object is deleted!! -->
                 <v-dialog v-model="deleteCfmDialog" max-width="280">
                     <v-card>
@@ -129,8 +134,7 @@ $username = $_SESSION['username'];
                 </v-dialog>
 
                 <!-- goal setting -->
-                <v-card color="rgba(0,0,0,0.4)" style="margin-left:20px; margin-right:20px" dark>
-
+                <v-card color="rgba(0,0,0,0.4)" dark>
                     <v-card-title>
                         <v-icon>mdi-flag</v-icon>
                         Today's Goal:
@@ -217,7 +221,7 @@ $username = $_SESSION['username'];
                     </v-col>
                 </v-row>
                 <!-- Calendar part -->
-                <v-row style="margin:10px" >
+                <v-row style="margin:10px">
                     <v-col>
                         <v-sheet height="128" elevation="3">
                             <v-toolbar flat>
@@ -941,7 +945,7 @@ $username = $_SESSION['username'];
                             var todayDate = new Date()
                             var todayDay = new Date().getDay();
                             var chosenDay = currentDateStart.getDay();
-                            
+
                             //if date is in the future, do not change!!
 
                             if (currentDateStart > todayDate) {
@@ -1035,14 +1039,14 @@ $username = $_SESSION['username'];
                 }
                 loadRequest.open("GET", "https://api.openweathermap.org/data/2.5/onecall?lat=" + lat + "&lon=" + lng + "&units=metric" + "&appid=" + api_key_weather, true);
                 loadRequest.send();
-                event.preventDefault();
+                //event.preventDefault();
 
             }
             getLocation();
         }
 
         //This is for trigger AJAX!
-        function runNotification(){
+        function runNotification() {
             //Calls for event check
             $.ajax({
                 url: "./include/cron.php",
