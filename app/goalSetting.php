@@ -255,6 +255,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                             console.log("something is right");
                             FormApp.successMessage = "Entry successfully updated!";
                             FormApp.successAlert = true;
+                            window.location.href = 'index.php';
 
                         } else if (dataResult.statusCode == 201) {
                             console.log("something is wrong");
