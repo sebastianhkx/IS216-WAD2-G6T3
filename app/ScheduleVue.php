@@ -60,7 +60,7 @@ $username = $_SESSION['username'];
   <div class="">
 
     <div id="app">
-      <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+      <v-app style="background: linear-gradient(180deg, #7474BF 0%, #348AC7 100%);">
         <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
           <v-list-item>
             <v-list-item-content>
@@ -111,8 +111,8 @@ $username = $_SESSION['username'];
         </v-navigation-drawer>
 
         <v-main>
-          <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.5)" dark>
-            <v-toolbar flat color="rgb(0, 0, 0, 0.8)">
+          <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.3)" dark>
+            <v-toolbar flat color="rgb(0, 0, 0, 0.5)">
               <!-- <v-toolbar flat color="light-blue accent-2"> -->
               <v-icon>mdi-account</v-icon>
               <v-toolbar-title class="font-weight-light">
@@ -397,10 +397,6 @@ $username = $_SESSION['username'];
     }
 
 
-
-
-
-
     function returnPlaces() {
       var location = FormApp.eLocation;
       const client_id = "VXUI3SSKXSUGY0X2V1RCQDVQ12YBGV3V4F2TY3K51T00Z3FA";
@@ -473,10 +469,7 @@ $username = $_SESSION['username'];
       var currentDate = new Date();
       var selectedDate = new Date(FormApp.eDateInput);
       var diffTime = Math.abs(selectedDate - currentDate);
-      console.log(selectedDate);
-      console.log(diffTime);
       var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      console.log(diffDays);
 
       if (diffDays > 7 || diffDays < 0) {
         FormApp.recWeather = "Weather cannot be estimated.";
@@ -732,10 +725,6 @@ $username = $_SESSION['username'];
             });
 
           });
-
-
-
-
         }
 
       } else {
