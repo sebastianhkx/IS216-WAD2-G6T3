@@ -20,7 +20,7 @@ $testDateStr = strtotime("now");
 $startTime = date("H:i:s", strtotime("+5 min", $testDateStr));
 $finalTime = date("H:i:s", strtotime("+9 min", $testDateStr));
 $finalDate = date("Y-m-d", strtotime("+5 min", $testDateStr));
-$Day = date("D", strtotime("+1 hour", $testDateStr));
+$Day = date("D", strtotime("+5 min", $testDateStr));
 
 var_dump($startTime) ;
 var_dump($finalTime) ;
