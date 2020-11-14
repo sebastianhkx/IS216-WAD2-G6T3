@@ -115,7 +115,7 @@ $username = $_SESSION['username'];
                 <!-- send all events and task for the day??? -->
                 <v-fab-transition>
                     <v-btn color="pink" @click="cfmRetrieveScheduleDiag = true" dark fixed bottom right fab>
-                        <v-icon>mdi-plus</v-icon>
+                        <v-icon>mdi-arrow-down-bold-box</v-icon>
                     </v-btn>
                 </v-fab-transition>
                 <!-- Alert confirmation when object is deleted!! -->
