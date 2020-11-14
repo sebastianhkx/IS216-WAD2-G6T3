@@ -109,7 +109,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                             </v-list-item-icon>
                             <v-list-item-title>Scheduler</v-list-item-title>
                         </v-list-item>
-                        <v-list-item href="model/logout_process.php">
+                        <v-list-item href="include/logout_process.php">
                             <v-list-item-icon>
                                 <v-icon>mdi-logout-variant</v-icon>
                             </v-list-item-icon>
