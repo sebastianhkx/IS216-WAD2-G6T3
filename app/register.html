@@ -19,26 +19,41 @@
         }
 
         .compStyle {
-            margin: 20px;
+            padding: 20px;
         }
     </style>
 </head>
 
 <body>
 
-    <div id="app" class="container box">
-        <v-app>
+    <div id="app">
+        <v-app style="background: linear-gradient(180deg, #7474BF 0%, #348AC7 100%);">
 
             <!--MAin BODY-->
             <v-main>
                 <v-container>
-                    <v-card style="text-align: center;" class='cardformat'>
+                    <v-card dark
+                        style="text-align: center; background: rgba(0,0,0,0.3); margin-left:20%; margin-right:20%"
+                        class='cardformat'>
                         <v-alert v-if="errorAlert" border="left" close-text="Close Alert" color="pink darken-1" dark
-                        dismissible>
+                            dismissible>
                             {{errorMsg}}
                         </v-alert>
-                        <v-alert v-if="successMsg" border="left" close-text="Close Alert" color="green light-1" dark
-                        >
+                        <h2 class="compStyle">Register Form</h2>
+                        <v-expansion-panels style="background: rgba(0,0,0,0.1)">
+                            <v-expansion-panel style="background: rgba(0,0,0,0.1); text-align:left">
+                                <v-expansion-panel-header style="text-align: left;">
+                                    <span> <v-icon>mdi-robot</v-icon> Register your Bot first before registering! </span> 
+                                </v-expansion-panel-header>
+                                <v-expansion-panel-content>
+                                    <ol>
+                                        <li><a style='color: lightblue' href="https://telegram.me/scheduler34_bot" target="_blank">Add the bot @scheduler34_bot</a></li>
+                                        <li>Send /start to the bot</li>
+                                    </ol>
+                                </v-expansion-panel-content>
+                            </v-expansion-panel>
+                        </v-expansion-panels>
+                        <v-alert v-if="successMsg" border="left" close-text="Close Alert" color="green light-1" dark>
                             You've successfully registered! We'll redirect you to the login page shortly...
                             <a href="login.html">Click here if it doesn't redirect you automatically.</a>
                         </v-alert>
@@ -54,12 +69,18 @@
                             <v-text-field type="password" v-model="rPassword" :rules="pRules" label="Repeat Password:"
                                 required class="compStyle"></v-text-field>
 
-                            <v-text-field v-model="tele_handle" :rules="teleRules" label="Telegram Handle:"
-                                required class="compStyle"></v-text-field>
+                            <v-text-field v-model="tele_handle" :rules="teleRules" label="Telegram Handle:" required
+                                class="compStyle"></v-text-field>
+
+                                <!-- give instructions first! -->
+                                
+
 
                             <v-btn class="compStyle" color="success" @click='eValidateSubmit' :disabled="!loginForm">
                                 Register
                             </v-btn>
+
+                            
                         </v-form>
                     </v-card>
                 </v-container>
@@ -91,8 +112,8 @@
             passwordRules: [v => !!v || 'Password is required',
             v => (v && v.length > 7) || 'Password must be longer than 7 characters'
             ],
-            teleRules: [v => !!v || 'Username is required'],
-            
+            teleRules: [v => !!v || 'Telegram Handle is required'],
+
             fieldRules: [v => !!v || 'Username is required'],
 
             tele_handle: '',
@@ -135,27 +156,20 @@
 
     function registerUser() {
 
-        alert("Please Follow the Instruction Carefully");
-        alert("Add the bot @scheduler34_bot");
-        alert("Send /start to the bot");
-
         //retrieve telehandler
         var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
+        xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
-                var obj = JSON.parse(this.response);
-                console.log(obj);
-                
                 var result = '';
 
                 var obj = JSON.parse(this.response);
                 //console.log(obj);
 
                 var check = obj.result.find(function (post, index) {
-                    if (post.message.chat.username == FormApp.tele_handle){
+                    if (post.message.chat.username == FormApp.tele_handle) {
                         return post.message.chat.id;
-                        }
-                        
+                    }
+
                 });
 
                 var result = check.message.chat.id;
@@ -170,38 +184,49 @@
                 // if there is tele_id 
 
                 if (result != '') {
-            
-                var loadReq = new XMLHttpRequest();
-                loadReq.onreadystatechange = function () {
-                if (this.readyState == 4 && this.status == 200) {
-                    response = this.responseText;
-                    if (response.includes("has successfully registered!") == true){
-                        FormApp.successMsg = true;
-                        setInterval(function () {
-                            window.location.href = "login.html";
-                        }, 3000);
-                    } else {
-                        FormApp.errorAlert = true;
-                        FormApp.errorMsg = response;
-                    }
+
+                    var loadReq = new XMLHttpRequest();
+                    loadReq.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                            response = this.responseText;
+
+                            //app congratulates you.
+                            var xhttp = new XMLHttpRequest();
+
+                            var chat_id = result;
+                            var text = "Welcome! You've successfully linked your account to our bot!";
+
+
+                            xhttp.open("GET", "https://api.telegram.org/bot1421065755:AAFKUQFBFs2KAr53AyrHhAlE-xMpgNSHv6s/sendMessage?text=" + text + '&chat_id=' + chat_id, true);
+                            xhttp.send();
+
+                            if (response.includes("has successfully registered!") == true) {
+                                FormApp.successMsg = true;
+                                setInterval(function () {
+                                    window.location.href = "login.html";
+                                }, 3000);
+                            } else {
+                                FormApp.errorAlert = true;
+                                FormApp.errorMsg = response;
+                            }
+                        }
+
+                    };
+                    loadReq.open("POST", "include/register_process.php", true);
+                    loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                    loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password + "&tele_handle=" + result);
                 }
 
-                };
-                loadReq.open("POST", "include/register_process.php", true);
-                loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password + "&tele_handle="+ result);
+                else {
+
+                    FormApp.errorAlert = true;
+                    FormApp.errorMsg = "It appears that your telehandle does not exist! Please follow the steps again!";
+
                 }
 
-            else{
-
-                FormApp.errorAlert = true;
-                FormApp.errorMsg = "It appears that your telehandle does not exist! Please follow the steps again!";
-
-        }
 
 
-                
-                
+
             }
 
 
