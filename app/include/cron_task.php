@@ -17,9 +17,9 @@ $chat_id = 480703954;
 $testDateStr = strtotime("now");
 
 
-$startTime = date("H:i:s", strtotime("+1 hour", $testDateStr));
-$finalTime = date("H:i:s", strtotime("+2 hour", $testDateStr));
-$finalDate = date("Y-m-d", strtotime("+1 hour", $testDateStr));
+$startTime = date("H:i:s", strtotime("+5 min", $testDateStr));
+$finalTime = date("H:i:s", strtotime("+9 min", $testDateStr));
+$finalDate = date("Y-m-d", strtotime("+5 min", $testDateStr));
 $Day = date("D", strtotime("+1 hour", $testDateStr));
 
 var_dump($startTime) ;
