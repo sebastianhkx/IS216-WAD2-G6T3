@@ -68,7 +68,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
     <div class="">
 
         <div id="app">
-            <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+            <v-app style="background: linear-gradient(180deg, #7474BF 0%, #348AC7 100%);">
                 <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
                     <v-list-item>
                         <v-list-item-content>
@@ -119,8 +119,8 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                 </v-navigation-drawer>
 
                 <v-main>
-                    <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.5)" dark>
-                        <v-toolbar flat color="rgb(0, 0, 0, 0.8)">
+                    <v-card class="overflow-hidden" color="rgb(0, 0, 0, 0.3)" dark>
+                        <v-toolbar flat color="rgb(0, 0, 0, 0.5)">
                             <!-- <v-toolbar flat color="light-blue accent-2"> -->
                             <v-icon>mdi-account</v-icon>
                             <v-toolbar-title class="font-weight-light">
@@ -815,7 +815,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
 
                                     if (dataResult.statusCode == 200) {
 
-                                        FormApp.successMessage = "Data Successfully added!";
+                                        FormApp.successMessage = "Entry Successfully edited!";
                                         FormApp.successAlert = true;
 
                                     } else if (dataResult.statusCode == 201) {
