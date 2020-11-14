@@ -1,7 +1,7 @@
 <?php
 
 class UNAVAILABLE {
-    private $task_id;
+    private $unavailable_id;
     private $user_id;
     private $date;
     private $start_time;
