@@ -68,7 +68,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
     <div class="">
 
         <div id="app">
-            <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+            <v-app style="background: linear-gradient(180deg, #7474BF 0%, #348AC7 100%);">
                 <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
                     <v-list-item>
                         <v-list-item-content>
