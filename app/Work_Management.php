@@ -51,7 +51,7 @@ $username = $_SESSION['username'];
 
         @keyframes session-finish {
             0% {
-                background: #1b5e20;
+                background: #91F798;
             }
 
             50% {
@@ -59,7 +59,7 @@ $username = $_SESSION['username'];
             }
 
             100% {
-                background: #1b5e20;
+                background: #91F798;
             }
         }
 
@@ -101,7 +101,7 @@ $username = $_SESSION['username'];
         }
 
         .workStatus {
-            padding-top: 40px;
+            padding-top: 20px;
 
         }
 
@@ -118,19 +118,19 @@ $username = $_SESSION['username'];
         }
 
         .timer-wrapper.session {
-            box-shadow: 2px 0 0 2px #1b5e20, 0 2px 0 2px #1b5e20, -2px 0 0 2px #1b5e20, 0 -2px 0 2px #1b5e20, 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            box-shadow: 2px 0 0 2px #69F0AE, 0 2px 0 2px #69F0AE, -2px 0 0 2px #69F0AE, 0 -2px 0 2px #69F0AE, 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
 
         .timer-wrapper.session:hover {
-            box-shadow: 2px 0 0 2px #388e3c, 0 2px 0 2px #388e3c, -2px 0 0 2px #388e3c, 0 -2px 0 2px #388e3c, 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+            box-shadow: 2px 0 0 2px #00C853, 0 2px 0 2px #00C853, -2px 0 0 2px #00C853, 0 -2px 0 2px #00C853, 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
         }
 
         .timer-wrapper.break {
-            box-shadow: 2px 0 0 2px #b71c1c, 0 2px 0 2px #b71c1c, -2px 0 0 2px #b71c1c, 0 -2px 0 2px #b71c1c, 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            box-shadow: 2px 0 0 2px #F76F6F, 0 2px 0 2px #F76F6F, -2px 0 0 2px #F76F6F, 0 -2px 0 2px #F76F6F, 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
         }
 
         .timer-wrapper.break:hover {
-            box-shadow: 2px 0 0 2px #f44336, 0 2px 0 2px #f44336, -2px 0 0 2px #f44336, 0 -2px 0 2px #f44336, 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
+            box-shadow: 2px 0 0 2px #00C853, 0 2px 0 2px #00C853, -2px 0 0 2px #00C853, 0 -2px 0 2px #00C853, 0 12px 15px 0 rgba(0, 0, 0, 0.24), 0 17px 50px 0 rgba(0, 0, 0, 0.19);
         }
 
         .timer-wrapper .fill {
@@ -186,7 +186,7 @@ $username = $_SESSION['username'];
         }
 
         .change.session span {
-            border-color: #1b5e20;
+            border-color: #00E676;
         }
 
         .change.session input {
@@ -203,7 +203,7 @@ $username = $_SESSION['username'];
             height: 8.4px;
             cursor: pointer;
             box-shadow: 1px 1px 1px #000, 0px 0px 1px #0d0d0d;
-            background: #388e3c;
+            background: #00E676;
             border-radius: 1.3px;
             border: 0.2px solid #010101;
         }
@@ -214,7 +214,7 @@ $username = $_SESSION['username'];
             height: 36px;
             width: 16px;
             border-radius: 3px;
-            background: #1b5e20;
+            background: #00C853;
             cursor: pointer;
             -webkit-appearance: none;
             margin-top: -14px;
@@ -275,7 +275,7 @@ $username = $_SESSION['username'];
         }
 
         .change.break span {
-            border-color: #b71c1c;
+            border-color: #F76F6F;
         }
 
         .change.break input {
@@ -292,7 +292,7 @@ $username = $_SESSION['username'];
             height: 8.4px;
             cursor: pointer;
             box-shadow: 1px 1px 1px #000, 0px 0px 1px #0d0d0d;
-            background: #f44336;
+            background: #F76F6F;
             border-radius: 1.3px;
             border: 0.2px solid #010101;
         }
@@ -303,7 +303,7 @@ $username = $_SESSION['username'];
             height: 36px;
             width: 16px;
             border-radius: 3px;
-            background: #b71c1c;
+            background: #F52525;
             cursor: pointer;
             -webkit-appearance: none;
             margin-top: -14px;
@@ -368,7 +368,7 @@ $username = $_SESSION['username'];
 <body>
 
     <div id="workApp">
-        <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+        <v-app style="background: linear-gradient(180deg, #7474BF 0%, #348AC7 100%);">
             <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
                 <v-list-item>
                     <v-list-item-content>
@@ -422,16 +422,16 @@ $username = $_SESSION['username'];
 
                 <h1>Pomodoro Timer</h1>
                 <div class="workStatus">
-                    <h4>Now Your Work Status: </h4><label id=label>
+                    <h4>Your current Session: </h4><label id=label>
                         <h4>{{worktitle}}</h4>
                     </label>
                 </div>
                 <div class="timer-wrapper" :class="session.toLowerCase()" @click="startStop"><span class="sessionText">{{ this.session }}</span><span class="time">{{ this.time }}</span><span class="fill" :style="{ height: `${fillHeight}%` }" :class="[{ finish: finish }, session.toLowerCase()]"></span></div>
                 <div class="change session">
-                    <h4>Working Time Setting:</h4><span>{{ sessionTime | zeroPad }}</span><input v-model="sessionTime" type="range" min="1" max="60" />
+                    <h4>Working Time Setting:</h4><span style="color:whitesmoke">{{ sessionTime | zeroPad }}</span><input v-model="sessionTime" type="range" min="1" max="60" />
                 </div>
                 <div class="change break">
-                    <h4>Break Time Setting: </h4><span> {{ breakTime | zeroPad }}</span><input v-model="breakTime" type="range" min="1" max="60" />
+                    <h4>Break Time Setting: </h4><span style="color:whitesmoke"> {{ breakTime | zeroPad }}</span><input v-model="breakTime" type="range" min="1" max="60" />
                 </div>
 
             </v-main>
@@ -520,8 +520,9 @@ $username = $_SESSION['username'];
 
             created: function() {
 
-                    loadTask();
-                },
+                loadTask();
+                checkExist();
+            },
 
             methods: {
 
@@ -572,6 +573,16 @@ $username = $_SESSION['username'];
         function loadTask() {
             var currentTime = CurentTime()
             var currentDate = getTodayDate();
+            var todayDay = new Date(currentDate).getDay();
+            var weekType;
+
+            //Determine if weekday/weekend!!
+            if (todayDay > 0 && todayDay < 6) {
+                weekType = 'Weekday';
+            } else {
+                weekType = 'Weekend';
+            }
+
             console.log(currentTime);
             $(document).ready(function() {
 
@@ -581,14 +592,20 @@ $username = $_SESSION['username'];
 
                     data: {
                         date: currentDate,
-                        currentTime: currentTime
+                        currentTime: currentTime,
+                        weekType: weekType,
+                        todayDay: todayDay
                     },
 
                     cache: false,
                     success: function(dataResult) {
 
                         var dataResult = JSON.parse(dataResult);
-                        navApp.worktitle = dataResult[0].title;
+                        if (dataResult.length > 0) {
+                            navApp.worktitle = dataResult[0].title;
+                        } else {
+                            navApp.worktitle = 'You have nothing going on now!';
+                        }
 
                     }
 
@@ -597,8 +614,6 @@ $username = $_SESSION['username'];
             });
 
         }
-        
-
 
         function getCorrectDate(d) {
             var date = d.getDate();
@@ -674,6 +689,38 @@ $username = $_SESSION['username'];
 
             var dateStr = year + "-" + month + "-" + date;
             return dateStr;
+        }
+
+        function checkExist() {
+            var currentDate = getTodayDate();
+            var formatType = "read";
+            var user_id = '<?php echo $id; ?>';
+
+            $.ajax({
+                url: "./include/process_goal.php",
+                type: "POST",
+                data: {
+                    type: formatType,
+                    date: currentDate,
+                    user_id: user_id
+                },
+
+                cache: false,
+                success: function(dataResult) {
+
+                    var dataResult = JSON.parse(dataResult);
+
+                    if (dataResult.length > 0) {
+                        //content exists!!
+                        navApp.goalDisplay = dataResult[0].description;
+                    } else {
+                        navApp.goalDisplay = "No goal yet! Set one now!";
+                    }
+
+                }
+
+            });
+
         }
     </script>
 
