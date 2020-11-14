@@ -43,11 +43,14 @@
                         <v-expansion-panels style="background: rgba(0,0,0,0.1)">
                             <v-expansion-panel style="background: rgba(0,0,0,0.1); text-align:left">
                                 <v-expansion-panel-header style="text-align: left;">
-                                    <span> <v-icon>mdi-robot</v-icon> Register your Bot first before registering! </span> 
+                                    <span>
+                                        <v-icon>mdi-robot</v-icon> Register your Bot first before registering!
+                                    </span>
                                 </v-expansion-panel-header>
                                 <v-expansion-panel-content>
                                     <ol>
-                                        <li><a style='color: lightblue' href="https://telegram.me/scheduler34_bot" target="_blank">Add the bot @scheduler34_bot</a></li>
+                                        <li><a style='color: lightblue' href="https://telegram.me/scheduler34_bot"
+                                                target="_blank">Add the bot @scheduler34_bot</a></li>
                                         <li>Send /start to the bot</li>
                                     </ol>
                                 </v-expansion-panel-content>
@@ -72,15 +75,15 @@
                             <v-text-field v-model="tele_handle" :rules="teleRules" label="Telegram Handle:" required
                                 class="compStyle"></v-text-field>
 
-                                <!-- give instructions first! -->
-                                
+                            <!-- give instructions first! -->
+
 
 
                             <v-btn class="compStyle" color="success" @click='eValidateSubmit' :disabled="!loginForm">
                                 Register
                             </v-btn>
 
-                            
+
                         </v-form>
                     </v-card>
                 </v-container>
@@ -90,7 +93,7 @@
 
 </body>
 
-<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
     integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
@@ -122,6 +125,7 @@
             errorAlert: false,
             successMsg: false,
             errorMsg: '',
+            valid: true,
         },
         computed: {
             pRules() {
@@ -172,7 +176,10 @@
 
                 });
 
-                var result = check.message.chat.id;
+
+                if (check != null) {
+                    result = check.message.chat.id;
+                }
 
                 //for (let index = 0; index < obj.result.length; index++) {
                 //    if (FormApp.tele_handle == obj.result[index].message.chat.username) {
@@ -223,9 +230,6 @@
                     FormApp.errorMsg = "It appears that your telehandle does not exist! Please follow the steps again!";
 
                 }
-
-
-
 
             }
 
