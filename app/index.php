@@ -61,7 +61,7 @@ $username = $_SESSION['username'];
 <body>
 
     <div id="mainApp">
-        <v-app style="background: linear-gradient(180deg, rgba(161,196,253,1) 0%, rgba(194,233,251,1) 100%);">
+        <v-app style="background: linear-gradient(180deg, #7474BF 0%, #348AC7 100%);">
             <v-navigation-drawer permanent app dark style="background: rgba(0,0,0,0.2);" :mini-variant="mini">
                 <v-list-item>
                     <v-list-item-content>
@@ -217,7 +217,7 @@ $username = $_SESSION['username'];
                     </v-col>
                 </v-row>
                 <!-- Calendar part -->
-                <v-row style="margin:10px">
+                <v-row style="margin:10px" >
                     <v-col>
                         <v-sheet height="128" elevation="3">
                             <v-toolbar flat>
@@ -225,7 +225,7 @@ $username = $_SESSION['username'];
                                 <h2>Calendar</h2>
                             </v-toolbar>
                             <v-toolbar flat>
-                                <v-btn outlined class="mr-4" color="grey darken-2" @click="setToday">
+                                <v-btn outlined class="mr-4" color="grey darken-2" dark @click="setToday">
                                     Today
                                 </v-btn>
                                 <v-btn fab text small color="grey darken-2" @click="prev">
@@ -368,6 +368,7 @@ $username = $_SESSION['username'];
                 //var startDate2 = new Date("Nov 7 2020 08:00:00");
                 //var endDate2 = new Date("Nov 7 2020 15:00:00")
                 setInterval(this.weatherReturn, 100);
+                setInterval(this.notifyTrigger, 3600000);
                 callWeather();
                 this.updateEvents();
             },
@@ -456,6 +457,9 @@ $username = $_SESSION['username'];
                         }
 
                     });
+                },
+                notifyTrigger: function() {
+                    runNotification();
                 },
                 viewDay({
                     date
@@ -1037,6 +1041,44 @@ $username = $_SESSION['username'];
             getLocation();
         }
 
+        //This is for trigger AJAX!
+        function runNotification(){
+            //Calls for event check
+            $.ajax({
+                url: "./include/cron.php",
+                type: "POST",
+                data: {
+
+                },
+
+                cache: false,
+                success: function(dataResult) {
+
+                    //Nothing happens, just to run AJAX to call notifications!
+
+                }
+
+            });
+
+            //Calls for task check
+            $.ajax({
+                url: "./include/cron_task.php",
+                type: "POST",
+                data: {
+
+                },
+
+                cache: false,
+                success: function(dataResult) {
+
+                    //Nothing happens, just to run AJAX to call notifications!
+
+                }
+
+            });
+        }
+
+        //This is for adding goals!
         function checkExist() {
             var currentDate = getTodayDate();
             var formatType = "read";
