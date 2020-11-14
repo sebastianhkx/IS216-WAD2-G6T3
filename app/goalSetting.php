@@ -109,7 +109,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                             </v-list-item-icon>
                             <v-list-item-title>Scheduler</v-list-item-title>
                         </v-list-item>
-                     <v-list-item href="include/logout_process.php">
+                        <v-list-item href="include/logout_process.php">
                             <v-list-item-icon>
                                 <v-icon>mdi-logout-variant</v-icon>
                             </v-list-item-icon>
@@ -163,7 +163,7 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -189,7 +189,12 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                     goalID: '' //only used if existing
                 },
                 computed: {
-
+                    lgAndUp() {
+                        return this.$vuetify.breakpoint.mdAndUp;
+                    },
+                    mini() {
+                        return !(this.lgAndUp || this.menuOpen);
+                    },
                 },
                 created: function() {
                     //We want to check if the thing exist.
