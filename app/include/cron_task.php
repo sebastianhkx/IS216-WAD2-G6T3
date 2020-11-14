@@ -5,9 +5,10 @@ require_once 'common.php';
 date_default_timezone_set("Asia/Singapore");
 
 
-$user_id = $_POST['user_id'];
+$user_id = $_SESSION['userid'];
 
-$chat_id = $_POST['chat_id'];
+$chat_id = $_SESSION['chat_id'];
+
 
 /*
 $user_id = 1;
