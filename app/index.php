@@ -112,11 +112,12 @@ $username = $_SESSION['username'];
             </v-navigation-drawer>
 
             <v-main>
-                    <v-fab-transition>
-                        <v-btn color="pink" dark fixed bottom right fab>
-                            <v-icon>mdi-plus</v-icon>
-                        </v-btn>
-                    </v-fab-transition>
+                <!-- send all events and task for the day??? -->
+                <v-fab-transition>
+                    <v-btn color="pink" @click="cfmRetrieveScheduleDiag = true" dark fixed bottom right fab>
+                        <v-icon>mdi-plus</v-icon>
+                    </v-btn>
+                </v-fab-transition>
                 <!-- Alert confirmation when object is deleted!! -->
                 <v-dialog v-model="deleteCfmDialog" max-width="280">
                     <v-card>
@@ -132,6 +133,54 @@ $username = $_SESSION['username'];
                         </v-card-actions>
                     </v-card>
                 </v-dialog>
+
+                <!-- Prompts for confirmation dialog to get schedule -->
+                <v-dialog v-model="cfmRetrieveScheduleDiag" max-width="280">
+                    <v-card>
+                        <v-card-title class="headline">
+                            Retrieve Schedule:
+                        </v-card-title>
+                        <v-card-text>Would you like to retrieve your entire schedule for the day on telegram?</v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="green darken-1" text @click="giveSchedule">
+                                Retrieve
+                            </v-btn>
+                            <v-btn color="green darken-1" text @click="cfmRetrieveScheduleDiag = false">
+                                Don't retrieve
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+
+                <v-dialog v-model="progressLoadScheduleDiag" persistent max-width="480">
+                    <v-card>
+                        <v-card-title class="headline">
+                            Retrieving schedule...
+                        </v-card-title>
+                        <v-card-text>
+                            <v-progress-linear indeterminate color="green"></v-progress-linear>
+                        </v-card-text>
+                    </v-card>
+                </v-dialog>
+
+
+                <!-- retrieved dialog done! -->
+                <v-dialog v-model="retrievedScheduleDiag" max-width="280">
+                    <v-card>
+                        <v-card-title class="headline">
+                            Retrieval operation complete!
+                        </v-card-title>
+                        <v-card-text>{{retrievedScheduleDiagMsg}}</v-card-text>
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="green darken-1" text @click="retrievedScheduleDiag = false">
+                                Dismiss
+                            </v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+
 
                 <!-- goal setting -->
                 <v-card color="rgba(0,0,0,0.4)" dark>
@@ -365,6 +414,10 @@ $username = $_SESSION['username'];
                 events: [],
                 agendas_events: [],
                 agendas_tasks: [],
+                cfmRetrieveScheduleDiag: false,
+                retrievedScheduleDiag: false,
+                retrievedScheduleDiagMsg: '',
+                progressLoadScheduleDiag: false,
             },
             created: function() {
                 //var startDate = new Date("Nov 2 2020 08:00:00");
@@ -458,6 +511,29 @@ $username = $_SESSION['username'];
                                 navApp.deleteCfmDialogMsg = "Database returned 201 status code!";
                             }
 
+                        }
+
+                    });
+                },
+                giveSchedule: function() {
+                    //Prompt for check!
+                    navApp.cfmRetrieveScheduleDiag = false;
+                    //Bring up the loading screen
+                    navApp.progressLoadScheduleDiag = true
+                    $.ajax({
+                        url: "./include/button_function.php", // retrieve the entire schedule
+                        type: "POST",
+                        data: {
+
+                        },
+
+                        cache: false,
+                        success: function(dataResult) {
+
+                            //Do success only
+                            navApp.progressLoadScheduleDiag = false;
+                            navApp.retrievedScheduleDiag = true;
+                            navApp.retrievedScheduleDiagMsg = 'Your schedule has been loaded into telegram!';
                         }
 
                     });
