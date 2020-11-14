@@ -72,17 +72,18 @@
                             <v-text-field type="password" v-model="rPassword" :rules="pRules" label="Repeat Password:"
                                 required class="compStyle"></v-text-field>
 
-                            <v-text-field v-model="tele_handle" :rules="teleRules" label="Telegram Handle:" required
+                            <v-text-field v-model="tele_handle" :rules="teleRules" label="Telegram Handle: (Exclude @)" required
                                 class="compStyle"></v-text-field>
 
                             <!-- give instructions first! -->
-
-
 
                             <v-btn class="compStyle" color="success" @click='eValidateSubmit' :disabled="!loginForm">
                                 Register
                             </v-btn>
 
+                            <v-btn class="compStyle" color="success" href="login.html">
+                                Back to Login
+                            </v-btn>
 
                         </v-form>
                     </v-card>
