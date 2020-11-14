@@ -200,7 +200,7 @@ if ($Day == "Mon" || $Day == "Tue" || $Day == "Wed" || $Day == "Thu" || $Day == 
 }
 
     
-$repeatable = "Non-Repeat";
+$repeatable = "Non Repeat";
 
 $dao = new DAO();
 
