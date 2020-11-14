@@ -11,7 +11,6 @@
 
     <style>
         .cardFormat {
-            padding: 20px;
             background-color: #a4508b;
             background-image: linear-gradient(326deg, #a4508b 0%, #5f0a87 74%);
 
@@ -36,13 +35,13 @@
 
 <body>
 
-    <div id="app" class="container box">
-        <v-app>
+    <div id="app">
+        <v-app style="background: linear-gradient(180deg, #7474BF 0%, #348AC7 100%);">
 
             <!--MAin BODY-->
             <v-main>
                 <v-container>
-                    <v-card style="text-align: center;" color="#a4508b" color="#5f0a87" class='cardformat'>
+                    <v-card style="text-align: center; background: rgba(0,0,0,0.1); margin-left:20%; margin-right:20%" class='cardformat' dark>
                         <v-alert v-if="errorAlert" border="left" close-text="Close Alert" color="pink darken-1" dark
                             dismissible>
                             {{errorMsg}}
