@@ -6,9 +6,11 @@ require_once 'common.php';
 $user_id = $_SESSION['userid'];
 $date = $_POST['date'];
 $currentTime = $_POST['currentTime'];
+$weekType = $_POST['weekType'];
+$todayDay = $_POST['todayDay'];
 
 $dao = new HANDLERDAO();
-$task_list = $dao->get_task_by_date_time($date, $user_id, $currentTime);
+$task_list = $dao->get_task_by_date_time($date, $user_id, $currentTime, $weekType, $todayDay);
 
 $tasks = [];
 foreach( $task_list as $task_object ) {

@@ -55,6 +55,7 @@ for ($i=0; $i < count($events); $i++) {
     $end_time = $json['end_time'];
     $title = $json['title'];
     $description = $json['description'];
+    $location = $json['location'];
 
     var_dump($start_time);
     var_dump($end_time);
@@ -65,11 +66,12 @@ for ($i=0; $i < count($events); $i++) {
 
     $data = array(
         'text' => 
-        "Here is your upcoming schedule: 
+        "Here is your upcoming event schedule one hour later: 
         Title: '${title}' 
-        start_time: '${start_time}' 
-        end_time: '${end_time}' 
-        description: '${description}'",
+        Start time: '${start_time}' 
+        End Time: '${end_time}'
+        Location: '${location}' 
+        Description: '${description}'",
 
         'chat_id' => $chat_id
     );
@@ -77,6 +79,7 @@ for ($i=0; $i < count($events); $i++) {
     file_get_contents("https://api.telegram.org/bot${token}/sendMessage?" . http_build_query($data) );
 
 }
+
 
 
 ?>

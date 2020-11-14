@@ -7,17 +7,17 @@ require_once 'common.php';
 
 //Actual 
 
-$user_id = $_POST['user_id'];
+$user_id = $_SESSION['userid'];
 
 
 $dao = new HANDLERDAO();
-$event_list = $dao->get_unavailable_user($user_id);
+$unavailable_list = $dao->get_unavailable_user($user_id);
 
 
 $uanvs = [];
 foreach( $unavailable_list as $unav_object ) {
     $uanv = [];
-    $uanv["task_id"] = $unav_object->getUnavailableID();
+    $uanv["unavailable_id"] = $unav_object->getUnavailableID();
     $uanv["user_id"] = $unav_object->getUser();
     $uanv["date"] = $unav_object->getDate();
     $uanv["start_time"] = $unav_object->getStartTime();
@@ -28,10 +28,10 @@ foreach( $unavailable_list as $unav_object ) {
     $uanvs[] = $uanv;
 }
 
-$count = count($uanvs);
+//$count = count($uanvs);
 
 // make posts into json and return json data
-$postJSON = json_encode(array("counter"=>$count));
+$postJSON = json_encode($uanvs);
 echo $postJSON;
 
 // }

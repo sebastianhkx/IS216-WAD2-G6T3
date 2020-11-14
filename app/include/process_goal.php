@@ -16,6 +16,7 @@ if ($_POST['type'] == "add") {
     $dao = new GoalDao();
     $status = $dao->insert_goal_day($user_id, $date, $description);
 
+
     if ($status) {
         echo json_encode(array("statusCode" => 200));
     } else {

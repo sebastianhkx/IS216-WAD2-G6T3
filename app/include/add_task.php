@@ -15,7 +15,6 @@ $repeatable=$_POST['repeatable'];
 $dao = new HANDLERDAO();
 $status = $dao->add_task($user_id,$date,$start_time,$end_time,$repeatable,$title,$description);
 
-var_dump($_POST);
 
 if ($status) {
   echo json_encode(array("statusCode"=>200));

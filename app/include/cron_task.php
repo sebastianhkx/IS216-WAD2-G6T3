@@ -9,7 +9,6 @@ $user_id = $_SESSION['userid'];
 
 $chat_id = $_SESSION['chat_id'];
 
-
 /*
 $user_id = 1;
 $chat_id = 480703954;
@@ -72,12 +71,12 @@ if ($Day == "Mon" || $Day == "Tue" || $Day == "Wed" || $Day == "Thu" || $Day == 
 
         $data = array(
             'text' => 
-            "Here is your upcoming schedule: 
+            "You have a task coming up later!: 
             Title: '${title}' 
-            start_time: '${start_time}' 
-            end_time: '${end_time}' 
-            description: '${description}'",
-
+            Start Time: '${start_time}' 
+            End Time: '${end_time}' 
+            Description: '${description}'",
+    
             'chat_id' => $chat_id
         );
 
@@ -130,12 +129,12 @@ if ($Day == "Mon" || $Day == "Tue" || $Day == "Wed" || $Day == "Thu" || $Day == 
 
         $data = array(
             'text' => 
-            "Here is your upcoming schedule: 
+            "You have a task coming up later!: 
             Title: '${title}' 
-            start_time: '${start_time}' 
-            end_time: '${end_time}' 
-            description: '${description}'",
-
+            Start Time: '${start_time}' 
+            End Time: '${end_time}' 
+            Description: '${description}'",
+    
             'chat_id' => $chat_id
         );
 
@@ -188,11 +187,11 @@ for ($i=0; $i < count($tasks_2); $i++) {
 
     $data = array(
         'text' => 
-        "Here is your upcoming schedule: 
+        "You have a task coming up later!: 
         Title: '${title}' 
-        start_time: '${start_time}' 
-        end_time: '${end_time}' 
-        description: '${description}'",
+        Start Time: '${start_time}' 
+        End Time: '${end_time}' 
+        Description: '${description}'",
 
         'chat_id' => $chat_id
     );
@@ -235,9 +234,9 @@ for ($i=0; $i < count($tasks_3) ; $i++) {
     var_dump($cur_date);
     $day_string = date("D", strtotime($cur_date));
     var_dump($day_string);
-
-
-    if ($day_string == $Day) {
+    var_dump($Day);
+    
+    if ($day_string === $Day) {
 
         $start_time =$json['start_time'];
         $end_time = $json['end_time'];
@@ -253,11 +252,11 @@ for ($i=0; $i < count($tasks_3) ; $i++) {
     
         $data = array(
             'text' => 
-            "Here is your upcoming schedule: 
+            "You have a task coming up later!: 
             Title: '${title}' 
-            start_time: '${start_time}' 
-            end_time: '${end_time}' 
-            description: '${description}'",
+            Start Time: '${start_time}' 
+            End Time: '${end_time}' 
+            Description: '${description}'",
     
             'chat_id' => $chat_id
         );

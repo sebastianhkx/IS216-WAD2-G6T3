@@ -9,7 +9,7 @@ require_once 'common.php';
 //Actual 
 
 
-$user_id = $_POST['user_id'];
+$user_id = $_SESSION['userid'];
 
 
 $dao = new HANDLERDAO();
