@@ -4,7 +4,6 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 require_once 'common.php';
-session_start();
 
 if( trim($_POST['username']) != '' && trim($_POST['password']) != '' ) {
 
