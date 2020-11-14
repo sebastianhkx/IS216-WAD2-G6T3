@@ -1,14 +1,33 @@
 # IS216-WAD2-G6T3 Project Req
- Vuetify
+
+## Problems
+Students and workers have a busy schedule and it’s common for people to forget their appointments especially if they have a lot going on. Thus, most of us rely on a calendar app or a scheduling app one way or the other to organize our life. However, they are usually very limited in functionalities and only provide either a productivity aspect or a scheduling aspect.
+
+The features of the app is as indicated below:
+
+## Login page
+- Login and Register
+
+
+## Register page
+- Register the user
+- No repeat username is allowed
+- Telegram Handle is needed
+- Steps will be issued for the system to retrieve the username for sending notifications
+
+### Purpose
+Register Page is to log the user into our sql database, so that he may login. The system will automatically request for the telegram handle so that it may be used to search for the chat_id which is crucial for the notification.
+
 ## Main page
-### Features Needed:
+- Welcomes the user into 
 - Agenda Overview (List view of tasks for the day + time)
-- Each listed task/reminder comes with a checkbox, when checked, it's completed.
 - Calendar View for the day
 - When clicking on 'Outdoor' related task, will show popup of weather and location and maybe estimated time from current location?
 - Implement Toast notification
 - Clicking on certain time on the calendar will lead to schedule form with time & date info prefilled
 - Ability to edit certain task by clicking on timeline. It will open a schedule form with prefilled areas.
+
+### Features Needed:
 
 ## Schedule Page/Modal
 ### Features Needed:
