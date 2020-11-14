@@ -367,7 +367,12 @@ if (isset($_GET['itemid']) && isset($_GET['taskType'])) {
                     goalDisplay: ''
                 },
                 computed: {
-
+                    mini() {
+                        return !(this.lgAndUp || this.menuOpen);
+                    },
+                    lgAndUp() {
+                        return this.$vuetify.breakpoint.mdAndUp;
+                    },
                 },
                 created: function() {
                     checkExist();
