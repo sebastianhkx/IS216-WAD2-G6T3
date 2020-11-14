@@ -358,7 +358,12 @@ $username = $_SESSION['username'];
           goalDisplay: ''
         },
         computed: {
-
+          mini() {
+            return !(this.lgAndUp || this.menuOpen);
+          },
+          lgAndUp() {
+            return this.$vuetify.breakpoint.mdAndUp;
+          },
         },
         created: function() {
           checkExist();
