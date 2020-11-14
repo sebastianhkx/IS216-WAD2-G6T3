@@ -638,7 +638,9 @@ $username = $_SESSION['username'];
                     navApp.agendas_events.map(convertToAmPm);
                 }
             };
-            loadReq.open("GET", "include/read_event.php", true);
+            loadReq.open("POST", "include/read_event_user.php", true);
+            loadReq.setRequestHeader('Accept', 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8');
+            loadReq.setRequestHeader('Content-Type', 'application/json');
             loadReq.send();
         }
 
@@ -883,7 +885,9 @@ $username = $_SESSION['username'];
                     navApp.agendas_tasks.map(convertToAmPm);
                 }
             };
-            loadReq.open("GET", "include/read_task.php", true);
+            loadReq.open("POST", "include/read_task_user.php", true);
+            loadReq.setRequestHeader('Accept', 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8');
+            loadReq.setRequestHeader('Content-Type', 'application/json');
             loadReq.send();
         }
 
@@ -1068,7 +1072,9 @@ $username = $_SESSION['username'];
                     }
                 }
             };
-            loadReq.open("GET", "include/read_unavailable.php", true);
+            loadReq.open("POST", "include/read_unavailable_user.php", true);
+            loadReq.setRequestHeader('Accept', 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8');
+            loadReq.setRequestHeader('Content-Type', 'application/json');
             loadReq.send();
         }
 
