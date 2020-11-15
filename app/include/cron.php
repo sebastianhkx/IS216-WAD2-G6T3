@@ -66,7 +66,7 @@ for ($i=0; $i < count($events); $i++) {
 
     $data = array(
         'text' => 
-        "Here is your upcoming event schedule one hour later: 
+        "Here is your upcoming event schedule 10 minutes later: 
         Title: '${title}' 
         Start time: '${start_time}' 
         End Time: '${end_time}'
