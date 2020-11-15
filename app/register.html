@@ -67,7 +67,7 @@
                             <v-text-field v-model="username" :rules="fieldRules" label="Username:" required
                                 class="compStyle"></v-text-field>
 
-                            <v-text-field v-model="name" :rules="nameRules" label="Name:" required
+                            <v-text-field v-model="fullname" :rules="nameRules" label="Name:" required
                                 class="compStyle"></v-text-field>
 
                             <v-text-field type="password" v-model="password" :rules="passwordRules" name="password"
@@ -126,6 +126,7 @@
             tele_handle: '',
             password: '',
             rPassword: '',
+            fullname: '',
             errorAlert: false,
             successMsg: false,
             errorMsg: '',
@@ -225,7 +226,7 @@
                     };
                     loadReq.open("POST", "include/register_process.php", true);
                     loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password + "&tele_handle=" + result);
+                    loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password + "&tele_handle=" + result + "&fullname=" + fullname);
                 }
 
                 else {
