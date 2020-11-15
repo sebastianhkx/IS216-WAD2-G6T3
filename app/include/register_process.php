@@ -12,6 +12,7 @@ if( trim($_POST['username']) != '' && trim($_POST['password']) && trim($_POST['u
     $username = $_POST['username'];
     $password = $_POST['password'];
     $tele_handle = $_POST['tele_handle'];
+    $fullname = $_POST['fullname'];
 
     // If passwords do not match:    
   //  if($password !== $retype_password){
@@ -35,7 +36,7 @@ if( trim($_POST['username']) != '' && trim($_POST['password']) && trim($_POST['u
     }
 
     //If it's a success, register user!
-    $register_result = $dao->register($username, $hashedPass, $tele_handle);
+    $register_result = $dao->register($username, $hashedPass, $tele_handle, $fullname);
 
 
     // If registration in Account table was SUCCESSFUL
