@@ -21,25 +21,30 @@ var_dump($startTime) ;
 var_dump($finalTime) ;
 var_dump($finalDate) ;
 
+$dao_1 = new UserDAO();
+$user_list = $dao_1->getAlluser();
 
-$dao_1 = new userDAO();
-$user_list = $dao_1-> getAlluser();
+var_dump($user_list);
 
 $users = [];
 foreach ($user_list as $user_object){
+    var_dump($user_object);
+
     $user = [];
-    $user["id"] = $user_object->getUserId();
-    $user["username"] = $user_object->getName();
-    $user["passwordHash"] = $user_object->getHashedPassword();
-    $user["teleHandle"] = $user_object->getTeleHandle();
+    $user["userid"] = $user_object->getUserId();
+    $user["name"] = $user_object->getName();
+    $user["hashed_password"] = $user_object->getHashedPassword();
+    $user["tele_handle"] = $user_object->getTeleHandle();
     $users[] = $user;
 }
+
+var_dump($users);
 
 for ($i4=0; $i4 < count($users); $i4++) { 
 
     ///////////////////////////////// Event Handler /////////////////////
-    $user_id = $users[$i4]["id"];
-    $chat_id = $users[$i4]["teleHandle"];
+    $user_id = $users[$i4]["userid"];
+    $chat_id = $users[$i4]["tele_handle"];
 
 
 
