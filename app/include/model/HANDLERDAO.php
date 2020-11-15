@@ -507,7 +507,7 @@ public function get_unavailable_user($user_id){
 
 
 
-public function add_unavailable($unavailable_id, $user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
+public function add_unavailable($user_id, $date, $start_time, $end_time, $repeatable, $title, $description) {
 
   // STEP 1
   $connMgr = new ConnectionManager();
@@ -515,7 +515,6 @@ public function add_unavailable($unavailable_id, $user_id, $date, $start_time, $
 
   $sql = "INSERT INTO unavailable_list
   (
-      unavailable_id,
       user_id, 
       date, 
       start_time, 
@@ -526,7 +525,6 @@ public function add_unavailable($unavailable_id, $user_id, $date, $start_time, $
   )
 VALUES
   (
-      :unavailable_id,
       :user_id,
       :date,
       :start_time,
@@ -536,7 +534,6 @@ VALUES
       :description
   )";
 $stmt = $conn->prepare($sql);
-$stmt->bindParam(':unavailable_id', $unavailable_id, PDO::PARAM_STR);
 $stmt->bindParam(':user_id', $user_id, PDO::PARAM_STR);
 $stmt->bindParam(':date', $date, PDO::PARAM_STR);
 $stmt->bindParam(':start_time', $start_time, PDO::PARAM_STR);
