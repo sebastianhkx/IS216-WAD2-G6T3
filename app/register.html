@@ -67,6 +67,9 @@
                             <v-text-field v-model="username" :rules="fieldRules" label="Username:" required
                                 class="compStyle"></v-text-field>
 
+                            <v-text-field v-model="name" :rules="nameRules" label="Name:" required
+                                class="compStyle"></v-text-field>
+
                             <v-text-field type="password" v-model="password" :rules="passwordRules" name="password"
                                 label="Password:" required class="compStyle"></v-text-field>
                             <v-text-field type="password" v-model="rPassword" :rules="pRules" label="Repeat Password:"
@@ -119,7 +122,7 @@
             teleRules: [v => !!v || 'Telegram Handle is required'],
 
             fieldRules: [v => !!v || 'Username is required'],
-
+            nameRules: [v => !!v || 'Name is required'],
             tele_handle: '',
             password: '',
             rPassword: '',
