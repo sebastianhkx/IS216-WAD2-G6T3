@@ -665,7 +665,7 @@ $username = $_SESSION['username'];
                                 rawDate: response[i].date,
                                 rawStartTime: response[i].start_time,
                                 rawEndTime: response[i].end_time,
-                                color: "yellow lighten-2",
+                                color: "brown lighten-2",
                                 timed: true,
                                 details: response[i].description,
                                 repeatable: response[i].repeatable,
