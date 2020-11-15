@@ -226,7 +226,7 @@
                     };
                     loadReq.open("POST", "include/register_process.php", true);
                     loadReq.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                    loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password + "&tele_handle=" + result + "&fullname=" + fullname);
+                    loadReq.send("username=" + FormApp.username + "&password=" + FormApp.password + "&tele_handle=" + result + "&fullname=" + FormApp.fullname);
                 }
 
                 else {
