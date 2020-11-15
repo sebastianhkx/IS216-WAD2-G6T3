@@ -67,6 +67,36 @@ class UserDAO{
         return $result;
     }
     
+    public function getAlluser(){
+
+
+        $conn = new ConnectionManager();
+        $pdo = $conn->getConnection();
+    
+        // YOUR CODE GOES HERE
+        $sql = "SELECT * from userbase";
+         
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindParam(":username",$username, PDO::PARAM_STR);
+        $status = $stmt->execute();
+    
+        $userObject = null;
+            
+        if($row = $stmt->fetch()){
+    
+            $userObject = new User($row['id'], 
+                                    $row['username'], 
+                                    $row['passwordHash'],
+                                    $row['teleHandle']
+                                );
+            }
+    
+    
+        return $userObject;
+    
+    
+    }
+    
 }
 
 
