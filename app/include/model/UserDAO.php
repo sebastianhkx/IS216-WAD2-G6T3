@@ -28,7 +28,8 @@ class UserDAO{
             $userObject = new User($row['id'], 
                                     $row['username'], 
                                     $row['passwordHash'],
-                                    $row['teleHandle']
+                                    $row['teleHandle'],
+                                    $row['fullname']
                             );
         }
 
@@ -90,7 +91,8 @@ class UserDAO{
                         $row['id'], 
                         $row['username'], 
                         $row['passwordHash'],
-                        $row['teleHandle']
+                        $row['teleHandle'],
+                        $row['fullname']
                         );
                     }
 
