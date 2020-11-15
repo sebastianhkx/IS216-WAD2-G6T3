@@ -4,10 +4,6 @@ require_once 'common.php';
 
 date_default_timezone_set("Asia/Singapore");
 
-$user_id = $_SESSION['userid'];
-
-$chat_id = $_SESSION['chat_id'];
-
 /*
 $user_id = 1;
 $chat_id = 480703954;
