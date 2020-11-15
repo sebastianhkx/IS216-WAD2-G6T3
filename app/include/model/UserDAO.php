@@ -40,21 +40,22 @@ class UserDAO{
 
     //Register user!!
 
-    public function register($username, $hashed_password, $teleHandle) {
+    public function register($username, $hashed_password, $teleHandle, $fullname) {
 
         // Step 1 - Connect to Database
         $connMgr = new ConnectionManager();
         $pdo = $connMgr->getConnection();
 
         // Step 2 - Prepare SQL
-        $sql = "INSERT INTO userbase (username, passwordHash, teleHandle) VALUES (
-                    :username, :passwordHash, :teleHandle
+        $sql = "INSERT INTO userbase (username, passwordHash, teleHandle, fullname) VALUES (
+                    :username, :passwordHash, :teleHandle, :fullname
                 )
         ";
         $stmt = $pdo->prepare($sql);
         $stmt->bindParam(':username', $username, PDO::PARAM_STR);
         $stmt->bindParam(':passwordHash', $hashed_password, PDO::PARAM_STR);
         $stmt->bindParam(':teleHandle', $teleHandle, PDO::PARAM_STR);
+        $stmt->bindParam(':fullname', $fullname, PDO::PARAM_STR);
         
         // Step 3 - Execute SQL
         $result = $stmt->execute();
@@ -66,7 +67,8 @@ class UserDAO{
         // Step 6 - Return
         return $result;
     }
-    
+
+    // Return value is all;
     public function getAlluser(){
 
 
@@ -102,6 +104,9 @@ class UserDAO{
     
     
     }
+
+    
+
     
 }
 
