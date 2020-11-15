@@ -425,7 +425,8 @@ $username = $_SESSION['username'];
                 //var startDate2 = new Date("Nov 7 2020 08:00:00");
                 //var endDate2 = new Date("Nov 7 2020 15:00:00")
                 setInterval(this.weatherReturn, 100);
-                setInterval(this.notifyTrigger, 3600000);
+                this.notifyTrigger();
+                setInterval(this.notifyTrigger, 300000);
                 callWeather();
                 this.updateEvents();
             },
