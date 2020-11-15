@@ -77,22 +77,28 @@ class UserDAO{
         $sql = "SELECT * from userbase";
          
         $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":username",$username, PDO::PARAM_STR);
         $status = $stmt->execute();
+        $stmt->setFetchMode(PDO::FETCH_ASSOC);
     
-        $userObject = null;
-            
-        if($row = $stmt->fetch()){
-    
-            $userObject = new User($row['id'], 
-                                    $row['username'], 
-                                    $row['passwordHash'],
-                                    $row['teleHandle']
-                                );
-            }
-    
-    
-        return $userObject;
+        // STEP 4
+        $user_list = [];
+        while( $row = $stmt->fetch() ) {
+            $user_list[] =
+                new User(
+                        $row['id'], 
+                        $row['username'], 
+                        $row['passwordHash'],
+                        $row['teleHandle']
+                        );
+                    }
+
+        // STEP 5
+        $stmt = null;
+        $conn = null;
+
+        // STEP 6
+        return $user_list;
+
     
     
     }
