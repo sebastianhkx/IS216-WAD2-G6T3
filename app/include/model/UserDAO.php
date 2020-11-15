@@ -1,117 +1,41 @@
+<?php 
 
-<?php
+// DO NOT MODIFY THE CODES
 
-require_once 'common.php';
-    
-class UserDAO{
+class User {
+    private $userid;
+    private $name;
+    private $hashed_password;
+    private $tele_handle;
+    private $fullname;
 
-    
-    // This function gets information about a User based on a given userid
-    // Return value is an User Object  or null (not found);
-     public function getUserDetails($username){
-
-
-        $conn = new ConnectionManager();
-        $pdo = $conn->getConnection();
-
-        // YOUR CODE GOES HERE
-        $sql = "SELECT * from userbase where username = :username";
-     
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(":username",$username, PDO::PARAM_STR);
-        $status = $stmt->execute();
-
-        $userObject = null;
-        
-        if($row = $stmt->fetch()){
-
-            $userObject = new User($row['id'], 
-                                    $row['username'], 
-                                    $row['passwordHash'],
-                                    $row['teleHandle'],
-                                    $row['fullname']
-                            );
-        }
-
-
-        return $userObject;
-
-
+    public function __construct($userid, $name, $hashed_password, $tele_handle, $fullname){
+        $this->userid = $userid;
+        $this->name = $name;
+        $this->hashed_password = $hashed_password;
+        $this->tele_handle = $tele_handle;
+        $this->fullname = $fullname;
     }
 
-    //Register user!!
-
-    public function register($username, $hashed_password, $teleHandle, $fullname) {
-
-        // Step 1 - Connect to Database
-        $connMgr = new ConnectionManager();
-        $pdo = $connMgr->getConnection();
-
-        // Step 2 - Prepare SQL
-        $sql = "INSERT INTO userbase (username, passwordHash, teleHandle, fullname) VALUES (
-                    :username, :passwordHash, :teleHandle, :fullname
-                )
-        ";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-        $stmt->bindParam(':passwordHash', $hashed_password, PDO::PARAM_STR);
-        $stmt->bindParam(':teleHandle', $teleHandle, PDO::PARAM_STR);
-        $stmt->bindParam(':fullname', $fullname, PDO::PARAM_STR);
-        
-        // Step 3 - Execute SQL
-        $result = $stmt->execute();
-        
-        // Step 5 - Clear Resources
-        $stmt = null;
-        $pdo = null;
-
-        // Step 6 - Return
-        return $result;
+    public function getUserId(){
+        return $this->userid;
     }
 
-    // Return value is all;
-    public function getAlluser(){
-
-
-        $conn = new ConnectionManager();
-        $pdo = $conn->getConnection();
-    
-        // YOUR CODE GOES HERE
-        $sql = "SELECT * from userbase";
-         
-        $stmt = $pdo->prepare($sql);
-        $status = $stmt->execute();
-        $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    
-        // STEP 4
-        $user_list = [];
-        while( $row = $stmt->fetch() ) {
-            $user_list[] =
-                new User(
-                        $row['id'], 
-                        $row['username'], 
-                        $row['passwordHash'],
-                        $row['teleHandle'],
-                        $row['fullname']
-                        );
-                    }
-
-        // STEP 5
-        $stmt = null;
-        $conn = null;
-
-        // STEP 6
-        return $user_list;
-
-    
-    
+    public function getName(){
+        return $this->name;
     }
 
-    
+    public function getHashedPassword(){
+        return $this->hashed_password;
+    }
 
-    
+    public function getTeleHandle(){
+        return $this->tele_handle;
+    }
+
+    public function getFullname() {
+        return $this->fullname;
+    }
+
 }
-
-
-
 ?>
