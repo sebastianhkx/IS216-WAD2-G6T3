@@ -8,7 +8,8 @@ CREATE TABLE if not exists userbase (
     id integer auto_increment primary key,
     username varchar(200),
     passwordHash varchar(1000),
-    teleHandle varchar(200)
+    teleHandle varchar(200),
+    fullname varchar(200)
 );
 
 CREATE TABLE if not exists `goal_table` (
