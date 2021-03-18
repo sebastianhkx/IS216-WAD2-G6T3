@@ -41,6 +41,3 @@ CREATE TABLE if not exists abandoner (
 )ENGINE=InnoDB DEFAULT CHARSET= utf8mb4;
 
 
-
-
-
